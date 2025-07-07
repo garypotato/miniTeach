@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import shopify from "../../initialShopify";
 
-// Using a more permissive type to work around Next.js type issues
-export async function GET(request: NextRequest, context: any) {
+export async function GET(_: NextRequest, context: { params: { id: string } }) {
   const params = context.params;
   try {
     const id = params.id;

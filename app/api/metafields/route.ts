@@ -7,11 +7,8 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    metafields = await shopify.metafield.list({
-      metafield: {
-        ...body,
-      },
-    });
+    // Pass the body parameters directly to the list method
+    metafields = await shopify.metafield.list(body);
 
     return new Response(
       JSON.stringify({ success: true, data: metafields, error: null }),
