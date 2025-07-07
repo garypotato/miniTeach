@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import shopify from "../../initialShopify";
 
-export async function GET(_: NextRequest, context: { params: { id: string } }) {
-  const params = context.params;
+export async function GET(
+  _: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
+  const params = await context.params;
   try {
     const id = params.id;
     const product = await shopify.product.get(parseInt(id, 10));
