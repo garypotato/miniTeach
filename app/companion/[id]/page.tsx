@@ -18,9 +18,9 @@ interface Companion {
 }
 
 interface CompanionDetailProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 async function getCompanion(id: string): Promise<Companion | null> {

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useLanguage } from '../hooks/useLanguage'
 
 interface Companion {
   id: number
@@ -72,6 +73,7 @@ async function fetchMoreCompanions(excludeIds: number[]): Promise<Companion[]> {
 }
 
 export default function CompanionsSection({ initialCompanions }: CompanionsSectionProps) {
+  const { t } = useLanguage()
   const [companions, setCompanions] = useState<Companion[]>(initialCompanions)
   const [loadingMore, setLoadingMore] = useState(false)
   const [hasMoreAvailable, setHasMoreAvailable] = useState(true)
@@ -120,9 +122,9 @@ export default function CompanionsSection({ initialCompanions }: CompanionsSecti
     <section id="companions-section" className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <h3 className="text-3xl font-bold text-gray-900 mb-4">Meet Our Companions</h3>
+          <h3 className="text-3xl font-bold text-gray-900 mb-4">{t('companions.title')}</h3>
           <p className="text-lg text-gray-600">
-            {`Discover caring professionals ready to support your child's journey`}
+            {t('companions.description')}
           </p>
         </div>
 

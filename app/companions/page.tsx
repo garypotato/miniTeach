@@ -15,10 +15,10 @@ interface Companion {
 }
 
 interface CompanionsPageProps {
-  searchParams: {
+  searchParams: Promise<{
     page?: string;
     search?: string;
-  };
+  }>;
 }
 
 async function getAllCompanions(): Promise<Companion[]> {
