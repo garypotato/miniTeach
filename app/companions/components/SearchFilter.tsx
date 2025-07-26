@@ -653,14 +653,14 @@ export default function SearchFilter({
 
               {/* Modal Footer */}
               <div
-                className="flex items-center justify-between p-8 border-t border-gray-200 bg-gray-50"
+                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 sm:p-8 border-t border-gray-200 bg-gray-50"
                 onClick={(e) => e.stopPropagation()}
                 onMouseDown={(e) => e.stopPropagation()}
               >
                 <button
                   onClick={handleClearFilters}
                   disabled={isLoading}
-                  className="flex items-center space-x-2 px-6 py-3 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center justify-center space-x-2 px-6 py-3 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
                 >
                   <svg
                     className="w-4 h-4"
@@ -678,18 +678,18 @@ export default function SearchFilter({
                   <span>Clear All</span>
                 </button>
 
-                <div className="flex space-x-3">
+                <div className="flex flex-col sm:flex-row gap-3 sm:space-x-3 w-full sm:w-auto">
                   <button
                     onClick={() => dispatch(closeModal())}
                     disabled={isLoading}
-                    className="px-6 py-3 text-sm font-medium text-gray-700 bg-white border-2 border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full sm:w-auto px-6 py-3 text-sm font-medium text-gray-700 bg-white border-2 border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleApplyFilters}
                     disabled={isLoading}
-                    className="flex items-center space-x-2 px-8 py-3 text-sm font-medium text-white rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 transition-all hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    className="flex items-center justify-center space-x-2 w-full sm:w-auto px-8 py-3 text-sm font-medium text-white rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 transition-all hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                     style={{ backgroundColor: "#47709B" }}
                   >
                     {isLoading && (
