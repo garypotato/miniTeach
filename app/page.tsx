@@ -78,7 +78,7 @@ export default async function Home() {
             <span className="block" style={{color: '#47709B'}}>Child Companion</span>
           </h2>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Connect with qualified, caring educators and companions who will nurture your child's growth and development in a safe, supportive environment.
+            {`Connect with qualified, caring educators and companions who will nurture your child's growth and development in a safe, supportive environment.`}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
@@ -135,7 +135,7 @@ export default async function Home() {
                 </svg>
               </div>
               <h4 className="text-xl font-semibold text-gray-900 mb-2">Personalized Care</h4>
-              <p className="text-gray-600">Each companion provides individualized attention tailored to your child's unique needs.</p>
+              <p className="text-gray-600">{`Each companion provides individualized attention tailored to your child's unique needs.`}</p>
             </div>
 
             <div className="text-center">

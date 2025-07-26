@@ -160,7 +160,7 @@ export default async function CompanionsPage({
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Browse through our complete collection of qualified child companions
-            and educators. Find the perfect match for your child's needs.
+            {`and educators. Find the perfect match for your child's needs.`}
           </p>
         </div>
 
@@ -192,7 +192,7 @@ export default async function CompanionsPage({
               No companions found
             </h3>
             <p className="text-gray-600 mb-4">
-              We couldn't find any companions at the moment.
+              {`We couldn't find any companions at the moment.`}
             </p>
             <Link
               href="/"

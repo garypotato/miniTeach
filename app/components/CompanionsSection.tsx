@@ -122,7 +122,7 @@ export default function CompanionsSection({ initialCompanions }: CompanionsSecti
         <div className="text-center mb-12">
           <h3 className="text-3xl font-bold text-gray-900 mb-4">Meet Our Companions</h3>
           <p className="text-lg text-gray-600">
-            Discover caring professionals ready to support your child's journey
+            {`Discover caring professionals ready to support your child's journey`}
           </p>
         </div>
 
@@ -208,7 +208,7 @@ export default function CompanionsSection({ initialCompanions }: CompanionsSecti
         {!hasMoreAvailable && companions.length > 8 && (
           <div className="text-center mt-12">
             <p className="text-gray-600 mb-4">
-              You've seen {companions.length} companions! 
+              {`You've seen ${companions.length} companions!`} 
             </p>
             <button 
               onClick={resetCompanions}

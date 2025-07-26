@@ -212,7 +212,7 @@ export default async function CompanionDetail({ params }: CompanionDetailProps) 
             <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
               <h3 className="text-xl font-semibold text-gray-900 mb-4">Ready to Connect?</h3>
               <p className="text-gray-600 mb-6">
-                Get in touch with {companion.title} to discuss how they can support your child's development.
+                {`Get in touch with ${companion.title} to discuss how they can support your child's development.`}
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <button className="flex-1 text-white px-6 py-3 rounded-full font-semibold transition-colors hover:opacity-90" style={{backgroundColor: '#47709B'}}>
