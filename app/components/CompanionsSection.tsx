@@ -174,10 +174,18 @@ export default function CompanionsSection({
                     {companion.title}
                   </h4>
                   <p className="text-gray-600 text-sm leading-relaxed">
-                    {truncateText(
-                      extractTextFromHtml(companion.body_html),
-                      120
-                    )}
+                    <span className="hidden sm:inline">
+                      {truncateText(
+                        extractTextFromHtml(companion.body_html),
+                        120
+                      )}
+                    </span>
+                    <span className="sm:hidden">
+                      {truncateText(
+                        extractTextFromHtml(companion.body_html),
+                        80
+                      )}
+                    </span>
                   </p>
                   <div
                     className="mt-4 flex items-center text-sm font-medium"

@@ -73,17 +73,14 @@ async function getAllCompanions(): Promise<Companion[]> {
     let pageCount = 0;
 
     do {
-      pageCount++;
-      console.log(`Fetching companions page ${pageCount}...`);
+      pageCount++; // eslint-disable-line @typescript-eslint/no-unused-vars
 
       const result = await getProducts(params);
 
       if (result.success && result.data) {
         allBasicCompanions.push(...result.data);
 
-        console.log(
-          `Page ${pageCount}: fetched ${result.data.length} companions`
-        );
+        // Page fetched companions
 
         // Get next page parameters from Shopify API
         const nextParams = (
@@ -94,7 +91,6 @@ async function getAllCompanions(): Promise<Companion[]> {
         params = nextParams;
 
         if (nextParams) {
-          console.log(`Next page parameters:`, nextParams);
         }
       } else {
         console.warn("Failed to fetch companions page:", result.error);
@@ -102,9 +98,7 @@ async function getAllCompanions(): Promise<Companion[]> {
       }
     } while (params !== undefined);
 
-    console.log(
-      `Successfully fetched ${allBasicCompanions.length} basic companions across ${pageCount} pages`
-    );
+    // Successfully fetched basic companions
 
     // Step 2: Fetch metafields for all products using GraphQL in batches
     const productIds = allBasicCompanions.map((p) => p.id.toString());
@@ -113,12 +107,7 @@ async function getAllCompanions(): Promise<Companion[]> {
 
     for (let i = 0; i < productIds.length; i += batchSize) {
       const batchIds = productIds.slice(i, i + batchSize);
-      console.log(
-        `Fetching metafields for products ${i + 1}-${Math.min(
-          i + batchSize,
-          productIds.length
-        )}`
-      );
+      // Fetching metafields for products batch
 
       const metafieldsResult = await getProductsWithMetafields(batchIds);
 
@@ -141,9 +130,7 @@ async function getAllCompanions(): Promise<Companion[]> {
       }
     }
 
-    console.log(
-      `Successfully processed ${companionsWithMetafields.length} companions with metafields`
-    );
+    // Successfully processed companions with metafields
     return companionsWithMetafields;
   } catch (error) {
     console.error("Error in getAllCompanions:", error);

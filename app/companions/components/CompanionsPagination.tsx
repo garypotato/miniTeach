@@ -161,10 +161,24 @@ export default function CompanionsPagination({
 
                       <div className="prose prose-gray max-w-none">
                         <p className="text-gray-600 leading-relaxed">
-                          {truncateText(
-                            extractTextFromHtml(companion.body_html),
-                            280
-                          )}
+                          <span className="hidden md:inline">
+                            {truncateText(
+                              extractTextFromHtml(companion.body_html),
+                              280
+                            )}
+                          </span>
+                          <span className="hidden sm:inline md:hidden">
+                            {truncateText(
+                              extractTextFromHtml(companion.body_html),
+                              180
+                            )}
+                          </span>
+                          <span className="sm:hidden">
+                            {truncateText(
+                              extractTextFromHtml(companion.body_html),
+                              120
+                            )}
+                          </span>
                         </p>
                       </div>
 

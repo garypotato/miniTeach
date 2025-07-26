@@ -200,12 +200,7 @@ export default async function CompanionDetail({
                               "age",
                             ];
 
-                            // Debug: Show all available metafield keys
-                            console.log(
-                              "All metafields:",
-                              companion.metafields
-                            );
-                            const allKeys = companion.metafields.map(
+                            companion.metafields.map(
                               (metafield: unknown) => {
                                 const field = metafield as Record<
                                   string,
@@ -214,8 +209,6 @@ export default async function CompanionDetail({
                                 return field.key;
                               }
                             );
-                            console.log("All metafield keys:", allKeys);
-                            console.log("Looking for keys:", relevantFields);
 
                             const getFieldLabel = (key: string) => {
                               const labels: Record<string, string> = {
@@ -282,10 +275,6 @@ export default async function CompanionDetail({
                                 return aIndex - bIndex;
                               });
 
-                            console.log(
-                              "Filtered metafields:",
-                              filteredMetafields
-                            );
 
                             // Temporary debug display
                             return (
