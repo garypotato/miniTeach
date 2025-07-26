@@ -1,4 +1,5 @@
 import HomePage from './components/HomePage'
+import { getApiRoute } from './lib/api'
 
 interface Companion {
   id: number
@@ -22,7 +23,7 @@ const shuffleArray = (array: Companion[]) => {
 
 async function getInitialCompanions(): Promise<Companion[]> {
   try {
-    const response = await fetch('http://localhost:3000/api/products', {
+    const response = await fetch(getApiRoute('/products'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

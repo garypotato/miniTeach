@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import CompanionsPagination from "./components/CompanionsPagination";
 import SearchFilter from "./components/SearchFilter";
+import { getApiRoute } from "../lib/api";
 
 interface Companion {
   id: number;
@@ -23,7 +24,7 @@ interface CompanionsPageProps {
 
 async function getAllCompanions(): Promise<Companion[]> {
   try {
-    const response = await fetch("http://localhost:3000/api/products", {
+    const response = await fetch(getApiRoute('/products'), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

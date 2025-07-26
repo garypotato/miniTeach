@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
+import { getApiRoute } from '../../lib/api'
 
 interface Companion {
   id: number
@@ -25,7 +26,7 @@ interface CompanionDetailProps {
 
 async function getCompanion(id: string): Promise<Companion | null> {
   try {
-    const response = await fetch('http://localhost:3000/api/products', {
+    const response = await fetch(getApiRoute('/products'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
