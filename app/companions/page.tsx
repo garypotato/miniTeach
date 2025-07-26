@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import CompanionsPagination from "./components/CompanionsPagination";
 import SearchFilter from "./components/SearchFilter";
-import { getApiRoute } from "../lib/api";
+import { getProducts } from "../lib/shopify";
 
 interface Companion {
   id: number;
@@ -24,22 +24,19 @@ interface CompanionsPageProps {
 
 async function getAllCompanions(): Promise<Companion[]> {
   try {
-    const response = await fetch(getApiRoute('/products'), {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ collection_id: "491355177275" }),
-      cache: "no-store",
-    });
-
-    const data = await response.json();
-    if (data.success && data.data) {
-      return data.data;
+    console.log('🔍 Server-side: Getting all companions directly from Shopify')
+    
+    const result = await getProducts({ collection_id: "491355177275" });
+    
+    if (result.success && result.data) {
+      console.log(`✅ Found ${result.data.length} total companions`)
+      return result.data;
     }
+    
+    console.log('⚠️ Shopify returned no data:', result.error)
     return [];
   } catch (error) {
-    console.error("Error fetching companions:", error);
+    console.error("❌ Error fetching companions:", error);
     return [];
   }
 }

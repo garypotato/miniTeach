@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
-import { getApiRoute } from '../../lib/api'
+import { getProducts } from '../../lib/shopify'
 
 interface Companion {
   id: number
@@ -26,23 +26,25 @@ interface CompanionDetailProps {
 
 async function getCompanion(id: string): Promise<Companion | null> {
   try {
-    const response = await fetch(getApiRoute('/products'), {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ collection_id: '491355177275' }),
-      cache: 'no-store'
-    })
+    console.log(`🔍 Server-side: Getting companion ${id} directly from Shopify`)
     
-    const data = await response.json()
-    if (data.success && data.data) {
-      const foundCompanion = data.data.find((c: Companion) => c.id.toString() === id)
-      return foundCompanion || null
+    const result = await getProducts({ collection_id: '491355177275' })
+    
+    if (result.success && result.data) {
+      const foundCompanion = result.data.find((c: Companion) => c.id.toString() === id)
+      if (foundCompanion) {
+        console.log(`✅ Found companion: ${foundCompanion.title}`)
+        return foundCompanion
+      } else {
+        console.log(`⚠️ Companion with id ${id} not found`)
+        return null
+      }
     }
+    
+    console.log('⚠️ Shopify returned no data:', result.error)
     return null
   } catch (error) {
-    console.error('Error fetching companion:', error)
+    console.error('❌ Error fetching companion:', error)
     return null
   }
 }

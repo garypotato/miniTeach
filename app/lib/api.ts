@@ -1,16 +1,26 @@
 function getBaseUrl() {
-  // In development
-  if (process.env.NODE_ENV === 'development') {
-    return 'http://localhost:3000'
+  const isDev = process.env.NODE_ENV === 'development'
+  const customUrl = process.env.VERCEL_URL
+  const fallbackUrl = 'https://mini-teach.vercel.app'
+  
+  let baseUrl: string
+  
+  if (isDev) {
+    baseUrl = 'http://localhost:3000'
+  } else if (customUrl) {
+    baseUrl = customUrl
+  } else {
+    baseUrl = fallbackUrl
   }
   
-  // In production, use custom VERCEL_URL from .env file
-  if (process.env.VERCEL_URL) {
-    return process.env.VERCEL_URL
-  }
+  console.log('🌐 API Base URL:', {
+    isDev,
+    customUrl,
+    fallbackUrl,
+    finalUrl: baseUrl
+  })
   
-  // Fallback to default production domain
-  return 'https://mini-teach.vercel.app'
+  return baseUrl
 }
 
 export function getApiUrl(path: string) {

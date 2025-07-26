@@ -1,5 +1,5 @@
 import HomePage from './components/HomePage'
-import { getApiRoute } from './lib/api'
+import { getProducts } from './lib/shopify'
 
 interface Companion {
   id: number
@@ -23,22 +23,25 @@ const shuffleArray = (array: Companion[]) => {
 
 async function getInitialCompanions(): Promise<Companion[]> {
   try {
-    const response = await fetch(getApiRoute('/products'), {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ collection_id: '491355177275' }),
-      cache: 'no-store' // Ensure fresh data on each request
-    })
+    console.log('🔍 Server-side: Getting companions directly from Shopify')
     
-    const data = await response.json()
-    if (data.success && data.data) {
-      return shuffleArray(data.data).slice(0, 8)
+    const result = await getProducts({ collection_id: '491355177275' })
+    
+    console.log('📦 Shopify result:', JSON.stringify(result, null, 2))
+    
+    if (result.success && result.data) {
+      console.log(`✅ Found ${result.data.length} companions, returning ${Math.min(8, result.data.length)}`)
+      return shuffleArray(result.data).slice(0, 8)
     }
+    
+    console.log('⚠️ Shopify returned no data or unsuccessful response:', result.error)
     return []
   } catch (error) {
-    console.error('Error fetching initial companions:', error)
+    console.error('❌ Error fetching initial companions:', error)
+    console.error('❌ Error details:', {
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
+    })
     return []
   }
 }
