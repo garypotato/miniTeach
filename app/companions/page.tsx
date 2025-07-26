@@ -24,19 +24,14 @@ interface CompanionsPageProps {
 
 async function getAllCompanions(): Promise<Companion[]> {
   try {
-    console.log('🔍 Server-side: Getting all companions directly from Shopify')
-    
     const result = await getProducts({ collection_id: "491355177275" });
-    
+
     if (result.success && result.data) {
-      console.log(`✅ Found ${result.data.length} total companions`)
       return result.data;
     }
-    
-    console.log('⚠️ Shopify returned no data:', result.error)
+
     return [];
-  } catch (error) {
-    console.error("❌ Error fetching companions:", error);
+  } catch {
     return [];
   }
 }

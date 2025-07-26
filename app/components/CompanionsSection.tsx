@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useLanguage } from '../hooks/useLanguage'
+import { getCompanionsAction } from '../actions/shopify'
 
 interface Companion {
   id: number
@@ -40,18 +41,11 @@ const truncateText = (text: string, maxLength: number) => {
 
 async function fetchMoreCompanions(excludeIds: number[]): Promise<Companion[]> {
   try {
-    const response = await fetch('/api/products', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ collection_id: '491355177275' }),
-    })
+    const result = await getCompanionsAction({ collection_id: '491355177275' })
     
-    const data = await response.json()
-    if (data.success && data.data) {
+    if (result.success && result.data) {
       // Filter out companions that are already displayed
-      const availableCompanions = data.data.filter((companion: Companion) => 
+      const availableCompanions = result.data.filter((companion: Companion) => 
         !excludeIds.includes(companion.id)
       )
       
