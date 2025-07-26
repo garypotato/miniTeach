@@ -2,60 +2,243 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import CompanionsPagination from "./components/CompanionsPagination";
 import SearchFilter from "./components/SearchFilter";
-import { getProducts } from "../lib/shopify";
+import { getProducts, getProductsWithMetafields } from "../lib/shopify";
+
+interface ShopifyProduct {
+  id: number;
+  title: string;
+  body_html: string;
+  handle: string;
+  vendor?: string;
+  product_type?: string;
+  tags?: string;
+  images?: Array<{
+    id: number;
+    src: string;
+    alt: string | null;
+    width: number;
+    height: number;
+  }>;
+}
 
 interface Companion {
   id: number;
   title: string;
   body_html: string;
   handle: string;
+  vendor?: string;
+  product_type?: string;
+  tags?: string;
+  images?: Array<{
+    id: number;
+    src: string;
+    alt: string | null;
+    width: number;
+    height: number;
+  }>;
   image?: {
     src: string;
     alt: string | null;
   };
+  metafields?: Array<{
+    id: string;
+    namespace: string;
+    key: string;
+    value: string;
+    type: string;
+    description?: string;
+  }>;
 }
 
 interface CompanionsPageProps {
   searchParams: Promise<{
     page?: string;
     search?: string;
+    cities?: string;
   }>;
 }
 
 async function getAllCompanions(): Promise<Companion[]> {
   try {
-    const result = await getProducts({ collection_id: "491355177275" });
+    // Step 1: Fetch ALL basic companion data using proper Shopify pagination
+    const allBasicCompanions: ShopifyProduct[] = [];
+    let params: Record<string, unknown> | undefined = {
+      collection_id: "491355177275",
+      status: "active",
+      published_status: "published",
+      limit: 250, // Maximum per request
+      fields: "id,title,body_html,handle,images,vendor,product_type,tags",
+    };
 
-    if (result.success && result.data) {
-      return result.data;
+    let pageCount = 0;
+
+    do {
+      pageCount++;
+      console.log(`Fetching companions page ${pageCount}...`);
+
+      const result = await getProducts(params);
+
+      if (result.success && result.data) {
+        allBasicCompanions.push(...result.data);
+
+        console.log(
+          `Page ${pageCount}: fetched ${result.data.length} companions`
+        );
+
+        // Get next page parameters from Shopify API
+        const nextParams = (
+          result.data as unknown as {
+            nextPageParameters?: Record<string, unknown>;
+          }
+        ).nextPageParameters;
+        params = nextParams;
+
+        if (nextParams) {
+          console.log(`Next page parameters:`, nextParams);
+        }
+      } else {
+        console.warn("Failed to fetch companions page:", result.error);
+        break;
+      }
+    } while (params !== undefined);
+
+    console.log(
+      `Successfully fetched ${allBasicCompanions.length} basic companions across ${pageCount} pages`
+    );
+
+    // Step 2: Fetch metafields for all products using GraphQL in batches
+    const productIds = allBasicCompanions.map((p) => p.id.toString());
+    const batchSize = 100; // GraphQL can handle larger batches
+    const companionsWithMetafields: Companion[] = [];
+
+    for (let i = 0; i < productIds.length; i += batchSize) {
+      const batchIds = productIds.slice(i, i + batchSize);
+      console.log(
+        `Fetching metafields for products ${i + 1}-${Math.min(
+          i + batchSize,
+          productIds.length
+        )}`
+      );
+
+      const metafieldsResult = await getProductsWithMetafields(batchIds);
+
+      if (metafieldsResult.success && metafieldsResult.data) {
+        // Transform and merge with basic data
+        const transformedBatch = metafieldsResult.data.map(
+          transformShopifyProduct
+        );
+        companionsWithMetafields.push(...transformedBatch);
+      } else {
+        console.warn(
+          "Failed to fetch metafields for batch:",
+          metafieldsResult.error
+        );
+        // Fall back to basic data without metafields for this batch
+        const fallbackBatch = allBasicCompanions
+          .slice(i, i + batchSize)
+          .map(transformShopifyProduct);
+        companionsWithMetafields.push(...fallbackBatch);
+      }
     }
 
-    return [];
-  } catch {
+    console.log(
+      `Successfully processed ${companionsWithMetafields.length} companions with metafields`
+    );
+    return companionsWithMetafields;
+  } catch (error) {
+    console.error("Error in getAllCompanions:", error);
     return [];
   }
+}
+
+// Helper function to extract text from HTML
+function stripHtml(html: string): string {
+  return html
+    .replace(/<[^>]*>/g, "")
+    .replace(/&[^;]+;/g, " ")
+    .trim();
+}
+
+// Helper function to transform Shopify product data
+function transformShopifyProduct(product: ShopifyProduct): Companion {
+  return {
+    ...product,
+    // Transform images array to single image object (use first image)
+    image:
+      product.images && product.images.length > 0
+        ? {
+            src: product.images[0].src,
+            alt: product.images[0].alt || product.title,
+          }
+        : undefined,
+  };
 }
 
 export default async function CompanionsPage({
   searchParams,
 }: CompanionsPageProps) {
-  const { page: pageParam, search: searchParam } = await searchParams;
+  const {
+    page: pageParam,
+    search: searchParam,
+    cities: citiesParam,
+  } = await searchParams;
   const page = parseInt(pageParam || "1", 10);
   const searchQuery = searchParam || "";
+  const selectedCities = citiesParam
+    ? citiesParam.split(",").filter((city) => city.trim())
+    : [];
   const companionsPerPage = 8;
 
   if (page < 1) {
     notFound();
   }
 
+  // Get all companions with proper Shopify API pagination
+  // This fetches ALL products using Shopify's nextPageParameters
+  // for collections larger than 250 items (Shopify's max per request)
   const allCompanions = await getAllCompanions();
 
-  // Filter companions based on search query
-  const filteredCompanions = searchQuery.trim()
-    ? allCompanions.filter((companion) =>
-        companion.title.toLowerCase().includes(searchQuery.toLowerCase().trim())
-      )
-    : allCompanions;
+  // Enhanced filter companions based on search query and selected cities
+  const filteredCompanions = allCompanions.filter((companion) => {
+    // Search filter
+    const matchesSearch =
+      !searchQuery.trim() ||
+      (() => {
+        const query = searchQuery.toLowerCase().trim();
+        const cleanBodyText = stripHtml(companion.body_html).toLowerCase();
+        return (
+          companion.title.toLowerCase().includes(query) ||
+          companion.vendor?.toLowerCase().includes(query) ||
+          companion.product_type?.toLowerCase().includes(query) ||
+          companion.tags?.toLowerCase().includes(query) ||
+          cleanBodyText.includes(query)
+        );
+      })();
+
+    // City filter - specifically check the 'current_location_in_australia' metafield
+    const matchesCities =
+      selectedCities.length === 0 ||
+      (() => {
+        // Find the location metafield
+        const locationMetafield = companion.metafields?.find(
+          (metafield) => metafield.key === "current_location_in_australia"
+        );
+
+        if (!locationMetafield) {
+          // If no location metafield, don't match any city filter
+          return false;
+        }
+
+        const companionLocation = locationMetafield.value?.toLowerCase() || "";
+
+        return selectedCities.some((city) => {
+          const cityLower = city.toLowerCase();
+          return companionLocation.includes(cityLower);
+        });
+      })();
+
+    return matchesSearch && matchesCities;
+  });
 
   const totalPages = Math.ceil(filteredCompanions.length / companionsPerPage);
 
@@ -158,7 +341,10 @@ export default async function CompanionsPage({
         </div>
 
         {/* Search Filter */}
-        <SearchFilter initialSearch={searchQuery} />
+        <SearchFilter
+          initialSearch={searchQuery}
+          initialCities={selectedCities}
+        />
 
         {currentCompanions.length === 0 ? (
           <div className="text-center py-12">

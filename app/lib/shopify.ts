@@ -1,8 +1,51 @@
 import shopify from "../api/initialShopify";
 
-export async function getProducts(options?: { collection_id?: string }) {
+interface ProductFilters {
+  collection_id?: string;
+  limit?: number;
+  status?: "active" | "archived" | "draft";
+  published_status?: "published" | "unpublished";
+  fields?: string;
+  vendor?: string;
+  product_type?: string;
+  ids?: string;
+  created_at_min?: string;
+  created_at_max?: string;
+  updated_at_min?: string;
+  updated_at_max?: string;
+  published_at_min?: string;
+  published_at_max?: string;
+  // Pagination parameters
+  page_info?: string;
+  since_id?: string;
+  [key: string]: unknown; // Allow any additional parameters for pagination
+}
+
+export async function getProducts(options?: ProductFilters) {
   try {
-    const products = await shopify.product.list(options || {});
+    let products;
+
+    // Set default filters for better performance and data quality
+    const defaultFilters = {
+      limit: 250, // Maximum allowed
+      status: "active",
+      published_status: "published",
+      fields: "id,title,body_html,handle,images,vendor,product_type,tags",
+      ...options,
+    };
+
+    // If filtering by collection, use collection.products for better performance
+    if (options?.collection_id) {
+      const { collection_id, ...restFilters } = defaultFilters;
+      if (collection_id) {
+        const collectionId = parseInt(collection_id, 10);
+        products = await shopify.collection.products(collectionId, restFilters);
+      } else {
+        products = await shopify.product.list(defaultFilters);
+      }
+    } else {
+      products = await shopify.product.list(defaultFilters);
+    }
 
     return {
       success: true,
@@ -10,6 +53,396 @@ export async function getProducts(options?: { collection_id?: string }) {
       error: null,
     };
   } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
+    return {
+      success: false,
+      data: null,
+      error: errorMessage,
+    };
+  }
+}
+
+// Function to get all products with pagination for large datasets
+export async function getAllProductsPaginated(options?: ProductFilters) {
+  try {
+    // For now, use the regular getProducts function with max limit
+    // This can be enhanced later if pagination is specifically needed
+    return await getProducts({
+      ...options,
+      limit: 250, // Maximum allowed per request
+    });
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
+    return {
+      success: false,
+      data: null,
+      error: errorMessage,
+    };
+  }
+}
+
+// Function to get a single product with metafields
+export async function getProductWithMetafields(productId: string) {
+  try {
+    console.log("Fetching product with ID:", productId);
+
+    // Method 1: Try to get product with metafields included
+    let productWithMetafields;
+    try {
+      productWithMetafields = await shopify.product.get(
+        parseInt(productId, 10),
+        {
+          fields:
+            "id,title,body_html,handle,images,vendor,product_type,tags,metafields",
+        }
+      );
+      console.log("Product with metafields field:", productWithMetafields);
+    } catch (error) {
+      console.log(
+        "Failed to get product with metafields field, trying basic fetch:",
+        error
+      );
+      productWithMetafields = await shopify.product.get(
+        parseInt(productId, 10)
+      );
+    }
+
+    console.log("Product fetched successfully:", productWithMetafields.title);
+
+    // Method 2: Try different metafield fetch approaches
+    console.log("Fetching metafields for product ID:", productId);
+
+    let metafields: unknown[] = [];
+
+    // Try approach 1: Direct metafield.list
+    try {
+      metafields = await shopify.metafield.list({
+        owner_resource: "product",
+        owner_id: parseInt(productId, 10),
+      });
+      console.log("Method 1 - metafield.list result:", metafields);
+
+      if (metafields.length === 0) {
+        console.log(
+          "No metafields found with Method 1, trying alternative approaches..."
+        );
+      }
+    } catch (error1) {
+      console.log("Method 1 failed:", error1);
+
+      // Try approach 2: Different parameter structure
+      try {
+        metafields = await shopify.metafield.list({
+          metafield: {
+            owner_resource: "product",
+            owner_id: parseInt(productId, 10),
+          },
+        });
+        console.log(
+          "Method 2 - metafield.list with nested params:",
+          metafields
+        );
+      } catch (error2) {
+        console.log("Method 2 failed:", error2);
+      }
+    }
+
+    // Try approach 3: List all metafields and check what's available
+    if (metafields.length === 0) {
+      try {
+        console.log("Trying to list all metafields to debug...");
+        const allMetafields = await shopify.metafield.list();
+        console.log("All metafields fetched:", allMetafields.length, "total");
+
+        if (allMetafields.length > 0) {
+          console.log(
+            "Sample metafields structure:",
+            allMetafields.slice(0, 2)
+          );
+
+          // Filter for product metafields
+          const productMetafields = allMetafields.filter((mf: unknown) => {
+            const metafield = mf as Record<string, unknown>;
+            return metafield.owner_resource === "product";
+          });
+
+          console.log(
+            "Total product metafields found:",
+            productMetafields.length
+          );
+
+          // Filter for this specific product
+          metafields = allMetafields.filter((mf: unknown) => {
+            const metafield = mf as Record<string, unknown>;
+            return (
+              metafield.owner_resource === "product" &&
+              metafield.owner_id === parseInt(productId, 10)
+            );
+          });
+
+          console.log("Metafields for this product:", metafields);
+
+          if (metafields.length === 0 && productMetafields.length > 0) {
+            console.log(
+              "Found other product metafields but not for this product. Checking owner_ids:"
+            );
+            productMetafields
+              .slice(0, 5)
+              .forEach((mf: unknown, index: number) => {
+                const metafield = mf as Record<string, unknown>;
+                console.log(`Product metafield ${index}:`, {
+                  owner_id: metafield.owner_id,
+                  key: metafield.key,
+                  namespace: metafield.namespace,
+                });
+              });
+          }
+        } else {
+          console.log(
+            "No metafields found at all - this suggests API permission issues"
+          );
+        }
+      } catch (error3) {
+        console.log("Method 3 failed:", error3);
+        console.log(
+          "This might indicate insufficient API permissions for metafields"
+        );
+
+        // Log the specific error details
+        if (error3 instanceof Error) {
+          console.log("Error details:", {
+            message: error3.message,
+            name: error3.name,
+            stack: error3.stack?.substring(0, 200) + "...",
+          });
+        }
+      }
+    }
+
+    console.log("Final metafields:", metafields);
+    console.log(
+      "Metafields count:",
+      Array.isArray(metafields) ? metafields.length : "Not an array"
+    );
+
+    return {
+      success: true,
+      data: {
+        ...productWithMetafields,
+        metafields: metafields,
+      },
+      error: null,
+    };
+  } catch (error) {
+    console.error("Error fetching product with metafields:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
+    return {
+      success: false,
+      data: null,
+      error: errorMessage,
+    };
+  }
+}
+
+// Function to get a single product with metaobjects (newer Shopify API)
+export async function getProductWithMetaobjects(productId: string) {
+  try {
+    const product = await shopify.product.get(parseInt(productId, 10));
+    let metaobjects: unknown[] = [];
+
+    // Check if shopify library has metaobjects support
+    try {
+      // Check if metaobjects method exists
+      if ((shopify as any).metaobject) {
+        metaobjects = await (shopify as any).metaobject.list();
+
+        // Filter for metaobjects related to this product
+        const productMetaobjects = metaobjects.filter((mo: any) => {
+          return (
+            (mo.handle && mo.handle.includes(productId)) ||
+            (mo.fields && JSON.stringify(mo.fields).includes(productId)) ||
+            mo.product_id === parseInt(productId, 10)
+          );
+        });
+
+        metaobjects = productMetaobjects;
+      } else {
+        // Try to use GraphQL API for metafields
+        const graphqlQuery = `
+          query getProductMetafields($id: ID!) {
+            product(id: $id) {
+              metafields(first: 100) {
+                edges {
+                  node {
+                    id
+                    namespace
+                    key
+                    value
+                    type
+                    description
+                  }
+                }
+              }
+            }
+          }
+        `;
+
+        // Check if GraphQL is available
+        if ((shopify as any).graphql) {
+          const graphqlResult = await (shopify as any).graphql(graphqlQuery, {
+            id: `gid://shopify/Product/${productId}`,
+          });
+
+          // Try both response structures - with and without .data
+          let edges = null;
+          if (graphqlResult.data?.product?.metafields?.edges) {
+            edges = graphqlResult.data.product.metafields.edges;
+          } else if (graphqlResult.product?.metafields?.edges) {
+            edges = graphqlResult.product.metafields.edges;
+          }
+
+          if (edges) {
+            metaobjects = edges.map((edge: unknown) => {
+              const edgeObj = edge as Record<string, unknown>;
+              return edgeObj.node;
+            });
+
+            // Exit early since we found metafields
+            return {
+              success: true,
+              data: {
+                ...product,
+                metafields: metaobjects,
+              },
+              error: null,
+            };
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching metaobjects:", error);
+    }
+
+    return {
+      success: true,
+      data: {
+        ...product,
+        metafields: metaobjects, // Keep the same property name for compatibility
+      },
+      error: null,
+    };
+  } catch (error) {
+    console.error("Error fetching product with metaobjects:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
+    return {
+      success: false,
+      data: null,
+      error: errorMessage,
+    };
+  }
+}
+
+// Function to get multiple products with metafields using GraphQL
+export async function getProductsWithMetafields(productIds: string[]) {
+  try {
+    if (productIds.length === 0)
+      return { success: true, data: [], error: null };
+
+    // Build GraphQL query for multiple products
+    const graphqlQuery = `
+      query getProductsMetafields($ids: [ID!]!) {
+        nodes(ids: $ids) {
+          ... on Product {
+            id
+            legacyResourceId
+            title
+            bodyHtml
+            handle
+            vendor
+            productType
+            tags
+            images(first: 10) {
+              edges {
+                node {
+                  id
+                  url
+                  altText
+                  width
+                  height
+                }
+              }
+            }
+            metafields(first: 50) {
+              edges {
+                node {
+                  id
+                  namespace
+                  key
+                  value
+                  type
+                  description
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
+
+    // Convert productIds to Shopify GIDs
+    const shopifyIds = productIds.map((id) => `gid://shopify/Product/${id}`);
+
+    // Execute GraphQL query
+    if ((shopify as any).graphql) {
+      const graphqlResult = await (shopify as any).graphql(graphqlQuery, {
+        ids: shopifyIds,
+      });
+
+      const products = graphqlResult.data?.nodes || graphqlResult.nodes || [];
+
+      // Transform GraphQL response to match expected format
+      const transformedProducts = products.map((product: any) => ({
+        id: parseInt(product.legacyResourceId, 10),
+        title: product.title,
+        body_html: product.bodyHtml,
+        handle: product.handle,
+        vendor: product.vendor,
+        product_type: product.productType,
+        tags: product.tags?.join(", "),
+        images:
+          product.images?.edges?.map((edge: any) => ({
+            id: parseInt(edge.node.id.split("/").pop(), 10),
+            src: edge.node.url,
+            alt: edge.node.altText,
+            width: edge.node.width,
+            height: edge.node.height,
+          })) || [],
+        metafields:
+          product.metafields?.edges?.map((edge: any) => edge.node) || [],
+      }));
+
+      return {
+        success: true,
+        data: transformedProducts,
+        error: null,
+      };
+    }
+
+    return {
+      success: false,
+      data: null,
+      error: "GraphQL not available",
+    };
+  } catch (error) {
+    console.error("Error fetching products with metafields:", error);
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
 

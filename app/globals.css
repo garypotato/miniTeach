@@ -27,3 +27,15 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Global scroll prevention class */
+.no-scroll {
+  overflow: hidden !important;
+  touch-action: none !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+/* Also prevent scrolling on html when body has no-scroll */
+html:has(.no-scroll) {
+  overflow: hidden !important;
+}
