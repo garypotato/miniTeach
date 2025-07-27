@@ -456,3 +456,111 @@ export async function getProductsWithMetafields(productIds: string[]) {
     };
   }
 }
+
+
+// Function to create a new companion product
+export async function createCompanionProduct(productData: {
+  title: string;
+  body_html: string;
+  vendor?: string;
+  product_type?: string;
+  tags?: string;
+}) {
+  try {
+    const product = await shopify.product.create({
+      title: productData.title,
+      body_html: productData.body_html,
+      vendor: productData.vendor || "MiniTeach",
+      product_type: productData.product_type || "Companion",
+      tags: productData.tags || "companion,childcare,education",
+      status: "active",
+      published: true,
+      published_scope: "web",
+    });
+
+    return {
+      success: true,
+      data: product,
+      error: null,
+    };
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
+    return {
+      success: false,
+      data: null,
+      error: errorMessage,
+    };
+  }
+}
+
+// Function to add product to collection
+export async function addProductToCollection(productId: number, collectionId: number) {
+  try {
+    const collect = await shopify.collect.create({
+      collection_id: collectionId,
+      product_id: productId,
+    });
+
+    return {
+      success: true,
+      data: collect,
+      error: null,
+    };
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
+    return {
+      success: false,
+      data: null,
+      error: errorMessage,
+    };
+  }
+}
+
+// Function to create metafields for a product
+export async function createProductMetafields(productId: number, metafields: Array<{
+  namespace: string;
+  key: string;
+  value: string;
+  type: string;
+}>) {
+  try {
+    const createdMetafields = [];
+    
+    for (const metafieldData of metafields) {
+      try {
+        if (metafieldData.value !== "" && metafieldData.value !== "[]") {
+          const metafield = await shopify.metafield.create({
+            owner_resource: "product",
+            owner_id: productId,
+            namespace: metafieldData.namespace,
+            key: metafieldData.key,
+            value: metafieldData.value,
+            type: metafieldData.type,
+          });
+          createdMetafields.push(metafield);
+        }
+      } catch (singleMetafieldError) {
+        console.warn(`Failed to create metafield ${metafieldData.key}:`, singleMetafieldError);
+      }
+    }
+
+    return {
+      success: true,
+      data: createdMetafields,
+      error: null,
+    };
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
+    return {
+      success: false,
+      data: null,
+      error: errorMessage,
+    };
+  }
+}

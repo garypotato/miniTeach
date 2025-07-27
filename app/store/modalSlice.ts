@@ -2,10 +2,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface ModalState {
   modalOpen: boolean;
-  modalType?: "loading" | "filter" | "confirmation";
+  modalType?: "loading" | "filter" | "confirmation" | "success";
   modalData?: Record<string, unknown>;
   isLoading: boolean;
   loadingMessage?: string;
+  isSuccess: boolean;
+  successMessage?: string;
+  successAction?: () => void;
 }
 
 const initialState: ModalState = {
@@ -14,6 +17,9 @@ const initialState: ModalState = {
   modalData: undefined,
   isLoading: false,
   loadingMessage: undefined,
+  isSuccess: false,
+  successMessage: undefined,
+  successAction: undefined,
 };
 
 const modalSlice = createSlice({
@@ -23,7 +29,7 @@ const modalSlice = createSlice({
     openModal: (
       state,
       action: PayloadAction<{
-        type: "loading" | "filter" | "confirmation";
+        type: "loading" | "filter" | "confirmation" | "success";
         data?: Record<string, unknown>;
       }>
     ) => {
@@ -35,6 +41,9 @@ const modalSlice = createSlice({
       state.modalOpen = false;
       state.modalType = undefined;
       state.modalData = undefined;
+      state.isSuccess = false;
+      state.successMessage = undefined;
+      state.successAction = undefined;
     },
     setLoading: (
       state,
@@ -43,8 +52,16 @@ const modalSlice = createSlice({
       state.isLoading = action.payload.loading;
       state.loadingMessage = action.payload.message;
     },
+    setSuccess: (
+      state,
+      action: PayloadAction<{ success: boolean; message?: string; action?: () => void }>
+    ) => {
+      state.isSuccess = action.payload.success;
+      state.successMessage = action.payload.message;
+      state.successAction = action.payload.action;
+    },
   },
 });
 
-export const { openModal, closeModal, setLoading } = modalSlice.actions;
+export const { openModal, closeModal, setLoading, setSuccess } = modalSlice.actions;
 export default modalSlice.reducer;

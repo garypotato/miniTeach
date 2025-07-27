@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { setLoading } from "@/app/store/modalSlice";
 
 interface Companion {
   id: number;
@@ -87,6 +90,8 @@ export default function CompanionsPagination({
   totalCompanions,
   searchQuery = "",
 }: CompanionsPaginationProps) {
+  const router = useRouter();
+  const dispatch = useDispatch();
   const pageNumbers = generatePageNumbers(currentPage, totalPages);
 
   const buildPageUrl = (page: number) => {
@@ -425,7 +430,8 @@ export default function CompanionsPagination({
                 value={currentPage}
                 onChange={(e) => {
                   const page = parseInt(e.target.value);
-                  window.location.href = buildPageUrl(page);
+                  dispatch(setLoading({ loading: true, message: "Loading page..." }));
+                  router.push(buildPageUrl(page));
                 }}
                 className="text-sm border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
