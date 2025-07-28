@@ -1,21 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import shopify from "../../../api/initialShopify";
-
-interface ShopifyMetafield {
-  id: number;
-  namespace: string;
-  key: string;
-  value: string;
-  type: string;
-}
-
-interface ShopifyApiMetafield {
-  id: number;
-  namespace: string;
-  key: string;
-  value: string | number;
-  type: string;
-}
+import { getProductWithMetafields, transformProductToCompanion } from "../../../services/shopify";
+import shopifyClient from "../../../services/shopify/client";
 
 // GET - Fetch single companion by ID
 export async function GET(
@@ -32,47 +17,20 @@ export async function GET(
       );
     }
 
-    // Fetch the product from Shopify
-    const product = await shopify.product.get(parseInt(companionId, 10));
+    const result = await getProductWithMetafields(companionId);
 
-    if (!product) {
+    if (!result.success || !result.data) {
       return NextResponse.json(
-        { success: false, error: "Companion not found" },
+        { success: false, error: result.error || "Companion not found" },
         { status: 404 }
       );
     }
 
-    // Fetch metafields for this product
-    let metafields: ShopifyMetafield[] = [];
-    try {
-      const metafieldResult = await shopify.metafield.list({
-        metafield: {
-          owner_resource: "product",
-          owner_id: parseInt(companionId, 10),
-        },
-      });
-      // Convert the result to our expected format
-      metafields = (metafieldResult as ShopifyApiMetafield[]).map((mf: ShopifyApiMetafield) => ({
-        id: mf.id,
-        namespace: mf.namespace,
-        key: mf.key,
-        value: String(mf.value),
-        type: mf.type,
-      }));
-    } catch (metafieldError) {
-      console.warn("Failed to fetch metafields:", metafieldError);
-      // Continue without metafields if they fail to load
-    }
-
-    // Combine product data with metafields
-    const companionData = {
-      ...product,
-      metafields: metafields || [],
-    };
+    const companion = transformProductToCompanion(result.data);
 
     return NextResponse.json({
       success: true,
-      data: companionData,
+      data: companion,
     });
 
   } catch (error) {
@@ -113,17 +71,20 @@ export async function PUT(
     const product_type = formData.get('product_type') as string;
     const tags = formData.get('tags') as string;
     
-    // Extract metafields
+    // Extract metafields based on new spec
     const metafields = {
+      wechat_id: formData.get('metafields.wechat_id') as string || '',
+      major: formData.get('metafields.major') as string || '',
+      education: formData.get('metafields.education') as string || '',
+      language: JSON.parse(formData.get('metafields.language') as string || '[]'),
       age: formData.get('metafields.age') as string || '',
-      current_location_in_australia: formData.get('metafields.current_location_in_australia') as string || '',
-      available_times_to_take_jobs: JSON.parse(formData.get('metafields.available_times_to_take_jobs') as string || '[]'),
-      relevant_skills: JSON.parse(formData.get('metafields.relevant_skills') as string || '[]'),
-      other_certificates: formData.get('metafields.other_certificates') as string || '',
-      australian_police_check: formData.get('metafields.australian_police_check') as string || '',
-      blue_card_status: formData.get('metafields.blue_card_status') as string || '',
-      preferred_age_group_to_work: formData.get('metafields.preferred_age_group_to_work') as string || '',
-      school_major_you_re_studying: formData.get('metafields.school_major_you_re_studying') as string || '',
+      location: formData.get('metafields.location') as string || '',
+      age_group: JSON.parse(formData.get('metafields.age_group') as string || '[]'),
+      blue_card: formData.get('metafields.blue_card') as string || '',
+      police_check: formData.get('metafields.police_check') as string || '',
+      skill: JSON.parse(formData.get('metafields.skill') as string || '[]'),
+      certification: JSON.parse(formData.get('metafields.certification') as string || '[]'),
+      availability: JSON.parse(formData.get('metafields.availability') as string || '[]'),
     };
     
     // Extract images
@@ -197,7 +158,7 @@ export async function PUT(
     };
 
     // Update the product
-    const updatedProduct = await shopify.product.update(parseInt(companionId, 10), productData);
+    const updatedProduct = await shopifyClient.product.update(parseInt(companionId, 10), productData);
 
     if (!updatedProduct || !updatedProduct.id) {
       return NextResponse.json(
@@ -207,99 +168,113 @@ export async function PUT(
     }
 
     // Fetch existing metafields to update them
-    let existingMetafields: ShopifyMetafield[] = [];
+    let existingMetafields: Array<{ id: number; namespace: string; key: string }> = [];
     try {
-      const metafieldResult = await shopify.metafield.list({
-        metafield: {
-          owner_resource: "product",
-          owner_id: parseInt(companionId, 10),
-        },
+      existingMetafields = await shopifyClient.metafield.list({
+        owner_resource: "product",
+        owner_id: parseInt(companionId, 10),
       });
-      // Convert the result to our expected format
-      existingMetafields = (metafieldResult as ShopifyApiMetafield[]).map((mf: ShopifyApiMetafield) => ({
-        id: mf.id,
-        namespace: mf.namespace,
-        key: mf.key,
-        value: String(mf.value),
-        type: mf.type,
-      }));
     } catch (error) {
       console.warn("Failed to fetch existing metafields:", error);
     }
 
-    // Prepare metafields data
+    // Prepare metafields data based on new spec
     const metafieldsData = [
+      {
+        owner_resource: "product",
+        owner_id: parseInt(companionId, 10),
+        namespace: "companion",
+        key: "wechat_id",
+        value: metafields.wechat_id,
+        type: "single_line_text_field",
+      },
+      {
+        owner_resource: "product",
+        owner_id: parseInt(companionId, 10),
+        namespace: "companion",
+        key: "major",
+        value: metafields.major,
+        type: "single_line_text_field",
+      },
+      {
+        owner_resource: "product",
+        owner_id: parseInt(companionId, 10),
+        namespace: "companion",
+        key: "education",
+        value: metafields.education,
+        type: "single_line_text_field",
+      },
+      {
+        owner_resource: "product",
+        owner_id: parseInt(companionId, 10),
+        namespace: "companion",
+        key: "language",
+        value: JSON.stringify(metafields.language),
+        type: "json",
+      },
       {
         owner_resource: "product",
         owner_id: parseInt(companionId, 10),
         namespace: "companion",
         key: "age",
         value: metafields.age,
-        type: "number_integer",
-      },
-      {
-        owner_resource: "product",
-        owner_id: parseInt(companionId, 10),
-        namespace: "companion",
-        key: "current_location_in_australia",
-        value: metafields.current_location_in_australia,
         type: "single_line_text_field",
       },
       {
         owner_resource: "product",
         owner_id: parseInt(companionId, 10),
         namespace: "companion",
-        key: "available_times_to_take_jobs",
-        value: JSON.stringify(metafields.available_times_to_take_jobs),
+        key: "location",
+        value: metafields.location,
+        type: "single_line_text_field",
+      },
+      {
+        owner_resource: "product",
+        owner_id: parseInt(companionId, 10),
+        namespace: "companion",
+        key: "age_group",
+        value: JSON.stringify(metafields.age_group),
         type: "json",
       },
       {
         owner_resource: "product",
         owner_id: parseInt(companionId, 10),
         namespace: "companion",
-        key: "relevant_skills",
-        value: JSON.stringify(metafields.relevant_skills),
+        key: "blue_card",
+        value: metafields.blue_card,
+        type: "single_line_text_field",
+      },
+      {
+        owner_resource: "product",
+        owner_id: parseInt(companionId, 10),
+        namespace: "companion",
+        key: "police_check",
+        value: metafields.police_check,
+        type: "single_line_text_field",
+      },
+      {
+        owner_resource: "product",
+        owner_id: parseInt(companionId, 10),
+        namespace: "companion",
+        key: "skill",
+        value: JSON.stringify(metafields.skill),
         type: "json",
       },
       {
         owner_resource: "product",
         owner_id: parseInt(companionId, 10),
         namespace: "companion",
-        key: "other_certificates",
-        value: metafields.other_certificates || "",
-        type: "multi_line_text_field",
+        key: "certification",
+        value: JSON.stringify(metafields.certification),
+        type: "json",
       },
       {
         owner_resource: "product",
         owner_id: parseInt(companionId, 10),
         namespace: "companion",
-        key: "australian_police_check",
-        value: metafields.australian_police_check,
-        type: "single_line_text_field",
-      },
-      {
-        owner_resource: "product",
-        owner_id: parseInt(companionId, 10),
-        namespace: "companion",
-        key: "blue_card_status",
-        value: metafields.blue_card_status,
-        type: "single_line_text_field",
-      },
-      {
-        owner_resource: "product",
-        owner_id: parseInt(companionId, 10),
-        namespace: "companion",
-        key: "preferred_age_group_to_work",
-        value: metafields.preferred_age_group_to_work,
-        type: "single_line_text_field",
-      },
-      {
-        owner_resource: "product",
-        owner_id: parseInt(companionId, 10),
-        namespace: "companion",
-        key: "school_major_you_re_studying",
-        value: metafields.school_major_you_re_studying || "",
-        type: "single_line_text_field",
+        key: "availability",
+        value: JSON.stringify(metafields.availability),
+        type: "json",
       },
     ];
 
@@ -315,14 +290,14 @@ export async function PUT(
         if (existingMetafield) {
           // Update existing metafield
           if (metafieldData.value !== "" && metafieldData.value !== "[]") {
-            const updated = await shopify.metafield.update(existingMetafield.id, {
+            const updated = await shopifyClient.metafield.update(existingMetafield.id, {
               value: metafieldData.value,
             });
             updatedMetafields.push(updated);
           } else {
             // Delete empty metafield
             try {
-              await shopify.metafield.delete(existingMetafield.id);
+              await shopifyClient.metafield.delete(existingMetafield.id);
             } catch (deleteError) {
               console.warn(`Failed to delete metafield ${metafieldData.key}:`, deleteError);
             }
@@ -330,7 +305,7 @@ export async function PUT(
         } else {
           // Create new metafield only if value is not empty
           if (metafieldData.value !== "" && metafieldData.value !== "[]") {
-            const created = await shopify.metafield.create(metafieldData);
+            const created = await shopifyClient.metafield.create(metafieldData);
             updatedMetafields.push(created);
           }
         }

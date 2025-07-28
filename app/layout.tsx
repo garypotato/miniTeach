@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ReduxProvider from "./providers/ReduxProvider";
 import GlobalModal from "./components/GlobalModal";
-import ScrollPreventionWrapper from "./components/ScrollPreventionWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +31,6 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-background text-foreground`}
       >
         <ReduxProvider>
-          <ScrollPreventionWrapper />
           {children}
           <GlobalModal />
         </ReduxProvider>

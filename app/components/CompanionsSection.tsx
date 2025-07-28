@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useLanguage } from "../hooks/useLanguage";
@@ -22,6 +22,8 @@ interface CompanionsSectionProps {
 }
 
 const extractTextFromHtml = (html: string) => {
+  if (!html) return "";
+  
   // Use consistent server/client approach
   return html
     .replace(/<[^>]*>/g, "") // Remove HTML tags
@@ -31,6 +33,7 @@ const extractTextFromHtml = (html: string) => {
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
     .replace(/&nbsp;/g, " ")
+    .replace(/[\u0000-\u001F\u007F-\u009F]/g, "") // Remove control characters
     .trim();
 };
 
@@ -41,7 +44,7 @@ const truncateText = (text: string, maxLength: number) => {
 
 async function fetchMoreCompanions(excludeIds: number[]): Promise<Companion[]> {
   try {
-    const result = await getCompanionsAction({ collection_id: "491355177275" });
+    const result = await getCompanionsAction();
 
     if (result.success && result.data) {
       // Filter out companions that are already displayed
@@ -73,6 +76,12 @@ export default function CompanionsSection({
   const [companions, setCompanions] = useState<Companion[]>(initialCompanions);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMoreAvailable, setHasMoreAvailable] = useState(true);
+
+  // Ensure hydration stability by avoiding any client-side randomization on initial render
+  useEffect(() => {
+    // Component is now hydrated - any client-side logic can go here
+    // Currently keeping companions stable to prevent hydration mismatch
+  }, []);
 
   const loadMoreCompanions = async () => {
     setLoadingMore(true);
@@ -163,7 +172,7 @@ export default function CompanionsSection({
                           className="text-2xl font-bold"
                           style={{ color: "#47709B" }}
                         >
-                          {companion.title.charAt(0)}
+                          {companion.title?.charAt(0)?.toUpperCase() || "?"}
                         </span>
                       </div>
                     </div>

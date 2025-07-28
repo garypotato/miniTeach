@@ -44,9 +44,6 @@ export default function HomePage({ initialCompanions }: HomePageProps) {
               <Link href="/companions" className="text-gray-700 hover:opacity-80 font-medium">
                 {t('nav.allCompanions')}
               </Link>
-              <Link href="/about" className="text-gray-700 hover:opacity-80 font-medium">
-                {t('nav.about')}
-              </Link>
               <LanguageSwitch />
             </nav>
 
@@ -89,13 +86,6 @@ export default function HomePage({ initialCompanions }: HomePageProps) {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {t('nav.allCompanions')}
-              </Link>
-              <Link 
-                href="/about" 
-                className="block px-3 py-2 text-gray-700 hover:bg-gray-50 font-medium rounded-md transition-colors duration-200"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {t('nav.about')}
               </Link>
             </div>
           </div>
@@ -200,16 +190,12 @@ export default function HomePage({ initialCompanions }: HomePageProps) {
               <h6 className="font-semibold mb-4">{t('footer.services')}</h6>
               <ul className="space-y-2 text-gray-400">
                 <li><Link href="/companions" className="hover:opacity-80" style={{color: '#AFC8DA'}}>{t('footer.findCompanions')}</Link></li>
-                <li><Link href="/about" className="hover:opacity-80" style={{color: '#AFC8DA'}}>{t('footer.aboutUs')}</Link></li>
-                <li><Link href="/contact" className="hover:opacity-80" style={{color: '#AFC8DA'}}>{t('footer.contact')}</Link></li>
               </ul>
             </div>
             <div>
-              <h6 className="font-semibold mb-4">{t('footer.support')}</h6>
+              <h6 className="font-semibold mb-4">{t('footer.contact')}</h6>
               <ul className="space-y-2 text-gray-400">
-                <li><Link href="/help" className="hover:opacity-80" style={{color: '#AFC8DA'}}>{t('footer.helpCenter')}</Link></li>
-                <li><Link href="/safety" className="hover:opacity-80" style={{color: '#AFC8DA'}}>{t('footer.safety')}</Link></li>
-                <li><Link href="/terms" className="hover:opacity-80" style={{color: '#AFC8DA'}}>{t('footer.terms')}</Link></li>
+                <li><span className="text-gray-400">Contact us for more information</span></li>
               </ul>
             </div>
             <div>
