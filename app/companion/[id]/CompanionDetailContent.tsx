@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ImageGallery } from "./ImageGallery";
-import MetafieldsDisplay from "../../components/MetafieldsDisplay";
+import MetafieldsDisplay from "./MetafieldsDisplay";
 import { useLanguage } from "../../hooks/useLanguage";
 import { Companion, CompanionImage } from "../../types/companion";
 

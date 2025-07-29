@@ -56,17 +56,35 @@ export interface TranslationsType {
   features: {
     title: string;
     subtitle: string;
-    verified: {
+    imageAlt: string;
+    educationStudents: {
       title: string;
       description: string;
     };
-    personalized: {
+    qualityValue: {
       title: string;
       description: string;
     };
-    educational: {
+    legalSafe: {
       title: string;
       description: string;
+    };
+    flexible: {
+      title: string;
+      description: string;
+    };
+    bilingual: {
+      title: string;
+      description: string;
+    };
+    interactiveLearning: {
+      title: string;
+      description: string;
+    };
+    cta: {
+      title: string;
+      description: string;
+      note: string;
     };
   };
   footer: {
@@ -183,5 +201,57 @@ export interface TranslationsType {
     operationCompleted: string;
     loadingPage: string;
     searchingCompanions: string;
+  };
+  faq: {
+    title: string;
+    question1: {
+      title: string;
+      description: string;
+      step1: {
+        title: string;
+        description: string;
+      };
+      step2: {
+        title: string;
+        description: string;
+      };
+      step3: {
+        title: string;
+        description: string;
+      };
+      step4: {
+        title: string;
+        description: string;
+      };
+      step5: {
+        title: string;
+        description: string;
+      };
+    };
+    question2: {
+      title: string;
+      description: string;
+    };
+    question3: {
+      title: string;
+      description: string;
+      point1: string;
+      point2: string;
+      point3: string;
+      point4: string;
+      conclusion: string;
+    };
+    question4: {
+      title: string;
+      description: string;
+      point1: string;
+      point2: string;
+      point3: string;
+      conclusion: string;
+    };
+    question5: {
+      title: string;
+      description: string;
+    };
   };
 }

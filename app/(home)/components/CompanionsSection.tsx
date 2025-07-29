@@ -3,8 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useLanguage } from "../hooks/useLanguage";
-import { getCompanionsAction } from "../actions/shopify";
+import { useLanguage } from "../../hooks/useLanguage";
+import { getCompanionsAction } from "../../actions/shopify";
 
 interface Companion {
   id: number;

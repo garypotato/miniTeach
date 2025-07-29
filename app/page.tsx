@@ -1,4 +1,4 @@
-import HomePage from "./components/HomePage";
+import HomePage from "./(home)/components/HomePage";
 import {
   getProducts,
   transformProductToCompanion,

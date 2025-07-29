@@ -1,10 +1,10 @@
-import { CompanionMetafields } from "../types/companion";
+import { CompanionMetafields } from "../../types/companion";
 import {
   getMetafieldIcon,
   formatMetafieldValue,
   METAFIELD_KEYS,
-} from "../utils/metafields";
-import { useLanguage } from "../hooks/useLanguage";
+} from "../../utils/metafields";
+import { useLanguage } from "../../hooks/useLanguage";
 
 interface MetafieldsDisplayProps {
   metafields: CompanionMetafields;
