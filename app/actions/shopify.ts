@@ -1,6 +1,11 @@
 "use server";
 
-import { getProducts, transformProductToCompanion, Companion, ShopifyResponse } from "../services/shopify";
+import {
+  getProducts,
+  transformProductToCompanion,
+  Companion,
+  ShopifyResponse,
+} from "../services/shopify";
 
 export async function getCompanionsAction(options?: {
   collection_id?: string;
@@ -11,6 +16,7 @@ export async function getCompanionsAction(options?: {
       status: "active",
       published_status: "published",
       fields: "id,title,body_html,handle,images",
+      collection_id: "491355177275", // Companion collection ID
     });
 
     if (result.success && result.data) {
@@ -29,7 +35,8 @@ export async function getCompanionsAction(options?: {
       error: result.error,
     };
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
     console.error("❌ Server action error:", errorMessage);
 
     return {

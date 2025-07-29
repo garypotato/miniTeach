@@ -1,5 +1,9 @@
 import HomePage from "./components/HomePage";
-import { getProducts, transformProductToCompanion, Companion } from "./services/shopify";
+import {
+  getProducts,
+  transformProductToCompanion,
+  Companion,
+} from "./services/shopify";
 
 // Remove server-side shuffling to prevent hydration mismatch
 // Shuffling will be handled client-side only

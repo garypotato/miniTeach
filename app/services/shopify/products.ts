@@ -64,8 +64,10 @@ export async function getProductsWithMetafields(
     }
 
     // Use GraphQL to fetch metafields for all products in a single query
-    const productIds = productsResult.data.map(product => `"gid://shopify/Product/${product.id}"`).join(', ');
-    
+    const productIds = productsResult.data
+      .map((product) => `"gid://shopify/Product/${product.id}"`)
+      .join(", ");
+
     const graphqlQuery = `
       {
         nodes(ids: [${productIds}]) {
@@ -93,30 +95,47 @@ export async function getProductsWithMetafields(
 
       // Create a map of product ID to metafields
       const metafieldsMap = new Map();
-      
+
       if (graphqlResponse.nodes) {
-        graphqlResponse.nodes.forEach((node: { id?: string; metafields?: { edges?: Array<{ node: { id: string; namespace: string; key: string; value: string | number; type: string; description?: string } }> } }) => {
-          if (node && node.id) {
-            // Extract numeric ID from GraphQL global ID
-            const numericId = node.id.split('/').pop();
-            if (numericId) {
-              const metafields = node.metafields?.edges?.map((edge) => ({
-                id: edge.node.id,
-                namespace: edge.node.namespace,
-                key: edge.node.key,
-                value: String(edge.node.value),
-                type: edge.node.type,
-                description: edge.node.description,
-              })) || [];
-              
-              metafieldsMap.set(parseInt(numericId), metafields);
+        graphqlResponse.nodes.forEach(
+          (node: {
+            id?: string;
+            metafields?: {
+              edges?: Array<{
+                node: {
+                  id: string;
+                  namespace: string;
+                  key: string;
+                  value: string | number;
+                  type: string;
+                  description?: string;
+                };
+              }>;
+            };
+          }) => {
+            if (node && node.id) {
+              // Extract numeric ID from GraphQL global ID
+              const numericId = node.id.split("/").pop();
+              if (numericId) {
+                const metafields =
+                  node.metafields?.edges?.map((edge) => ({
+                    id: edge.node.id,
+                    namespace: edge.node.namespace,
+                    key: edge.node.key,
+                    value: String(edge.node.value),
+                    type: edge.node.type,
+                    description: edge.node.description,
+                  })) || [];
+
+                metafieldsMap.set(parseInt(numericId), metafields);
+              }
             }
           }
-        });
+        );
       }
 
       // Combine products with their metafields
-      const productsWithMetafields = productsResult.data.map(product => ({
+      const productsWithMetafields = productsResult.data.map((product) => ({
         ...product,
         metafields: metafieldsMap.get(product.id) || [],
       }));
@@ -126,14 +145,16 @@ export async function getProductsWithMetafields(
         data: productsWithMetafields,
         error: null,
       };
-
     } catch (graphqlError) {
-      console.error('GraphQL error fetching metafields:', graphqlError);
-      
+      console.error("GraphQL error fetching metafields:", graphqlError);
+
       // Fallback: return products without metafields
       return {
         success: true,
-        data: productsResult.data.map(product => ({ ...product, metafields: [] })),
+        data: productsResult.data.map((product) => ({
+          ...product,
+          metafields: [],
+        })),
         error: null,
       };
     }
@@ -164,12 +185,12 @@ export async function getProductWithMetafields(
       type?: string;
       description?: string;
     }> = [];
-    
+
     try {
       const graphqlQuery = `
         {
           product(id: "gid://shopify/Product/${productId}") {
-            metafields(first: 50) {
+            metafields(first: 100) {
               edges {
                 node {
                   id
@@ -184,18 +205,29 @@ export async function getProductWithMetafields(
           }
         }
       `;
-      
+
       const graphqlResponse = await shopify.graphql(graphqlQuery);
-      
+
       if (graphqlResponse.product?.metafields?.edges) {
-        metafields = graphqlResponse.product.metafields.edges.map((edge: { node: { id: string; namespace: string; key: string; value: string | number; type: string; description?: string } }) => ({
-          id: edge.node.id,
-          namespace: edge.node.namespace,
-          key: edge.node.key,
-          value: String(edge.node.value),
-          type: edge.node.type,
-          description: edge.node.description,
-        }));
+        metafields = graphqlResponse.product.metafields.edges.map(
+          (edge: {
+            node: {
+              id: string;
+              namespace: string;
+              key: string;
+              value: string | number;
+              type: string;
+              description?: string;
+            };
+          }) => ({
+            id: edge.node.id,
+            namespace: edge.node.namespace,
+            key: edge.node.key,
+            value: String(edge.node.value),
+            type: edge.node.type,
+            description: edge.node.description,
+          })
+        );
       }
     } catch (metafieldError) {
       console.warn("Error fetching metafields via GraphQL:", metafieldError);

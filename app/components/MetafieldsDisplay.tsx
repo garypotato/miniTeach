@@ -1,4 +1,10 @@
-import { CompanionMetafields, getMetafieldLabel, getMetafieldIcon, formatMetafieldValue, METAFIELD_KEYS } from "../services/shopify";
+import {
+  CompanionMetafields,
+  getMetafieldLabel,
+  getMetafieldIcon,
+  formatMetafieldValue,
+  METAFIELD_KEYS,
+} from "../services/shopify";
 
 interface MetafieldsDisplayProps {
   metafields: CompanionMetafields;
@@ -16,11 +22,13 @@ const FIELD_ORDER = [
   METAFIELD_KEYS.AVAILABILITY,
   METAFIELD_KEYS.BLUE_CARD,
   METAFIELD_KEYS.POLICE_CHECK,
-  METAFIELD_KEYS.WECHAT_ID,
+  // METAFIELD_KEYS.WECHAT_ID,
 ];
 
-export default function MetafieldsDisplay({ metafields }: MetafieldsDisplayProps) {
-  const displayFields = FIELD_ORDER.filter(key => {
+export default function MetafieldsDisplay({
+  metafields,
+}: MetafieldsDisplayProps) {
+  const displayFields = FIELD_ORDER.filter((key) => {
     const value = metafields[key as keyof CompanionMetafields];
     return value !== undefined && value !== null && value !== "";
   });
@@ -47,44 +55,106 @@ export default function MetafieldsDisplay({ metafields }: MetafieldsDisplayProps
           Professional Details Coming Soon
         </h4>
         <p className="text-blue-700 mb-4">
-          Detailed professional information for this companion is currently being updated. Please check back soon or contact us for more information.
+          Detailed professional information for this companion is currently
+          being updated. Please check back soon or contact us for more
+          information.
         </p>
         <div className="text-sm text-blue-600">
           <p>Information we typically provide includes:</p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2 text-left max-w-md mx-auto">
             <div className="flex items-center space-x-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
               <span>Education</span>
             </div>
             <div className="flex items-center space-x-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
               <span>Location</span>
             </div>
             <div className="flex items-center space-x-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
               <span>Skills</span>
             </div>
             <div className="flex items-center space-x-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
               <span>Languages</span>
             </div>
             <div className="flex items-center space-x-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
               <span>Certifications</span>
             </div>
             <div className="flex items-center space-x-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
               <span>Availability</span>
             </div>
@@ -99,7 +169,7 @@ export default function MetafieldsDisplay({ metafields }: MetafieldsDisplayProps
       {displayFields.map((key) => {
         const value = metafields[key as keyof CompanionMetafields];
         const displayValue = formatMetafieldValue(key, value);
-        
+
         return (
           <div
             key={key}

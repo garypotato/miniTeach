@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProductWithMetafields, transformProductToCompanion, Companion } from "../../services/shopify";
+import {
+  getProductWithMetafields,
+  transformProductToCompanion,
+  Companion,
+} from "../../services/shopify";
 import { ImageGallery } from "./ImageGallery";
 import MetafieldsDisplay from "../../components/MetafieldsDisplay";
 
