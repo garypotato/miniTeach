@@ -73,3 +73,14 @@ The [`shopify-api-node`](https://github.com/MONEI/Shopify-api-node) package is u
 - All Shopify API logic must be encapsulated within a dedicated folder (e.g. `lib/shopify/` or `services/shopify/`).
 
 ---
+
+## Language Version
+
+All hardcoded text must have two versions:
+
+- Chinese
+- English (Please use Australian English conventions)
+
+Note: Text sourced from the database does not need to be modified.
+
+---

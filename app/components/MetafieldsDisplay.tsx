@@ -1,10 +1,10 @@
+import { CompanionMetafields } from "../types/companion";
 import {
-  CompanionMetafields,
-  getMetafieldLabel,
   getMetafieldIcon,
   formatMetafieldValue,
   METAFIELD_KEYS,
-} from "../services/shopify";
+} from "../utils/metafields";
+import { useLanguage } from "../hooks/useLanguage";
 
 interface MetafieldsDisplayProps {
   metafields: CompanionMetafields;
@@ -28,6 +28,13 @@ const FIELD_ORDER = [
 export default function MetafieldsDisplay({
   metafields,
 }: MetafieldsDisplayProps) {
+  const { t } = useLanguage();
+
+  // Function to get translated metafield label
+  const getTranslatedLabel = (key: string): string => {
+    return t(`companionDetail.metafields.${key}`) || key;
+  };
+
   const displayFields = FIELD_ORDER.filter((key) => {
     const value = metafields[key as keyof CompanionMetafields];
     return value !== undefined && value !== null && value !== "";
@@ -52,15 +59,13 @@ export default function MetafieldsDisplay({
           </svg>
         </div>
         <h4 className="text-lg font-semibold text-blue-900 mb-2">
-          Professional Details Coming Soon
+          {t("companionDetail.noDetails.title")}
         </h4>
         <p className="text-blue-700 mb-4">
-          Detailed professional information for this companion is currently
-          being updated. Please check back soon or contact us for more
-          information.
+          {t("companionDetail.noDetails.description")}
         </p>
         <div className="text-sm text-blue-600">
-          <p>Information we typically provide includes:</p>
+          <p>{t("companionDetail.noDetails.infoWeProvide")}</p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2 text-left max-w-md mx-auto">
             <div className="flex items-center space-x-2">
               <svg
@@ -76,7 +81,7 @@ export default function MetafieldsDisplay({
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span>Education</span>
+              <span>{t("companionDetail.noDetails.education")}</span>
             </div>
             <div className="flex items-center space-x-2">
               <svg
@@ -108,7 +113,7 @@ export default function MetafieldsDisplay({
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span>Skills</span>
+              <span>{t("companionDetail.noDetails.skills")}</span>
             </div>
             <div className="flex items-center space-x-2">
               <svg
@@ -124,7 +129,7 @@ export default function MetafieldsDisplay({
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span>Languages</span>
+              <span>{t("companionDetail.noDetails.languages")}</span>
             </div>
             <div className="flex items-center space-x-2">
               <svg
@@ -140,7 +145,7 @@ export default function MetafieldsDisplay({
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span>Certifications</span>
+              <span>{t("companionDetail.noDetails.certifications")}</span>
             </div>
             <div className="flex items-center space-x-2">
               <svg
@@ -156,7 +161,7 @@ export default function MetafieldsDisplay({
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span>Availability</span>
+              <span>{t("companionDetail.noDetails.availability")}</span>
             </div>
           </div>
         </div>
@@ -199,7 +204,7 @@ export default function MetafieldsDisplay({
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
                   <div className="sm:col-span-1">
                     <h4 className="text-base font-semibold text-gray-900">
-                      {getMetafieldLabel(key)}
+                      {getTranslatedLabel(key)}
                     </h4>
                   </div>
                   <div className="sm:col-span-2">

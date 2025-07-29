@@ -3,6 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ReduxProvider from "./providers/ReduxProvider";
 import GlobalModal from "./components/GlobalModal";
+import GlobalHeader from "./components/GlobalHeader";
+import GlobalFooter from "./components/GlobalFooter";
+import GoToTop from "./components/GoToTop";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,7 +34,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-background text-foreground`}
       >
         <ReduxProvider>
-          {children}
+          <div className="min-h-screen flex flex-col">
+            <GlobalHeader />
+            <main className="flex-1">{children}</main>
+            <GlobalFooter />
+            <GoToTop />
+          </div>
           <GlobalModal />
         </ReduxProvider>
       </body>

@@ -23,7 +23,7 @@ interface CompanionsSectionProps {
 
 const extractTextFromHtml = (html: string) => {
   if (!html) return "";
-  
+
   // Use consistent server/client approach
   return html
     .replace(/<[^>]*>/g, "") // Remove HTML tags
@@ -200,7 +200,7 @@ export default function CompanionsSection({
                     className="mt-4 flex items-center text-sm font-medium"
                     style={{ color: "#47709B" }}
                   >
-                    <span>View Profile</span>
+                    <span>{t("companionsList.viewProfile")}</span>
                     <svg
                       className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform"
                       fill="none"

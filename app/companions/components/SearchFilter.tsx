@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import { openModal, closeModal, setLoading } from "@/app/store/modalSlice";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 interface SearchFilterProps {
   initialSearch: string;
@@ -23,6 +24,7 @@ export default function SearchFilter({
   const { modalOpen, modalType, isLoading } = useSelector(
     (state: RootState) => state.modal
   );
+  const { t } = useLanguage();
 
   const [searchInput, setSearchInput] = useState(initialSearch);
   const [selectedCities, setSelectedCities] = useState<string[]>(initialCities);
@@ -42,7 +44,9 @@ export default function SearchFilter({
     name: string = searchInput,
     cities: string[] = selectedCities
   ) => {
-    dispatch(setLoading({ loading: true, message: "Searching companions..." }));
+    dispatch(
+      setLoading({ loading: true, message: t("modal.searchingCompanions") })
+    );
     const params = new URLSearchParams(searchParams);
 
     if (name.trim()) {
@@ -117,11 +121,10 @@ export default function SearchFilter({
         {/* Hero Search Section */}
         <div className="text-center mb-8">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Find Your Perfect Companion
+            {t("searchFilter.title")}
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Discover amazing companions in Australia&apos;s major cities. Use
-            our advanced filters to find exactly what you&apos;re looking for.
+            {t("searchFilter.subtitle")}
           </p>
 
           {/* Main Search Button */}
@@ -134,7 +137,7 @@ export default function SearchFilter({
             {isLoading ? (
               <>
                 <div className="animate-spin rounded-full h-6 w-6 border-2 border-white border-t-transparent"></div>
-                <span>Searching...</span>
+                <span>{t("searchFilter.searching")}</span>
               </>
             ) : (
               <>
@@ -151,7 +154,7 @@ export default function SearchFilter({
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                   />
                 </svg>
-                <span>Search & Filter Companions</span>
+                <span>{t("searchFilter.searchButton")}</span>
                 <svg
                   className="h-5 w-5 group-hover:translate-x-1 transition-transform"
                   fill="none"
@@ -199,7 +202,7 @@ export default function SearchFilter({
                       d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707v6.586a1 1 0 01-1.447.894l-4-2A1 1 0 018 18.586v-4.586a1 1 0 00-.293-.707L1.293 7.293A1 1 0 011 6.586V4z"
                     />
                   </svg>
-                  <span>Active Filters</span>
+                  <span>{t("searchFilter.activeFilters")}</span>
                 </h3>
                 <button
                   onClick={handleClear}
@@ -219,7 +222,7 @@ export default function SearchFilter({
                       d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                     />
                   </svg>
-                  <span>Clear All</span>
+                  <span>{t("searchFilter.clearAll")}</span>
                 </button>
               </div>
 
@@ -239,7 +242,9 @@ export default function SearchFilter({
                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                       />
                     </svg>
-                    <span>Name: &ldquo;{searchInput}&rdquo;</span>
+                    <span>
+                      {t("searchFilter.name")}: &ldquo;{searchInput}&rdquo;
+                    </span>
                     <button
                       type="button"
                       disabled={isLoading}
@@ -289,7 +294,9 @@ export default function SearchFilter({
                         d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                       />
                     </svg>
-                    <span>City: {city}</span>
+                    <span>
+                      {t("searchFilter.city")}: {city}
+                    </span>
                     <button
                       type="button"
                       disabled={isLoading}
@@ -344,10 +351,10 @@ export default function SearchFilter({
               </div>
               <div>
                 <p className="text-sm font-medium text-blue-800">
-                  Search by Name
+                  {t("searchFilter.stats.searchByName")}
                 </p>
                 <p className="text-xs text-blue-600">
-                  Find specific companions
+                  {t("searchFilter.stats.findSpecific")}
                 </p>
               </div>
             </div>
@@ -378,9 +385,11 @@ export default function SearchFilter({
               </div>
               <div>
                 <p className="text-sm font-medium text-purple-800">
-                  Filter by City
+                  {t("searchFilter.stats.filterByCity")}
                 </p>
-                <p className="text-xs text-purple-600">Browse by location</p>
+                <p className="text-xs text-purple-600">
+                  {t("searchFilter.stats.browseByLocation")}
+                </p>
               </div>
             </div>
           </div>
@@ -404,10 +413,10 @@ export default function SearchFilter({
               </div>
               <div>
                 <p className="text-sm font-medium text-green-800">
-                  Find Favorites
+                  {t("searchFilter.stats.findFavorites")}
                 </p>
                 <p className="text-xs text-green-600">
-                  Discover top companions
+                  {t("searchFilter.stats.discoverTop")}
                 </p>
               </div>
             </div>
@@ -440,11 +449,10 @@ export default function SearchFilter({
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="text-2xl font-bold mb-2">
-                      Find Your Perfect Companion
+                      {t("searchFilter.modal.title")}
                     </h2>
                     <p className="text-blue-100 text-sm">
-                      Use filters to discover companions that match your
-                      preferences
+                      {t("searchFilter.modal.subtitle")}
                     </p>
                   </div>
                   <button
@@ -494,7 +502,7 @@ export default function SearchFilter({
                       </svg>
                     </div>
                     <h3 className="text-lg font-semibold text-gray-900">
-                      Search by Name
+                      {t("searchFilter.modal.searchByName")}
                     </h3>
                   </div>
 
@@ -505,7 +513,7 @@ export default function SearchFilter({
                       onChange={(e) => setTempSearchInput(e.target.value)}
                       onFocus={(e) => e.stopPropagation()}
                       onClick={(e) => e.stopPropagation()}
-                      placeholder="Type a companion's name..."
+                      placeholder={t("searchFilter.modal.searchPlaceholder")}
                       className="block w-full px-5 py-4 text-lg border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500 focus:ring-opacity-20 focus:border-blue-500 focus:outline-none transition-all placeholder-gray-400"
                     />
                     <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
@@ -551,7 +559,7 @@ export default function SearchFilter({
                       </svg>
                     </div>
                     <h3 className="text-lg font-semibold text-gray-900">
-                      Filter by Location
+                      {t("searchFilter.modal.filterByLocation")}
                     </h3>
                   </div>
 
@@ -615,7 +623,8 @@ export default function SearchFilter({
                   {tempSelectedCities.length > 0 && (
                     <div className="mt-4 p-4 bg-blue-50 rounded-xl border border-blue-200">
                       <p className="text-sm font-medium text-blue-700 mb-2">
-                        Selected Cities ({tempSelectedCities.length})
+                        {t("searchFilter.modal.selectedCities")} (
+                        {tempSelectedCities.length})
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {tempSelectedCities.map((city) => (
@@ -675,7 +684,7 @@ export default function SearchFilter({
                       d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                     />
                   </svg>
-                  <span>Clear All</span>
+                  <span>{t("searchFilter.modal.clearAll")}</span>
                 </button>
 
                 <div className="flex flex-col sm:flex-row gap-3 sm:space-x-3 w-full sm:w-auto">
@@ -684,7 +693,7 @@ export default function SearchFilter({
                     disabled={isLoading}
                     className="w-full sm:w-auto px-6 py-3 text-sm font-medium text-gray-700 bg-white border-2 border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Cancel
+                    {t("searchFilter.modal.cancel")}
                   </button>
                   <button
                     onClick={handleApplyFilters}
@@ -709,7 +718,9 @@ export default function SearchFilter({
                       />
                     </svg>
                     <span>
-                      {isLoading ? "Searching..." : "Search Companions"}
+                      {isLoading
+                        ? t("searchFilter.modal.searching")
+                        : t("searchFilter.modal.searchCompanions")}
                     </span>
                   </button>
                 </div>
