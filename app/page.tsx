@@ -5,8 +5,17 @@ import {
   Companion,
 } from "./services/shopify";
 
-// Remove server-side shuffling to prevent hydration mismatch
-// Shuffling will be handled client-side only
+// Simple server-side shuffle using Math.random() 
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  
+  return shuffled;
+}
 
 async function getInitialCompanions(): Promise<Companion[]> {
   try {
@@ -15,13 +24,17 @@ async function getInitialCompanions(): Promise<Companion[]> {
       status: "active",
       published_status: "published",
       fields: "id,title,body_html,handle,images",
-      limit: 50,
+      limit: 50, // Get more companions to have better randomization
     });
 
     if (result.success && result.data && result.data.length > 0) {
       const transformedData = result.data.map(transformProductToCompanion);
-      // Return first 8 companions without shuffling to prevent hydration mismatch
-      return transformedData.slice(0, 8);
+      
+      // Server-side shuffle for different companions each visit
+      const shuffledData = shuffleArray(transformedData);
+      
+      // Return first 8 shuffled companions
+      return shuffledData.slice(0, 8);
     }
     return [];
   } catch (error) {

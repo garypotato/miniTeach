@@ -46,8 +46,9 @@ async function fetchMoreCompanions(excludeIds: number[]): Promise<Companion[]> {
         (companion: Companion) => !excludeIds.includes(companion.id)
       );
 
-      // Shuffle the available companions
+      // Simple shuffle using Math.random()
       const shuffled = [...availableCompanions];
+      
       for (let i = shuffled.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
@@ -69,75 +70,16 @@ export default function CompanionsSection({
   const [companions, setCompanions] = useState<Companion[]>(initialCompanions);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMoreAvailable, setHasMoreAvailable] = useState(true);
-  const masonryRef = useRef<HTMLDivElement>(null);
 
-  // Masonry layout function
-  const arrangeMasonry = () => {
-    if (!masonryRef.current) return;
-
-    const container = masonryRef.current;
-    const items = container.children as HTMLCollectionOf<HTMLElement>;
-    const containerWidth = container.offsetWidth;
-
-    // Calculate number of columns (max 5)
-    let columnCount = 2; // Default for mobile
-    if (containerWidth >= 640) columnCount = 3; // Tablet
-    if (containerWidth >= 1024) columnCount = 4; // Desktop
-    if (containerWidth >= 1280) columnCount = 5; // Large screens - max 5 columns
-
-    const gap = 20;
-    const columnWidth =
-      (containerWidth - gap * (columnCount - 1)) / columnCount;
-    const columnHeights = new Array(columnCount).fill(0);
-
-    // Position each item
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i];
-
-      // Find shortest column
-      const shortestColumnIndex = columnHeights.indexOf(
-        Math.min(...columnHeights)
-      );
-
-      // Position the item
-      const x = shortestColumnIndex * (columnWidth + gap);
-      const y = columnHeights[shortestColumnIndex];
-
-      item.style.position = "absolute";
-      item.style.left = `${x}px`;
-      item.style.top = `${y}px`;
-      item.style.width = `${columnWidth}px`;
-
-      // Update column height
-      columnHeights[shortestColumnIndex] += item.offsetHeight + gap;
+  // Randomize companions after hydration to ensure different companions each visit
+  useEffect(() => {
+    // Component is now hydrated - shuffle companions for variety
+    const shuffled = [...initialCompanions];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
-
-    // Set container height
-    container.style.height = `${Math.max(...columnHeights)}px`;
-  };
-
-  // Arrange masonry on mount and when companions change
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      arrangeMasonry();
-    }, 100); // Small delay to ensure images are loaded
-
-    const handleResize = () => {
-      arrangeMasonry();
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      clearTimeout(timeoutId);
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [companions]);
-
-  // Ensure hydration stability by avoiding any client-side randomization on initial render
-  useEffect(() => {
-    // Component is now hydrated - any client-side logic can go here
-    // Currently keeping companions stable to prevent hydration mismatch
+    setCompanions(shuffled);
   }, []);
 
   const loadMoreCompanions = async () => {
@@ -163,28 +105,55 @@ export default function CompanionsSection({
     } finally {
       setTimeout(() => {
         setLoadingMore(false);
-        // Rearrange masonry after new items are added
-        setTimeout(() => {
-          arrangeMasonry();
-        }, 100);
       }, 300);
     }
   };
 
-  const resetCompanions = () => {
-    // Reset to initial companions and shuffle them
-    const shuffled = [...initialCompanions];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  const resetCompanions = async () => {
+    try {
+      // Fetch all companions again for a completely fresh set
+      const result = await getCompanionsAction();
+      
+      if (result.success && result.data) {
+        // Simple shuffle for fresh selection
+        const shuffled = [...result.data];
+        
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+
+        // Show first 8 shuffled companions
+        setCompanions(shuffled.slice(0, 8));
+        setHasMoreAvailable(true);
+      } else {
+        // Fallback to shuffling initial companions
+        const shuffled = [...initialCompanions];
+        
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+
+        setCompanions(shuffled);
+        setHasMoreAvailable(true);
+      }
+    } catch (error) {
+      console.error("Error resetting companions:", error);
+      // Fallback to shuffling initial companions
+      const shuffled = [...initialCompanions];
+      
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+
+      setCompanions(shuffled);
+      setHasMoreAvailable(true);
     }
 
-    setCompanions(shuffled);
-    setHasMoreAvailable(true);
-
-    // Rearrange masonry after reset
+    // Scroll to section after reset
     setTimeout(() => {
-      arrangeMasonry();
       document
         .getElementById("companions-section")
         ?.scrollIntoView({ behavior: "smooth" });
@@ -211,16 +180,17 @@ export default function CompanionsSection({
 
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="companions-masonry-container">
-            <div ref={masonryRef} className="companions-masonry">
+            {/* CSS Grid Masonry Layout - No JS needed */}
+            <div className="companions-masonry-grid">
               {companions.map((companion, index) => {
                 // Fixed heights for image and footer
-                const imageHeight = 220; // Increased from 180px to 220px
-                const titleHeight = 40; // Fixed height for title (2 lines)
-                const footerHeight = 35; // Fixed height for "review profile" section
-                const padding = 16; // 4*4 = 16px padding
+                const imageHeight = 220;
+                const titleHeight = 40; 
+                const footerHeight = 35;
+                const padding = 16;
 
-                // Random description height for waterfall effect - increased minimum height
-                const descriptionHeights = [80, 100, 120, 140, 160]; // Higher minimum heights
+                // Random description height for waterfall effect
+                const descriptionHeights = [80, 100, 120, 140, 160];
                 const randomDescriptionHeight =
                   descriptionHeights[index % descriptionHeights.length];
 
@@ -232,7 +202,7 @@ export default function CompanionsSection({
                   padding;
                 const finalHeight = imageHeight + totalContentHeight;
 
-                // Get description text (no truncation needed - CSS will handle it)
+                // Get description text
                 const descriptionText = extractTextFromHtml(
                   companion.body_html
                 );
@@ -240,7 +210,7 @@ export default function CompanionsSection({
                 return (
                   <div
                     key={companion.id}
-                    className="companion-card-masonry"
+                    className="companion-card-grid"
                     style={{
                       height: `${finalHeight}px`,
                     }}

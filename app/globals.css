@@ -42,47 +42,46 @@ html:has(.no-scroll) {
   overflow: hidden !important;
 }
 
-/* Xiaohongshu-style Masonry Layout - Max 4 columns */
+/* CSS Grid Masonry Layout - No JavaScript needed */
 .companions-masonry-container {
   width: 100%;
-  padding: 0 16px;
   max-width: 100%;
 }
 
-@media (min-width: 640px) {
-  .companions-masonry-container {
-    padding: 0 24px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .companions-masonry-container {
-    padding: 0 32px;
-  }
-}
-
-@media (min-width: 1280px) {
-  .companions-masonry-container {
-    padding: 0 48px;
-    max-width: none;
-  }
-}
-
-.companions-masonry {
-  position: relative;
+.companions-masonry-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
   width: 100%;
-  min-height: 100px;
 }
 
-.companion-card-masonry {
-  position: absolute;
+.companion-card-grid {
+  break-inside: avoid;
   transition: transform 0.2s ease-in-out;
   box-sizing: border-box;
 }
 
-.companion-card-masonry:hover {
+.companion-card-grid:hover {
   transform: translateY(-2px);
-  z-index: 10;
+}
+
+/* Responsive columns */
+@media (min-width: 640px) {
+  .companions-masonry-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .companions-masonry-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .companions-masonry-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
 }
 
 /* Text truncation utility */
