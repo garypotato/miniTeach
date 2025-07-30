@@ -2,9 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/app/store/store";
-import { openModal, closeModal, setLoading } from "@/app/store/modalSlice";
+import { useModal } from "@/app/contexts/ModalContext";
 
 interface SearchFilterProps {
   initialSearch: string;
@@ -19,10 +17,7 @@ export default function SearchFilter({
 }: SearchFilterProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const dispatch = useDispatch();
-  const { modalOpen, modalType, isLoading } = useSelector(
-    (state: RootState) => state.modal
-  );
+  const { modalOpen, modalType, isLoading, openModal, closeModal, setLoading } = useModal();
 
   const [searchInput, setSearchInput] = useState(initialSearch);
   const [selectedCities, setSelectedCities] = useState<string[]>(initialCities);
@@ -35,14 +30,14 @@ export default function SearchFilter({
     setSelectedCities(initialCities);
     setTempSearchInput(initialSearch);
     setTempSelectedCities(initialCities);
-    dispatch(setLoading({ loading: false })); // Reset loading when new data arrives
-  }, [initialSearch, initialCities, dispatch]);
+    setLoading(false); // Reset loading when new data arrives
+  }, [initialSearch, initialCities, setLoading]);
 
   const handleSearch = (
     name: string = searchInput,
     cities: string[] = selectedCities
   ) => {
-    dispatch(setLoading({ loading: true, message: "正在搜索伙伴..." }));
+    setLoading(true, "正在搜索伙伴...");
     const params = new URLSearchParams(searchParams);
 
     if (name.trim()) {
@@ -70,7 +65,7 @@ export default function SearchFilter({
     setSearchInput(tempSearchInput);
     setSelectedCities(tempSelectedCities);
     handleSearch(tempSearchInput, tempSelectedCities);
-    dispatch(closeModal());
+    closeModal();
   };
 
   const handleCityToggle = (city: string) => {
@@ -87,7 +82,7 @@ export default function SearchFilter({
   };
 
   const handleClear = () => {
-    dispatch(setLoading({ loading: true, message: "Clearing filters..." }));
+    setLoading(true, "Clearing filters...");
     setSearchInput("");
     setSelectedCities([]);
     setTempSearchInput("");
@@ -106,7 +101,7 @@ export default function SearchFilter({
   const openFilterModal = () => {
     setTempSearchInput(searchInput);
     setTempSelectedCities(selectedCities);
-    dispatch(openModal({ type: "filter" }));
+    openModal("filter");
   };
 
   const hasActiveFilters = searchInput || selectedCities.length > 0;
@@ -117,10 +112,10 @@ export default function SearchFilter({
         {/* Hero Search Section */}
         <div className="text-center mb-8">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            {"�ҵ������������"}
+            找到您的完美陪伴者
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            {"�ڰĴ�������Ҫ���з������˾�̾�Ļ��"}
+            在澳大利亚寻找有经验的儿童陪伴者
           </p>
 
           {/* Main Search Button */}
@@ -133,7 +128,7 @@ export default function SearchFilter({
             {isLoading ? (
               <>
                 <div className="animate-spin rounded-full h-6 w-6 border-2 border-white border-t-transparent"></div>
-                <span>{"������..."}</span>
+                <span>搜索中...</span>
               </>
             ) : (
               <>
@@ -150,7 +145,7 @@ export default function SearchFilter({
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                   />
                 </svg>
-                <span>{"��������˻��"}</span>
+                <span>搜索陪伴者</span>
                 <svg
                   className="h-5 w-5 group-hover:translate-x-1 transition-transform"
                   fill="none"
@@ -198,7 +193,7 @@ export default function SearchFilter({
                       d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707v6.586a1 1 0 01-1.447.894l-4-2A1 1 0 018 18.586v-4.586a1 1 0 00-.293-.707L1.293 7.293A1 1 0 011 6.586V4z"
                     />
                   </svg>
-                  <span>{"��Ծ������"}</span>
+                  <span>当前筛选</span>
                 </h3>
                 <button
                   onClick={handleClear}
@@ -218,7 +213,7 @@ export default function SearchFilter({
                       d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                     />
                   </svg>
-                  <span>{"���ȫ��"}</span>
+                  <span>清除全部</span>
                 </button>
               </div>
 
@@ -239,7 +234,7 @@ export default function SearchFilter({
                       />
                     </svg>
                     <span>
-                      {"����"}: &ldquo;{searchInput}&rdquo;
+                      名称: &ldquo;{searchInput}&rdquo;
                     </span>
                     <button
                       type="button"
@@ -291,7 +286,7 @@ export default function SearchFilter({
                       />
                     </svg>
                     <span>
-                      {"����"}: {city}
+                      地点: {city}
                     </span>
                     <button
                       type="button"
@@ -347,9 +342,9 @@ export default function SearchFilter({
               </div>
               <div>
                 <p className="text-sm font-medium text-blue-800">
-                  {"����������"}
+                  实时搜索
                 </p>
-                <p className="text-xs text-blue-600">{"�����ض����"}</p>
+                <p className="text-xs text-blue-600">高效过滤</p>
               </div>
             </div>
           </div>
@@ -379,9 +374,9 @@ export default function SearchFilter({
               </div>
               <div>
                 <p className="text-sm font-medium text-purple-800">
-                  {"�����й���"}
+                  地理筛选
                 </p>
-                <p className="text-xs text-purple-600">{"��λ�����"}</p>
+                <p className="text-xs text-purple-600">精准定位</p>
               </div>
             </div>
           </div>
@@ -405,9 +400,9 @@ export default function SearchFilter({
               </div>
               <div>
                 <p className="text-sm font-medium text-green-800">
-                  {"�����ղ�"}
+                  智能收藏
                 </p>
-                <p className="text-xs text-green-600">{"���ֶ������"}</p>
+                <p className="text-xs text-green-600">多样选择</p>
               </div>
             </div>
           </div>
@@ -420,7 +415,7 @@ export default function SearchFilter({
             onMouseDown={(e) => {
               // Only close if clicking the backdrop itself
               if (e.target === e.currentTarget) {
-                dispatch(closeModal());
+                closeModal();
               }
             }}
           >

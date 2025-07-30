@@ -6,12 +6,6 @@ This is a **Next.js** project designed to assist **parents** in finding suitable
 
 ---
 
-## Website State Management
-
-- Use **Redux** to manage the application state.
-
----
-
 ## Data Source
 
 The project uses **Shopify** as the backend database.
@@ -88,39 +82,40 @@ Each **companion** is stored as a product under the `Companion` collection and i
 
 ### Required Fields
 
-| Field           | Input Type     | Description                                 | Validation                                        | Shopify Key   |
-| --------------- | -------------- | ------------------------------------------- | ------------------------------------------------- | ------------- |
-| **First Name**  | Text           | Given name of the companion                 | Required, cannot be empty                         | `first_name`  |
-| **Last Name**   | Text           | Family name of the companion                | Required, cannot be empty                         | `last_name`   |
-| **User Name**   | Email          | Email address of the user (login)          | Required, valid email format, must be unique     | `user_name`   |
-| **Password**    | Password       | Account password                            | Required, min 8 chars, letters + numbers         | `password`    |
-| **Major**       | Text           | Area of study or specialisation             | Required, cannot be empty                         | `major`       |
-| **Location**    | Select         | City or region where the companion is based | Required, dropdown (Sydney/Melbourne/Brisbane/etc)| `location`    |
-| **Description** | Textarea       | Companion's self-introduction               | Required, minimum 50 characters                   | `description` |
-| **Images**      | File Upload    | Profile photos                              | Required, 1-5 images, max 5MB each               | Product images|
+| Field           | Input Type  | Description                                 | Validation                                         | Shopify Key    |
+| --------------- | ----------- | ------------------------------------------- | -------------------------------------------------- | -------------- |
+| **First Name**  | Text        | Given name of the companion                 | Required, cannot be empty                          | `first_name`   |
+| **Last Name**   | Text        | Family name of the companion                | Required, cannot be empty                          | `last_name`    |
+| **User Name**   | Email       | Email address of the user (login)           | Required, valid email format, must be unique       | `user_name`    |
+| **Password**    | Password    | Account password                            | Required, min 8 chars, letters + numbers           | `password`     |
+| **Major**       | Text        | Area of study or specialisation             | Required, cannot be empty                          | `major`        |
+| **Location**    | Select      | City or region where the companion is based | Required, dropdown (Sydney/Melbourne/Brisbane/etc) | `location`     |
+| **Description** | Textarea    | Companion's self-introduction               | Required, minimum 50 characters                    | `description`  |
+| **Images**      | File Upload | Profile photos                              | Required, 1-5 images, max 5MB each                 | Product images |
 
 ---
 
 ### Optional Fields
 
-| Field                | Input Type     | Description                                          | Validation                           | Shopify Key     | Metafield Type        |
-| -------------------- | -------------- | ---------------------------------------------------- | ------------------------------------ | --------------- | --------------------- |
-| **WeChat ID**        | Text           | WeChat identifier                                    | Optional, text                       | `wechat_id`     | single_line_text_field|
-| **Education**        | Tags Input     | Education background (comma-separated)              | Optional, list of values             | `education`     | list.single_line_text_field|
-| **Age**              | Number         | Age of the companion                                 | Optional, numeric                    | `age`           | number_integer        |
-| **Blue Card / WWCC** | Select         | Holds a Blue Card or Working With Children Check    | Optional, Yes/No/Pending             | `blue_card`     | boolean               |
-| **Police Check**     | Select         | Has a valid police clearance                         | Optional, Yes/No/Pending             | `police_check`  | boolean               |
-| **Language**         | Tags Input     | Languages spoken (comma-separated)                  | Optional, list of values             | `language`      | list.single_line_text_field|
-| **Age Group**        | Tags Input     | Preferred age group for working with (comma-separated)| Optional, list of values           | `age_group`     | single_line_text_field|
-| **Skill**            | Tags Input     | Additional skills (comma-separated)                 | Optional, list of values             | `skill`         | list.single_line_text_field|
-| **Certification**    | Tags Input     | Relevant certifications held (comma-separated)      | Optional, list of values             | `certification` | list.single_line_text_field|
-| **Availability**     | Tags Input     | General availability (comma-separated)              | Optional, list of values             | `availability`  | single_line_text_field|
+| Field                | Input Type | Description                                            | Validation               | Shopify Key     | Metafield Type              |
+| -------------------- | ---------- | ------------------------------------------------------ | ------------------------ | --------------- | --------------------------- |
+| **WeChat ID**        | Text       | WeChat identifier                                      | Optional, text           | `wechat_id`     | single_line_text_field      |
+| **Education**        | Tags Input | Education background (comma-separated)                 | Optional, list of values | `education`     | list.single_line_text_field |
+| **Age**              | Number     | Age of the companion                                   | Optional, numeric        | `age`           | number_integer              |
+| **Blue Card / WWCC** | Select     | Holds a Blue Card or Working With Children Check       | Optional, Yes/No/Pending | `blue_card`     | boolean                     |
+| **Police Check**     | Select     | Has a valid police clearance                           | Optional, Yes/No/Pending | `police_check`  | boolean                     |
+| **Language**         | Tags Input | Languages spoken (comma-separated)                     | Optional, list of values | `language`      | list.single_line_text_field |
+| **Age Group**        | Tags Input | Preferred age group for working with (comma-separated) | Optional, list of values | `age_group`     | single_line_text_field      |
+| **Skill**            | Tags Input | Additional skills (comma-separated)                    | Optional, list of values | `skill`         | list.single_line_text_field |
+| **Certification**    | Tags Input | Relevant certifications held (comma-separated)         | Optional, list of values | `certification` | list.single_line_text_field |
+| **Availability**     | Tags Input | General availability (comma-separated)                 | Optional, list of values | `availability`  | single_line_text_field      |
 
 ---
 
 ## Input Type Details
 
 ### Tags Input
+
 - **Behavior**: User types values separated by commas
 - **Visual**: Each value becomes a removable tag/chip
 - **Example**: "English, Chinese, Japanese" → [English] [Chinese] [Japanese]
@@ -128,6 +123,7 @@ Each **companion** is stored as a product under the `Companion` collection and i
 - **Metafield Format**: JSON array for `list.single_line_text_field` types
 
 ### Validation Rules
+
 - **Email Uniqueness**: Real-time check using GraphQL, prevents duplicate registrations
 - **Password**: bcrypt hashed before storage
 - **Images**: Minimum 1 required, maximum 5 allowed, each max 5MB

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import ReduxProvider from "./providers/ReduxProvider";
+import { ModalProvider } from "./contexts/ModalContext";
 import GlobalModal from "./components/GlobalModal";
 import GlobalHeader from "./components/GlobalHeader";
 import GlobalFooter from "./components/GlobalFooter";
@@ -33,7 +33,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-background text-foreground`}
       >
-        <ReduxProvider>
+        <ModalProvider>
           <div className="min-h-screen flex flex-col">
             <GlobalHeader />
             <main className="flex-1">{children}</main>
@@ -41,7 +41,7 @@ export default function RootLayout({
             <GoToTop />
           </div>
           <GlobalModal />
-        </ReduxProvider>
+        </ModalProvider>
       </body>
     </html>
   );

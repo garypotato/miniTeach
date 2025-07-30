@@ -48,7 +48,7 @@ export default function HowItWorksSection() {
             如何运作
           </h3>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            找到完美伙伴的简单步�?
+            找到完美陪伴者的简单步骤
           </p>
         </div>
 
@@ -123,7 +123,7 @@ export default function HowItWorksSection() {
                     浏览探索
                   </h4>
                   <p className="text-sm text-gray-600 flex-1">
-                    家长浏览详细的伙伴档案，为孩子的需求找到完美匹配�?
+                    家长浏览详细的陪伴者档案，为孩子的需求找到完美匹配。
                   </p>
                 </div>
               </div>
@@ -194,10 +194,10 @@ export default function HowItWorksSection() {
                     </span>
                   </div>
                   <h4 className="text-base font-semibold text-gray-900 mb-2">
-                    {"���ע��"}
+                    陪伴者注册
                   </h4>
                   <p className="text-sm text-gray-600 flex-1 leading-relaxed">
-                    {"Ǳ�ڻ�����ȫ�����ְ�ʾ����飬���ǽ��������ܺ���֤��"}
+                    潜在陪伴者在平台上注册，完成详细的入职问卷，包含教育背景、技能和认证信息。
                   </p>
                 </div>
               </div>
@@ -216,10 +216,10 @@ export default function HowItWorksSection() {
                     </span>
                   </div>
                   <h4 className="text-base font-semibold text-gray-900 mb-2">
-                    {"��֤����"}
+                    陪伴者验证
                   </h4>
                   <p className="text-sm text-gray-600 flex-1 leading-relaxed">
-                    {"���ǵ�֧���Ŷӳ������ÿ�����롣ֻ�о�����֤�Ļ��Ż���ƽ̨���г���"}
+                    提交后，我们的支持团队会审查注册信息。只有通过验证流程的陪伴者才会在平台上公开展示。
                   </p>
                 </div>
               </div>
@@ -239,10 +239,10 @@ export default function HowItWorksSection() {
                     </span>
                   </div>
                   <h4 className="text-base font-semibold text-gray-900 mb-2">
-                    {"���̽��"}
+                    家长浏览
                   </h4>
                   <p className="text-sm text-gray-600 flex-1 leading-relaxed">
-                    {"�ҳ������ϸ�Ļ�鵵����Ϊ���ӵ������ҵ�����ƥ�䡣"}
+                    家长可以浏览平台，探索可用的陪伴者。每个档案都包含详细信息，帮助家长找到合适的陪伴者。
                   </p>
                 </div>
               </div>
@@ -261,10 +261,10 @@ export default function HowItWorksSection() {
                     </span>
                   </div>
                   <h4 className="text-base font-semibold text-gray-900 mb-2">
-                    {"������ϵ"}
+                    申请联系信息
                   </h4>
                   <p className="text-sm text-gray-600 flex-1 leading-relaxed">
-                    {"����Ȥ�ļҳ���ϵ���ǵ�֧���Ŷӣ��Ŷӻ���֤���ݲ�ȷ�����Ͽɿ��Ա�׼��"}
+                    当家长对特定陪伴者感兴趣时，必须联系我们的支持团队。团队会验证家长身份并确保符合可靠性标准。
                   </p>
                 </div>
               </div>
@@ -285,10 +285,10 @@ export default function HowItWorksSection() {
                       </span>
                     </div>
                     <h4 className="text-base font-semibold text-gray-900 mb-2">
-                      {"˽�ܽ���"}
+                      私人介绍
                     </h4>
                     <p className="text-sm text-gray-600 flex-1 leading-relaxed">
-                      {"һ�������׼��������ϵ��Ϣ��˽�·������Ա�ֱ�ӹ�ͨ��"}
+                      如果家长被认为值得信赖，陪伴者的联系信息将私下分享。之后双方可直接沟通，无需通过平台。
                     </p>
                   </div>
                 </div>
@@ -320,10 +320,10 @@ export default function HowItWorksSection() {
                   </div>
                   <div className="ml-6">
                     <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                      {"���ע��"}
+                      陪伴者注册
                     </h4>
                     <p className="text-gray-600">
-                      {"Ǳ�ڻ�����ȫ�����ְ�ʾ����飬���ǽ��������ܺ���֤��"}
+                      潜在陪伴者在平台上注册，完成详细的入职问卷，包含教育背景、技能和认证信息。
                     </p>
                   </div>
                 </div>
@@ -355,10 +355,10 @@ export default function HowItWorksSection() {
                   </div>
                   <div className="ml-6">
                     <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                      {"��֤����"}
+                      陪伴者验证
                     </h4>
                     <p className="text-gray-600">
-                      {"���ǵ�֧���Ŷӳ������ÿ�����롣ֻ�о�����֤�Ļ��Ż���ƽ̨���г���"}
+                      提交后，我们的支持团队会审查注册信息。只有通过验证流程的陪伴者才会在平台上公开展示。
                     </p>
                   </div>
                 </div>
@@ -390,10 +390,10 @@ export default function HowItWorksSection() {
                   </div>
                   <div className="ml-6">
                     <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                      {"���̽��"}
+                      家长浏览
                     </h4>
                     <p className="text-gray-600">
-                      {"�ҳ������ϸ�Ļ�鵵����Ϊ���ӵ������ҵ�����ƥ�䡣"}
+                      家长可以浏览平台，探索可用的陪伴者。每个档案都包含详细信息，帮助家长找到合适的陪伴者。
                     </p>
                   </div>
                 </div>
@@ -425,10 +425,10 @@ export default function HowItWorksSection() {
                   </div>
                   <div className="ml-6">
                     <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                      {"������ϵ"}
+                      申请联系信息
                     </h4>
                     <p className="text-gray-600">
-                      {"����Ȥ�ļҳ���ϵ���ǵ�֧���Ŷӣ��Ŷӻ���֤���ݲ�ȷ�����Ͽɿ��Ա�׼��"}
+                      当家长对特定陪伴者感兴趣时，必须联系我们的支持团队。团队会验证家长身份并确保符合可靠性标准。
                     </p>
                   </div>
                 </div>
@@ -460,10 +460,10 @@ export default function HowItWorksSection() {
                   </div>
                   <div className="ml-6">
                     <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                      {"˽�ܽ���"}
+                      私人介绍
                     </h4>
                     <p className="text-gray-600">
-                      {"һ�������׼��������ϵ��Ϣ��˽�·������Ա�ֱ�ӹ�ͨ��"}
+                      如果家长被认为值得信赖，陪伴者的联系信息将私下分享。之后双方可直接沟通，无需通过平台。
                     </p>
                   </div>
                 </div>
@@ -489,7 +489,7 @@ export default function HowItWorksSection() {
               />
             </svg>
             <span className="text-blue-800 font-medium">
-              {"��ƽ̨����ȡ�κη�����á�"}
+              本平台不收取任何服务费用。
             </span>
           </div>
         </div>

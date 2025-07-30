@@ -1,24 +1,20 @@
 "use client";
 
-import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { RootState } from "@/app/store/store";
-import { setSuccess } from "@/app/store/modalSlice";
+import { useModal } from "@/app/contexts/ModalContext";
 
 export default function GlobalModal() {
-  const dispatch = useDispatch();
-  const { modalType, isLoading, loadingMessage, isSuccess, successMessage } =
-    useSelector((state: RootState) => state.modal);
+  const { modalType, isLoading, loadingMessage, isSuccess, successMessage, setSuccess } = useModal();
 
   // Auto-close success modal after 5 seconds
   useEffect(() => {
     if (isSuccess) {
       const timer = setTimeout(() => {
-        dispatch(setSuccess({ success: false }));
+        setSuccess(false);
       }, 5000);
       return () => clearTimeout(timer);
     }
-  }, [isSuccess, dispatch]);
+  }, [isSuccess, setSuccess]);
 
   // Don't show modal for filter type (handled by SearchFilter component)
   if (modalType === "filter" || (!isLoading && !isSuccess)) return null;

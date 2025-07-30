@@ -16,6 +16,7 @@ interface FormFieldProps {
   required?: boolean;
   rows?: number;
   options?: Option[];
+  disabled?: boolean;
 }
 
 export default function FormField({
@@ -29,6 +30,7 @@ export default function FormField({
   required = false,
   rows = 4,
   options = [],
+  disabled = false,
 }: FormFieldProps) {
   const handleChange = (
     e: React.ChangeEvent<
@@ -41,6 +43,7 @@ export default function FormField({
   const baseClasses =
     "w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors";
   const errorClasses = error ? "border-red-300 bg-red-50" : "border-gray-300";
+  const disabledClasses = disabled ? "bg-gray-100 cursor-not-allowed opacity-75" : "";
 
   return (
     <div className="space-y-2">
@@ -57,7 +60,8 @@ export default function FormField({
           placeholder={placeholder}
           value={value}
           onChange={handleChange}
-          className={`${baseClasses} ${errorClasses} resize-vertical`}
+          disabled={disabled}
+          className={`${baseClasses} ${errorClasses} ${disabledClasses} resize-vertical`}
         />
       ) : type === "select" ? (
         <select
@@ -65,7 +69,8 @@ export default function FormField({
           name={name}
           value={value}
           onChange={handleChange}
-          className={`${baseClasses} ${errorClasses}`}
+          disabled={disabled}
+          className={`${baseClasses} ${errorClasses} ${disabledClasses}`}
         >
           {options.map((option) => (
             <option key={option.value} value={option.value}>
@@ -81,7 +86,8 @@ export default function FormField({
           placeholder={placeholder}
           value={value}
           onChange={handleChange}
-          className={`${baseClasses} ${errorClasses}`}
+          disabled={disabled}
+          className={`${baseClasses} ${errorClasses} ${disabledClasses}`}
         />
       )}
 
