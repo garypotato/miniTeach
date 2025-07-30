@@ -2,9 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function GlobalHeader() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+  
+  const isOnCreatePage = pathname === "/companion/create";
 
   return (
     <header className="bg-white shadow-sm border-b relative">
@@ -40,12 +44,18 @@ export default function GlobalHeader() {
             >
               关于我们
             </Link>
-            <Link
-              href="/companion/create"
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
-            >
-              成為陪伴者
-            </Link>
+            {isOnCreatePage ? (
+              <span className="bg-gray-400 text-white px-4 py-2 rounded-lg font-medium cursor-not-allowed">
+                成為陪伴者
+              </span>
+            ) : (
+              <Link
+                href="/companion/create"
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+              >
+                成為陪伴者
+              </Link>
+            )}
           </nav>
 
           {/* Mobile menu button */}
@@ -111,13 +121,19 @@ export default function GlobalHeader() {
             >
               关于我们
             </Link>
-            <Link
-              href="/companion/create"
-              className="block mx-3 my-2 px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 font-medium rounded-md transition-colors duration-200 text-center"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              成為陪伴者
-            </Link>
+            {isOnCreatePage ? (
+              <span className="block mx-3 my-2 px-3 py-2 bg-gray-400 text-white font-medium rounded-md text-center cursor-not-allowed">
+                成為陪伴者
+              </span>
+            ) : (
+              <Link
+                href="/companion/create"
+                className="block mx-3 my-2 px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 font-medium rounded-md transition-colors duration-200 text-center"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                成為陪伴者
+              </Link>
+            )}
           </div>
         </div>
       </div>

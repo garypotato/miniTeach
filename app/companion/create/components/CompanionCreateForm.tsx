@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import FormField from "./FormField";
-import MultiSelectField from "./MultiSelectField";
 import LoadingSpinner from "./LoadingSpinner";
 import ImageUpload from "./ImageUpload";
+import TagsInput from "./TagsInput";
 
 interface FormData {
   // Required fields
@@ -20,14 +20,14 @@ interface FormData {
   // Optional fields
   wechat_id: string;
   education: string;
-  language: string[];
+  language: string;
   age: string;
-  age_group: string[];
+  age_group: string;
   blue_card: string;
   police_check: string;
-  skill: string[];
-  certification: string[];
-  availability: string[];
+  skill: string;
+  certification: string;
+  availability: string;
   images: File[];
 }
 
@@ -37,6 +37,7 @@ interface ValidationErrors {
 
 export default function CompanionCreateForm() {
   const router = useRouter();
+  const emailCheckTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const [formData, setFormData] = useState<FormData>({
     first_name: "",
@@ -48,19 +49,20 @@ export default function CompanionCreateForm() {
     description: "",
     wechat_id: "",
     education: "",
-    language: [],
+    language: "",
     age: "",
-    age_group: [],
+    age_group: "",
     blue_card: "",
     police_check: "",
-    skill: [],
-    certification: [],
-    availability: [],
+    skill: "",
+    certification: "",
+    availability: "",
     images: [],
   });
 
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<
     "idle" | "success" | "error"
   >("idle");
@@ -101,7 +103,9 @@ export default function CompanionCreateForm() {
     }
 
     // Image validation
-    if (formData.images.length > 5) {
+    if (formData.images.length === 0) {
+      newErrors.images = "至少需要上傳1張照片";
+    } else if (formData.images.length > 5) {
       newErrors.images = "最多允許5張圖片";
     }
 
@@ -109,14 +113,61 @@ export default function CompanionCreateForm() {
     return Object.keys(newErrors).length === 0;
   };
 
+  const checkEmailUniqueness = async (email: string): Promise<boolean> => {
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return true; // Skip check for invalid emails
+    }
+
+    setIsCheckingEmail(true);
+    try {
+      const response = await fetch('/api/companions/check-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const result = await response.json();
+      
+      if (!result.available) {
+        setErrors(prev => ({ ...prev, user_name: "此電子郵件地址已被使用，請使用其他電子郵件地址" }));
+        return false;
+      }
+      
+      // Clear email error if available
+      setErrors(prev => ({ ...prev, user_name: "" }));
+      return true;
+    } catch (error) {
+      console.error('Error checking email uniqueness:', error);
+      return true; // Allow submission on check failure
+    } finally {
+      setIsCheckingEmail(false);
+    }
+  };
+
   const handleInputChange = (
     name: string,
     value: string | string[] | File[]
   ) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
+    
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+
+    // Check email uniqueness when user_name changes
+    if (name === 'user_name' && typeof value === 'string') {
+      // Clear previous timeout
+      if (emailCheckTimeoutRef.current) {
+        clearTimeout(emailCheckTimeoutRef.current);
+      }
+      
+      // Debounce the email check
+      emailCheckTimeoutRef.current = setTimeout(() => {
+        checkEmailUniqueness(value);
+      }, 1000);
     }
   };
 
@@ -152,15 +203,12 @@ export default function CompanionCreateForm() {
       if (formData.police_check)
         submitData.append("police_check", formData.police_check);
 
-      // Add array fields as JSON
-      submitData.append("language", JSON.stringify(formData.language));
-      submitData.append("age_group", JSON.stringify(formData.age_group));
-      submitData.append("skill", JSON.stringify(formData.skill));
-      submitData.append(
-        "certification",
-        JSON.stringify(formData.certification)
-      );
-      submitData.append("availability", JSON.stringify(formData.availability));
+      // Add array fields
+      submitData.append("language", formData.language);
+      submitData.append("age_group", formData.age_group);
+      submitData.append("skill", formData.skill);
+      submitData.append("certification", formData.certification);
+      submitData.append("availability", formData.availability);
 
       // Add images
       formData.images.forEach((image) => {
@@ -311,16 +359,25 @@ export default function CompanionCreateForm() {
             required
           />
 
-          <FormField
-            label="電子郵件地址"
-            name="user_name"
-            type="email"
-            placeholder="請輸入您的電子郵件地址"
-            value={formData.user_name}
-            onChange={handleInputChange}
-            error={errors.user_name}
-            required
-          />
+          <div className="relative">
+            <FormField
+              label="電子郵件地址"
+              name="user_name"
+              type="email"
+              placeholder="請輸入您的電子郵件地址"
+              value={formData.user_name}
+              onChange={handleInputChange}
+              error={errors.user_name}
+              required
+              disabled={isCheckingEmail}
+            />
+            {isCheckingEmail && (
+              <div className="absolute right-3 top-9 flex items-center">
+                <LoadingSpinner className="w-4 h-4 text-blue-600" />
+                <span className="ml-2 text-sm text-gray-500">檢查中...</span>
+              </div>
+            )}
+          </div>
 
           <FormField
             label="密碼"
@@ -354,26 +411,26 @@ export default function CompanionCreateForm() {
             error={errors.location}
             required
             options={[
-              { value: "", label: "選擇您的城市..." },
+              { value: "", label: "Select your city..." },
               {
                 value: "sydney",
-                label: "悉尼",
+                label: "Sydney",
               },
               {
                 value: "melbourne",
-                label: "墨爾本",
+                label: "Melbourne",
               },
               {
                 value: "brisbane",
-                label: "布里斯班",
+                label: "Brisbane",
               },
               {
                 value: "goldCoast",
-                label: "黃金海岸",
+                label: "Gold Coast",
               },
               {
                 value: "adelaide",
-                label: "阿德萊德",
+                label: "Adelaide",
               },
             ]}
           />
@@ -392,6 +449,24 @@ export default function CompanionCreateForm() {
             rows={5}
           />
         </div>
+
+        {/* Image Upload in Required Section */}
+        <div className="mt-8">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <span className="w-6 h-6 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-xs font-bold mr-3">
+              *
+            </span>
+            檔案照片
+          </h3>
+          <p className="text-gray-600 text-sm mb-4">
+            請上傳至少1張照片，最多5張 (每張圖片最大5MB)
+          </p>
+          <ImageUpload
+            images={formData.images}
+            onChange={(images: File[]) => handleInputChange("images", images)}
+            error={errors.images}
+          />
+        </div>
       </div>
 
       {/* Optional Fields Section */}
@@ -408,10 +483,9 @@ export default function CompanionCreateForm() {
             onChange={handleInputChange}
           />
 
-          <FormField
+          <TagsInput
             label="教育程度"
             name="education"
-            type="text"
             placeholder="例如：學士學位、碩士學位"
             value={formData.education}
             onChange={handleInputChange}
@@ -476,215 +550,48 @@ export default function CompanionCreateForm() {
         </div>
 
         <div className="grid grid-cols-1 gap-6 mt-6">
-          <MultiSelectField
+          <TagsInput
             label="使用語言"
             name="language"
-            placeholder="選擇您會說的語言"
+            placeholder="請輸入您會說的語言"
             value={formData.language}
             onChange={handleInputChange}
-            options={[
-              {
-                value: "english",
-                label: "英語",
-              },
-              {
-                value: "mandarin",
-                label: "普通話",
-              },
-              {
-                value: "cantonese",
-                label: "廣東話",
-              },
-              {
-                value: "spanish",
-                label: "西班牙語",
-              },
-              {
-                value: "french",
-                label: "法語",
-              },
-              {
-                value: "japanese",
-                label: "日語",
-              },
-              {
-                value: "korean",
-                label: "韓語",
-              },
-              {
-                value: "other",
-                label: "其他",
-              },
-            ]}
           />
 
-          <MultiSelectField
+          <TagsInput
             label="偏好年齡組"
             name="age_group"
-            placeholder="您偏好工作的年齡組"
+            placeholder="請輸入您偏好工作的年齡組"
             value={formData.age_group}
             onChange={handleInputChange}
-            options={[
-              {
-                value: "infants",
-                label: "嬰兒 (0-2歲)",
-              },
-              {
-                value: "toddlers",
-                label: "幼兒 (2-4歲)",
-              },
-              {
-                value: "preschool",
-                label: "學前兒童 (4-6歲)",
-              },
-              {
-                value: "schoolAge",
-                label: "學齡兒童 (6-12歲)",
-              },
-              {
-                value: "teenagers",
-                label: "青少年 (12歲以上)",
-              },
-            ]}
           />
 
-          <MultiSelectField
+          <TagsInput
             label="技能"
             name="skill"
-            placeholder="選擇您的技能"
+            placeholder="請輸入您的技能"
             value={formData.skill}
             onChange={handleInputChange}
-            options={[
-              {
-                value: "musicLessons",
-                label: "音樂課程",
-              },
-              {
-                value: "artCrafts",
-                label: "藝術和工藝",
-              },
-              {
-                value: "cooking",
-                label: "烹飪",
-              },
-              {
-                value: "sportsFitness",
-                label: "運動和健身",
-              },
-              {
-                value: "languageTutoring",
-                label: "語言輔導",
-              },
-              {
-                value: "homeworkHelp",
-                label: "作業輔助",
-              },
-              {
-                value: "specialNeeds",
-                label: "特殊需求支援",
-              },
-              {
-                value: "firstAid",
-                label: "急救認證",
-              },
-            ]}
           />
 
-          <MultiSelectField
+          <TagsInput
             label="認證"
             name="certification"
-            placeholder="選擇您的認證"
+            placeholder="請輸入您的認證"
             value={formData.certification}
             onChange={handleInputChange}
-            options={[
-              {
-                value: "earlyChildhood",
-                label: "幼兒教育",
-              },
-              {
-                value: "firstAid",
-                label: "急救",
-              },
-              {
-                value: "cpr",
-                label: "心肺復甦術",
-              },
-              {
-                value: "specialEducation",
-                label: "特殊教育",
-              },
-              {
-                value: "tefl",
-                label: "TEFL/TESOL",
-              },
-              {
-                value: "montessori",
-                label: "蒙特梭利",
-              },
-              {
-                value: "musicEducation",
-                label: "音樂教育",
-              },
-              {
-                value: "other",
-                label: "其他專業認證",
-              },
-            ]}
           />
 
-          <MultiSelectField
+          <TagsInput
             label="可用性"
             name="availability"
-            placeholder="您何時有空？"
+            placeholder="請輸入您的可用時間"
             value={formData.availability}
             onChange={handleInputChange}
-            options={[
-              {
-                value: "weekdayMornings",
-                label: "工作日早上",
-              },
-              {
-                value: "weekdayAfternoons",
-                label: "工作日下午",
-              },
-              {
-                value: "weekdayEvenings",
-                label: "工作日晚上",
-              },
-              {
-                value: "weekendMornings",
-                label: "週末早上",
-              },
-              {
-                value: "weekendAfternoons",
-                label: "週末下午",
-              },
-              {
-                value: "weekendEvenings",
-                label: "週末晚上",
-              },
-              {
-                value: "holidays",
-                label: "學校假期",
-              },
-              {
-                value: "emergency",
-                label: "緊急照護",
-              },
-            ]}
           />
         </div>
       </div>
 
-      {/* Image Upload Section */}
-      <div className="bg-white rounded-xl border border-gray-200 p-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">檔案照片</h2>
-        <ImageUpload
-          images={formData.images}
-          onChange={(images: File[]) => handleInputChange("images", images)}
-          error={errors.images}
-        />
-      </div>
 
       {/* Submit Section */}
       <div className="bg-white rounded-xl border border-gray-200 p-8">

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import shopifyClient from "../../services/shopify/client";
+import shopifyClient, { checkUserNameExists } from "../../services/shopify/client";
 import bcrypt from "bcryptjs";
 
 // POST - Create new companion
@@ -41,6 +41,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check if user_name (email) already exists using GraphQL
+    try {
+      const exists = await checkUserNameExists(user_name);
+      
+      if (exists) {
+        return NextResponse.json(
+          { success: false, error: "此電子郵件地址已被使用，請使用其他電子郵件地址" },
+          { status: 409 }
+        );
+      }
+    } catch (checkError) {
+      console.error("Error checking existing companions:", checkError);
+      return NextResponse.json(
+        { success: false, error: "無法驗證電子郵件唯一性，請稍後重試" },
+        { status: 500 }
+      );
+    }
+
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -48,22 +66,41 @@ export async function POST(request: NextRequest) {
     const metafields = {
       wechat_id: (formData.get("wechat_id") as string) || "",
       education: (formData.get("education") as string) || "",
-      language: JSON.parse((formData.get("language") as string) || "[]"),
+      language: ((formData.get("language") as string) || "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
       age: (formData.get("age") as string) || "",
-      age_group: JSON.parse((formData.get("age_group") as string) || "[]"),
+      age_group: ((formData.get("age_group") as string) || "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
       blue_card: (formData.get("blue_card") as string) || "",
       police_check: (formData.get("police_check") as string) || "",
-      skill: JSON.parse((formData.get("skill") as string) || "[]"),
-      certification: JSON.parse(
-        (formData.get("certification") as string) || "[]"
-      ),
-      availability: JSON.parse(
-        (formData.get("availability") as string) || "[]"
-      ),
+      skill: ((formData.get("skill") as string) || "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
+      certification: ((formData.get("certification") as string) || "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
+      availability: ((formData.get("availability") as string) || "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
     };
 
     // Extract images
     const images = formData.getAll("images") as File[];
+
+    // Validate images are provided
+    if (!images || images.length === 0 || images.every(img => img.size === 0)) {
+      return NextResponse.json(
+        { success: false, error: "至少需要上傳1張照片" },
+        { status: 400 }
+      );
+    }
 
     // Prepare title (first_name + last_name)
     const title = `${first_name} ${last_name}`;
@@ -86,47 +123,45 @@ export async function POST(request: NextRequest) {
       position: number;
     }> = [];
 
-    if (images && images.length > 0) {
-      // Validate max 5 images
-      if (images.length > 5) {
-        return NextResponse.json(
-          { success: false, error: "Maximum 5 images allowed" },
-          { status: 400 }
-        );
-      }
-
-      try {
-        const imagePromises = images.map(async (image, index) => {
-          if (image.size > 0) {
-            const bytes = await image.arrayBuffer();
-            const base64 = Buffer.from(bytes).toString("base64");
-            return {
-              attachment: base64,
-              filename: image.name || `companion-image-${index + 1}.jpg`,
-              alt: `${title} - Image ${index + 1}`,
-              position: index + 1,
-            };
-          }
-          return null;
-        });
-
-        const resolvedImages = await Promise.all(imagePromises);
-        processedImages = resolvedImages.filter(
-          (img) => img !== null
-        ) as typeof processedImages;
-      } catch (imageError) {
-        console.error("Error processing images:", imageError);
-        return NextResponse.json(
-          { success: false, error: "Failed to process images" },
-          { status: 500 }
-        );
-      }
+    // Validate max 5 images
+    if (images.length > 5) {
+      return NextResponse.json(
+        { success: false, error: "最多允許5張圖片" },
+        { status: 400 }
+      );
     }
 
-    // Create product with images
+    try {
+      const imagePromises = images.map(async (image, index) => {
+        if (image.size > 0) {
+          const bytes = await image.arrayBuffer();
+          const base64 = Buffer.from(bytes).toString("base64");
+          return {
+            attachment: base64,
+            filename: image.name || `companion-image-${index + 1}.jpg`,
+            alt: `${title} - Image ${index + 1}`,
+            position: index + 1,
+          };
+        }
+        return null;
+      });
+
+      const resolvedImages = await Promise.all(imagePromises);
+      processedImages = resolvedImages.filter(
+        (img) => img !== null
+      ) as typeof processedImages;
+    } catch (imageError) {
+      console.error("Error processing images:", imageError);
+      return NextResponse.json(
+        { success: false, error: "圖片處理失敗" },
+        { status: 500 }
+      );
+    }
+
+    // Create product with images (images are now required)
     const productWithImages = {
       ...companionData,
-      ...(processedImages.length > 0 && { images: processedImages }),
+      images: processedImages,
     };
 
     const createdProduct = await shopifyClient.product.create(
@@ -204,8 +239,8 @@ export async function POST(request: NextRequest) {
               owner_id: createdProduct.id,
               namespace: "custom",
               key: "education",
-              value: metafields.education,
-              type: "single_line_text_field",
+              value: JSON.stringify([metafields.education]),
+              type: "list.single_line_text_field",
             },
           ]
         : []),
@@ -217,7 +252,7 @@ export async function POST(request: NextRequest) {
               namespace: "custom",
               key: "language",
               value: JSON.stringify(metafields.language),
-              type: "json",
+              type: "list.single_line_text_field",
             },
           ]
         : []),
@@ -228,8 +263,8 @@ export async function POST(request: NextRequest) {
               owner_id: createdProduct.id,
               namespace: "custom",
               key: "age",
-              value: metafields.age,
-              type: "single_line_text_field",
+              value: Number(metafields.age) || 0,
+              type: "number_integer",
             },
           ]
         : []),
@@ -240,8 +275,8 @@ export async function POST(request: NextRequest) {
               owner_id: createdProduct.id,
               namespace: "custom",
               key: "age_group",
-              value: JSON.stringify(metafields.age_group),
-              type: "json",
+              value: metafields.age_group.join(" "),
+              type: "single_line_text_field",
             },
           ]
         : []),
@@ -252,8 +287,12 @@ export async function POST(request: NextRequest) {
               owner_id: createdProduct.id,
               namespace: "custom",
               key: "blue_card",
-              value: metafields.blue_card,
-              type: "single_line_text_field",
+              value: ["yes", "true", "是"].includes(
+                metafields.blue_card.toLowerCase()
+              )
+                ? "true"
+                : "false",
+              type: "boolean",
             },
           ]
         : []),
@@ -264,8 +303,12 @@ export async function POST(request: NextRequest) {
               owner_id: createdProduct.id,
               namespace: "custom",
               key: "police_check",
-              value: metafields.police_check,
-              type: "single_line_text_field",
+              value: ["yes", "true", "是"].includes(
+                metafields.police_check.toLowerCase()
+              )
+                ? "true"
+                : "false",
+              type: "boolean",
             },
           ]
         : []),
@@ -277,7 +320,7 @@ export async function POST(request: NextRequest) {
               namespace: "custom",
               key: "skill",
               value: JSON.stringify(metafields.skill),
-              type: "json",
+              type: "list.single_line_text_field",
             },
           ]
         : []),
@@ -289,7 +332,7 @@ export async function POST(request: NextRequest) {
               namespace: "custom",
               key: "certification",
               value: JSON.stringify(metafields.certification),
-              type: "json",
+              type: "list.single_line_text_field",
             },
           ]
         : []),
@@ -300,8 +343,8 @@ export async function POST(request: NextRequest) {
               owner_id: createdProduct.id,
               namespace: "custom",
               key: "availability",
-              value: JSON.stringify(metafields.availability),
-              type: "json",
+              value: metafields.availability.join(" "),
+              type: "single_line_text_field",
             },
           ]
         : []),
@@ -314,7 +357,7 @@ export async function POST(request: NextRequest) {
         const created = await shopifyClient.metafield.create(metafieldData);
         createdMetafields.push(created);
       } catch (metafieldError) {
-        console.warn(
+        console.error(
           `Failed to create metafield ${metafieldData.key}:`,
           metafieldError
         );
