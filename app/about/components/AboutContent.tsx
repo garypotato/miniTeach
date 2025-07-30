@@ -1,10 +1,6 @@
 "use client";
 
-import { useLanguage } from "../../hooks/useLanguage";
-
 export default function AboutContent() {
-  const { t } = useLanguage();
-
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -16,10 +12,10 @@ export default function AboutContent() {
       >
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-            {t("about.hero.title")}
+            {"�P� Mini-Teach"}
           </h1>
           <p className="text-xl text-white opacity-90 mb-8 max-w-3xl mx-auto">
-            {t("about.hero.subtitle")}
+            {"�B�Y�П���Ľ����W���c��ҕ�����x��ͯ���ļ�ͥ"}
           </p>
         </div>
       </section>
@@ -29,19 +25,29 @@ export default function AboutContent() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-              {t("about.story.title")}
+              {"�҂��Ĺ���"}
             </h2>
           </div>
 
           <div className="prose prose-lg mx-auto text-gray-700 leading-relaxed space-y-6">
             <p className="text-xl text-center mb-8 text-gray-600">
-              {t("about.story.introduction")}
+              {"Mini-Teach ���ɽ���������W���l��ă�ͯ���Ӌ����"}
             </p>
 
             <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
-              <p className="mb-6">{t("about.story.paragraph1")}</p>
-              <p className="mb-6">{t("about.story.paragraph2")}</p>
-              <p>{t("about.story.paragraph3")}</p>
+              <p className="mb-6">
+                {
+                  "�҂�ϣ�������ڰ��޾��x�������׽̡��Z�Ե����P��ϵ��ͬ�W���ҵ��c���I���ڡ������������x�Ĺ����C����"
+                }
+              </p>
+              <p className="mb-6">
+                {"ͬ�rҲ׌��ͥ�����ҵ��н������B���А��ĵ�����ߣ��麢�ӎ��������c���l��"}
+              </p>
+              <p>
+                {
+                  "�@��һ�����҂��H�����v���l��Сƽ̨�����҂�������x����ϵ�r����Ŭ������һ�ݸ����W���P�Ĺ����������������N�N���ƣ����C���ơ��n���ŵ��������顢ȱ�����}�������]��չʾ�Լ��ęC������һ���棬�҂�Ҳ���|�^���ټ�ͥ����������ϣ���Ĳ��ǡ����ֿ�סС���ѡ�������ϣ�������������б��A �������⣬�����Ļ����ЌW���|�������@�ӵ�����ߣ��K�������ҵ�����ǣ��҂������� Mini-Teach���봮�B���@�ɂ�����һȺ�߂�������I������c�����ČW������һȺϣ�����ӱ��úÌ����ļ�ͥ��"
+                }
+              </p>
             </div>
           </div>
         </div>
@@ -52,7 +58,7 @@ export default function AboutContent() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-              {t("about.mission.title")}
+              {"�҂���ʹ��"}
             </h2>
           </div>
 
@@ -76,11 +82,13 @@ export default function AboutContent() {
                   </svg>
                 </div>
                 <h3 className="text-xl font-bold text-gray-800">
-                  {t("about.mission.forStudents.title")}
+                  {"������W��"}
                 </h3>
               </div>
               <p className="text-gray-700 leading-relaxed">
-                {t("about.mission.forStudents.description")}
+                {
+                  "�҂�������H�W�����R�������C���ơ���æ���n�̰��ţ��Լ�ȱ�����}�C�����҂��ṩһ��ƽ̨��׌���Ľ������I֪�R�õ���ҕ���K�܄��������x��Ӱ푡�"
+                }
               </p>
             </div>
 
@@ -102,12 +110,12 @@ export default function AboutContent() {
                     />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-gray-800">
-                  {t("about.mission.forFamilies.title")}
-                </h3>
+                <h3 className="text-xl font-bold text-gray-800">{"���ͥ"}</h3>
               </div>
               <p className="text-gray-700 leading-relaxed">
-                {t("about.mission.forFamilies.description")}
+                {
+                  "�҂�֪����ͥ��Ҫ�Ĳ��H�H�ǡ����˿����ӡ�����ϣ����������������A �����⣬�Kͨ�^�����x�Ļ��ӆ��l���ĺ��ӡ��@���؄e������ߺ��y�ҵ������@�����҂����������ҵġ�"
+                }
               </p>
             </div>
           </div>
@@ -123,23 +131,25 @@ export default function AboutContent() {
       >
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
-            {t("about.cta.title")}
+            {"�����҂�����Ⱥ"}
           </h2>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            {t("about.cta.description")}
+            {
+              "�oՓ���ǌ��������x�����Ľ����W����߀�ǌ��󆢰l������ߵļ�ͥ���҂������@�e�����������"
+            }
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="/companions"
               className="bg-purple-600 text-white px-8 py-3 rounded-full font-semibold transition-all hover:bg-purple-700 hover:shadow-lg inline-block text-center"
             >
-              {t("about.cta.browseCompanions")}
+              {"���������"}
             </a>
             <a
               href="#contact"
               className="border-2 border-purple-600 text-purple-600 px-8 py-3 rounded-full font-semibold transition-all hover:bg-purple-50"
             >
-              {t("about.cta.contactUs")}
+              {"�j�҂�"}
             </a>
           </div>
         </div>

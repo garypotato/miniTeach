@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useLanguage } from "../../hooks/useLanguage";
+
 import { Companion } from "../../types/companion";
 
 interface CompanionPageWrapperProps {
@@ -19,8 +19,6 @@ export default function CompanionPageWrapper({
   companionsWithLocation,
   allCompanions,
 }: CompanionPageWrapperProps) {
-  const { t } = useLanguage();
-
   const showNoResults = filteredCompanions.length === 0;
 
   return (
@@ -37,7 +35,7 @@ export default function CompanionPageWrapper({
             <ol className="flex items-center space-x-2">
               <li>
                 <Link href="/" className="text-gray-500 hover:opacity-80">
-                  {t("breadcrumb.home")}
+                  首页
                 </Link>
               </li>
               <li>
@@ -54,9 +52,7 @@ export default function CompanionPageWrapper({
                 </svg>
               </li>
               <li>
-                <span className="text-gray-700 font-medium">
-                  {t("breadcrumb.allCompanions")}
-                </span>
+                <span className="text-gray-700 font-medium">所有伙伴</span>
               </li>
             </ol>
           </nav>
@@ -66,11 +62,9 @@ export default function CompanionPageWrapper({
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            {t("companions.allCompanions")}
-          </h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">所有伙伴</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            {t("companions.allCompanionsDescription")}
+            浏览我们完整的合格儿童伙伴和教育工作者收藏。为您的孩子找到完美匹配。
           </p>
         </div>
 
@@ -96,22 +90,18 @@ export default function CompanionPageWrapper({
               </svg>
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              {t("companions.noCompanionsFound")}
+              未找到伙伴
             </h3>
             <div className="space-y-4">
               <p className="text-gray-600">
                 {selectedCities.length > 0 &&
                 companionsWithLocation.length === 0
-                  ? `${t("companions.locationUnavailableMessage")} ${
-                      allCompanions.length
-                    } companions are available but none have location information yet.`
+                  ? `位置筛选目前不可用，因为伙伴位置数据正在更新中。 ${allCompanions.length} 个伙伴可用，但还没有位置信息。`
                   : selectedCities.length > 0
-                  ? `${t(
-                      "companions.noCompanionsInCities"
-                    )}: ${selectedCities.join(", ")}. ${t(
-                      "companions.expandSearchMessage"
-                    )}`
-                  : t("companions.noCompanionsMessage")}
+                  ? `在所选城市中未找到伙伴: ${selectedCities.join(
+                      ", "
+                    )}。尝试扩展您的搜索或移除位置筛选。`
+                  : "我们无法找到符合您搜索条件的伙伴。"}
               </p>
 
               {selectedCities.length > 0 &&
@@ -132,11 +122,9 @@ export default function CompanionPageWrapper({
                         />
                       </svg>
                       <p className="text-sm text-yellow-800">
-                        <strong>
-                          {t("companions.locationFilterDisabled")}
-                        </strong>
+                        <strong>位置筛选暂时禁用</strong>
                         <br />
-                        {t("companions.locationDataUpdating")}
+                        伙伴位置数据正在更新
                       </p>
                     </div>
                   </div>
@@ -150,7 +138,7 @@ export default function CompanionPageWrapper({
                   className="inline-flex items-center text-white px-6 py-3 rounded-full font-semibold transition-colors hover:opacity-90"
                   style={{ backgroundColor: "#47709B" }}
                 >
-                  {t("companions.clearFilters")}
+                  清除筛选并查看全部
                 </Link>
               )}
               <Link
@@ -158,7 +146,7 @@ export default function CompanionPageWrapper({
                 className="inline-flex items-center border-2 px-6 py-3 rounded-full font-semibold transition-colors hover:bg-gray-50"
                 style={{ borderColor: "#47709B", color: "#47709B" }}
               >
-                {t("companions.backToHome")}
+                返回首页
               </Link>
             </div>
           </div>

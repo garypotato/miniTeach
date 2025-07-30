@@ -1,6 +1,5 @@
 import React, { useRef, useState } from "react";
 import Image from "next/image";
-import { useLanguage } from "../../../hooks/useLanguage";
 
 interface ImageUploadProps {
   images: File[];
@@ -13,7 +12,6 @@ export default function ImageUpload({
   onChange,
   error,
 }: ImageUploadProps) {
-  const { t } = useLanguage();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
 
@@ -26,11 +24,11 @@ export default function ImageUpload({
 
     Array.from(files).forEach((file) => {
       if (!allowedTypes.includes(file.type)) {
-        alert(t("companionCreate.validation.imageFormat"));
+        alert("只允許JPG、PNG和GIF檔案");
         return;
       }
       if (file.size > maxSize) {
-        alert(t("companionCreate.validation.imageSize"));
+        alert("每張圖片必須小於5MB");
         return;
       }
       validFiles.push(file);
@@ -38,7 +36,7 @@ export default function ImageUpload({
 
     const totalFiles = [...images, ...validFiles];
     if (totalFiles.length > 5) {
-      alert(t("companionCreate.validation.maxImages"));
+      alert("最多允許5張圖片");
       onChange([...images, ...validFiles.slice(0, 5 - images.length)]);
     } else {
       onChange([...images, ...validFiles]);
@@ -73,9 +71,7 @@ export default function ImageUpload({
 
   return (
     <div className="space-y-4">
-      <div className="text-sm text-gray-600">
-        {t("companionCreate.form.images.description")}
-      </div>
+      <div className="text-sm text-gray-600">{""}</div>
 
       {/* Upload Area */}
       <div
@@ -118,9 +114,7 @@ export default function ImageUpload({
           </div>
 
           <div>
-            <p className="text-lg text-gray-600">
-              {t("companionCreate.form.images.dragText")}
-            </p>
+            <p className="text-lg text-gray-600">{""}</p>
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
@@ -131,8 +125,8 @@ export default function ImageUpload({
           </div>
 
           <div className="text-sm text-gray-500 space-y-1">
-            <p>{t("companionCreate.form.images.maxFiles")}</p>
-            <p>{t("companionCreate.form.images.supportedFormats")}</p>
+            <p>{""}</p>
+            <p>{""}</p>
           </div>
         </div>
       </div>

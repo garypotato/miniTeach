@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useLanguage } from "../../hooks/useLanguage";
 import { getCompanionsAction } from "../../actions/shopify";
 
 interface Companion {
@@ -67,7 +66,6 @@ async function fetchMoreCompanions(excludeIds: number[]): Promise<Companion[]> {
 export default function CompanionsSection({
   initialCompanions,
 }: CompanionsSectionProps) {
-  const { t } = useLanguage();
   const [companions, setCompanions] = useState<Companion[]>(initialCompanions);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMoreAvailable, setHasMoreAvailable] = useState(true);
@@ -204,9 +202,11 @@ export default function CompanionsSection({
       <div className="w-full">
         <div className="text-center mb-12 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="text-3xl font-bold text-gray-900 mb-4">
-            {t("companions.title")}
+            认识我们的伙伴
           </h3>
-          <p className="text-lg text-gray-600">{t("companions.description")}</p>
+          <p className="text-lg text-gray-600">
+            发现准备支持您孩子成长旅程的关爱专业人士
+          </p>
         </div>
 
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -333,7 +333,7 @@ export default function CompanionsSection({
                               marginTop: "auto",
                             }}
                           >
-                            <span>{t("companionsList.viewProfile")}</span>
+                            <span>查看档案</span>
                             <svg
                               className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform"
                               fill="none"

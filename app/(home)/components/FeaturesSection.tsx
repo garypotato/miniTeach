@@ -1,10 +1,6 @@
 "use client";
 
-import { useLanguage } from "../../hooks/useLanguage";
-
 export default function FeaturesSection() {
-  const { t } = useLanguage();
-
   const features = [
     {
       icon: (
@@ -22,8 +18,9 @@ export default function FeaturesSection() {
           />
         </svg>
       ),
-      title: t("features.educationStudents.title"),
-      description: t("features.educationStudents.description"),
+      title: "专业教育学生 – 技能娴熟且充满热情",
+      description:
+        "我们专门招募教育、幼儿教育或语言相关专业的学生。他们拥有教学知识，真正理解儿童需求——真正的教育工作者。",
       color: "from-blue-500 to-purple-600",
     },
     {
@@ -42,8 +39,9 @@ export default function FeaturesSection() {
           />
         </svg>
       ),
-      title: t("features.qualityValue.title"),
-      description: t("features.qualityValue.description"),
+      title: "高质量、高性价比 – 但常被忽视",
+      description:
+        "教育学生拥有技能和潜力，但由于签证或时间安排限制，往往缺乏机会。我们的平台以公平的价格将家庭与可靠的高质量伙伴联系起来。",
       color: "from-green-500 to-teal-600",
     },
     {
@@ -62,8 +60,9 @@ export default function FeaturesSection() {
           />
         </svg>
       ),
-      title: t("features.legalSafe.title"),
-      description: t("features.legalSafe.description"),
+      title: "合法签证和安全背景",
+      description:
+        "每位伙伴都持有有效的澳大利亚学生签证，并已完成WWCC、Blue Card或警察检查——让您更加安心。",
       color: "from-purple-500 to-pink-600",
     },
     {
@@ -82,8 +81,9 @@ export default function FeaturesSection() {
           />
         </svg>
       ),
-      title: t("features.flexible.title"),
-      description: t("features.flexible.description"),
+      title: "灵活且无承诺",
+      description:
+        "我们不收取佣金或要求您签订合同。费率和工作方式由您和伙伴商定——灵活、透明、无压力。",
       color: "from-orange-500 to-red-600",
     },
     {
@@ -102,8 +102,9 @@ export default function FeaturesSection() {
           />
         </svg>
       ),
-      title: t("features.bilingual.title"),
-      description: t("features.bilingual.description"),
+      title: "双语支持 – 非常适合华人家庭",
+      description:
+        "我们的平台支持中英文。许多伙伴会说普通话或粤语，确保沟通顺畅，没有语言障碍。",
       color: "from-indigo-500 to-blue-600",
     },
     {
@@ -122,8 +123,9 @@ export default function FeaturesSection() {
           />
         </svg>
       ),
-      title: t("features.interactiveLearning.title"),
-      description: t("features.interactiveLearning.description"),
+      title: "不仅仅是照顾 – 更是互动学习",
+      description:
+        "伙伴通过游戏、阅读和对话与孩子互动。这种体验超越监督——是关于激发成长和共同学习。",
       color: "from-teal-500 to-green-600",
     },
   ];
@@ -166,10 +168,10 @@ export default function FeaturesSection() {
                 </div>
 
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight">
-                  {t("features.title")}
+                  为什么选择我们？
                 </h2>
                 <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-8">
-                  {t("features.subtitle")}
+                  因为每个家庭都应该享有优质、关爱的儿童伙伴服务
                 </p>
 
                 {/* Feature highlights */}

@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useLanguage } from "../../hooks/useLanguage";
 
 interface CompanionDetailWrapperProps {
   children: React.ReactNode;
@@ -12,8 +11,6 @@ export default function CompanionDetailWrapper({
   children,
   companionTitle,
 }: CompanionDetailWrapperProps) {
-  const { t } = useLanguage();
-
   return (
     <div
       className="min-h-screen"
@@ -28,7 +25,7 @@ export default function CompanionDetailWrapper({
             <ol className="flex items-center space-x-2">
               <li>
                 <Link href="/" className="text-gray-500 hover:opacity-80">
-                  {t("breadcrumb.home")}
+                  首页
                 </Link>
               </li>
               <li>
@@ -49,7 +46,7 @@ export default function CompanionDetailWrapper({
                   href="/companions"
                   className="text-gray-500 hover:opacity-80"
                 >
-                  {t("breadcrumb.allCompanions")}
+                  所有伙伴
                 </Link>
               </li>
               <li>

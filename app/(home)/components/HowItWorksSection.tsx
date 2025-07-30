@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useLanguage } from "../../hooks/useLanguage";
 
 export default function HowItWorksSection() {
-  const { t } = useLanguage();
   const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
@@ -47,10 +45,10 @@ export default function HowItWorksSection() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            {t("howItWorks.title")}
+            如何运作
           </h3>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            {t("howItWorks.subtitle")}
+            找到完美伙伴的简单步�?
           </p>
         </div>
 
@@ -76,10 +74,10 @@ export default function HowItWorksSection() {
                     </span>
                   </div>
                   <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                    {t("howItWorks.steps.registration.title")}
+                    伙伴注册
                   </h4>
                   <p className="text-sm text-gray-600 flex-1">
-                    {t("howItWorks.steps.registration.description")}
+                    潜在伙伴完成全面的入职问卷调查，涵盖教育、技能和认证�?
                   </p>
                 </div>
               </div>
@@ -99,10 +97,10 @@ export default function HowItWorksSection() {
                     </span>
                   </div>
                   <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                    {t("howItWorks.steps.verification.title")}
+                    验证流程
                   </h4>
                   <p className="text-sm text-gray-600 flex-1">
-                    {t("howItWorks.steps.verification.description")}
+                    我们的支持团队彻底审查每份申请。只有经过验证的伙伴才会在平台上列出�?
                   </p>
                 </div>
               </div>
@@ -122,10 +120,10 @@ export default function HowItWorksSection() {
                     </span>
                   </div>
                   <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                    {t("howItWorks.steps.browsing.title")}
+                    浏览探索
                   </h4>
                   <p className="text-sm text-gray-600 flex-1">
-                    {t("howItWorks.steps.browsing.description")}
+                    家长浏览详细的伙伴档案，为孩子的需求找到完美匹配�?
                   </p>
                 </div>
               </div>
@@ -145,10 +143,10 @@ export default function HowItWorksSection() {
                     </span>
                   </div>
                   <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                    {t("howItWorks.steps.contact.title")}
+                    申请联系
                   </h4>
                   <p className="text-sm text-gray-600 flex-1">
-                    {t("howItWorks.steps.contact.description")}
+                    感兴趣的家长联系我们的支持团队，团队会验证身份并确保符合可靠性标准�?
                   </p>
                 </div>
               </div>
@@ -168,10 +166,10 @@ export default function HowItWorksSection() {
                     </span>
                   </div>
                   <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                    {t("howItWorks.steps.connection.title")}
+                    私密介绍
                   </h4>
                   <p className="text-sm text-gray-600 flex-1">
-                    {t("howItWorks.steps.connection.description")}
+                    一旦获得批准，伙伴的联系信息将私下分享，以便直接沟通�?
                   </p>
                 </div>
               </div>
@@ -196,10 +194,10 @@ export default function HowItWorksSection() {
                     </span>
                   </div>
                   <h4 className="text-base font-semibold text-gray-900 mb-2">
-                    {t("howItWorks.steps.registration.title")}
+                    {"���ע��"}
                   </h4>
                   <p className="text-sm text-gray-600 flex-1 leading-relaxed">
-                    {t("howItWorks.steps.registration.description")}
+                    {"Ǳ�ڻ�����ȫ�����ְ�ʾ����飬���ǽ��������ܺ���֤��"}
                   </p>
                 </div>
               </div>
@@ -218,10 +216,10 @@ export default function HowItWorksSection() {
                     </span>
                   </div>
                   <h4 className="text-base font-semibold text-gray-900 mb-2">
-                    {t("howItWorks.steps.verification.title")}
+                    {"��֤����"}
                   </h4>
                   <p className="text-sm text-gray-600 flex-1 leading-relaxed">
-                    {t("howItWorks.steps.verification.description")}
+                    {"���ǵ�֧���Ŷӳ������ÿ�����롣ֻ�о�����֤�Ļ��Ż���ƽ̨���г���"}
                   </p>
                 </div>
               </div>
@@ -241,10 +239,10 @@ export default function HowItWorksSection() {
                     </span>
                   </div>
                   <h4 className="text-base font-semibold text-gray-900 mb-2">
-                    {t("howItWorks.steps.browsing.title")}
+                    {"���̽��"}
                   </h4>
                   <p className="text-sm text-gray-600 flex-1 leading-relaxed">
-                    {t("howItWorks.steps.browsing.description")}
+                    {"�ҳ������ϸ�Ļ�鵵����Ϊ���ӵ������ҵ�����ƥ�䡣"}
                   </p>
                 </div>
               </div>
@@ -263,10 +261,10 @@ export default function HowItWorksSection() {
                     </span>
                   </div>
                   <h4 className="text-base font-semibold text-gray-900 mb-2">
-                    {t("howItWorks.steps.contact.title")}
+                    {"������ϵ"}
                   </h4>
                   <p className="text-sm text-gray-600 flex-1 leading-relaxed">
-                    {t("howItWorks.steps.contact.description")}
+                    {"����Ȥ�ļҳ���ϵ���ǵ�֧���Ŷӣ��Ŷӻ���֤���ݲ�ȷ�����Ͽɿ��Ա�׼��"}
                   </p>
                 </div>
               </div>
@@ -287,10 +285,10 @@ export default function HowItWorksSection() {
                       </span>
                     </div>
                     <h4 className="text-base font-semibold text-gray-900 mb-2">
-                      {t("howItWorks.steps.connection.title")}
+                      {"˽�ܽ���"}
                     </h4>
                     <p className="text-sm text-gray-600 flex-1 leading-relaxed">
-                      {t("howItWorks.steps.connection.description")}
+                      {"һ�������׼��������ϵ��Ϣ��˽�·������Ա�ֱ�ӹ�ͨ��"}
                     </p>
                   </div>
                 </div>
@@ -322,10 +320,10 @@ export default function HowItWorksSection() {
                   </div>
                   <div className="ml-6">
                     <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                      {t("howItWorks.steps.registration.title")}
+                      {"���ע��"}
                     </h4>
                     <p className="text-gray-600">
-                      {t("howItWorks.steps.registration.description")}
+                      {"Ǳ�ڻ�����ȫ�����ְ�ʾ����飬���ǽ��������ܺ���֤��"}
                     </p>
                   </div>
                 </div>
@@ -357,10 +355,10 @@ export default function HowItWorksSection() {
                   </div>
                   <div className="ml-6">
                     <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                      {t("howItWorks.steps.verification.title")}
+                      {"��֤����"}
                     </h4>
                     <p className="text-gray-600">
-                      {t("howItWorks.steps.verification.description")}
+                      {"���ǵ�֧���Ŷӳ������ÿ�����롣ֻ�о�����֤�Ļ��Ż���ƽ̨���г���"}
                     </p>
                   </div>
                 </div>
@@ -392,10 +390,10 @@ export default function HowItWorksSection() {
                   </div>
                   <div className="ml-6">
                     <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                      {t("howItWorks.steps.browsing.title")}
+                      {"���̽��"}
                     </h4>
                     <p className="text-gray-600">
-                      {t("howItWorks.steps.browsing.description")}
+                      {"�ҳ������ϸ�Ļ�鵵����Ϊ���ӵ������ҵ�����ƥ�䡣"}
                     </p>
                   </div>
                 </div>
@@ -427,10 +425,10 @@ export default function HowItWorksSection() {
                   </div>
                   <div className="ml-6">
                     <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                      {t("howItWorks.steps.contact.title")}
+                      {"������ϵ"}
                     </h4>
                     <p className="text-gray-600">
-                      {t("howItWorks.steps.contact.description")}
+                      {"����Ȥ�ļҳ���ϵ���ǵ�֧���Ŷӣ��Ŷӻ���֤���ݲ�ȷ�����Ͽɿ��Ա�׼��"}
                     </p>
                   </div>
                 </div>
@@ -462,10 +460,10 @@ export default function HowItWorksSection() {
                   </div>
                   <div className="ml-6">
                     <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                      {t("howItWorks.steps.connection.title")}
+                      {"˽�ܽ���"}
                     </h4>
                     <p className="text-gray-600">
-                      {t("howItWorks.steps.connection.description")}
+                      {"һ�������׼��������ϵ��Ϣ��˽�·������Ա�ֱ�ӹ�ͨ��"}
                     </p>
                   </div>
                 </div>
@@ -491,7 +489,7 @@ export default function HowItWorksSection() {
               />
             </svg>
             <span className="text-blue-800 font-medium">
-              {t("howItWorks.note")}
+              {"��ƽ̨����ȡ�κη�����á�"}
             </span>
           </div>
         </div>

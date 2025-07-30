@@ -2,11 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import LanguageSwitch from "./LanguageSwitch";
-import { useLanguage } from "../hooks/useLanguage";
 
 export default function GlobalHeader() {
-  const { t } = useLanguage();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
@@ -29,32 +26,30 @@ export default function GlobalHeader() {
               href="/"
               className="text-gray-700 hover:opacity-80 font-medium"
             >
-              {t("nav.home")}
+              首页
             </Link>
             <Link
               href="/companions"
               className="text-gray-700 hover:opacity-80 font-medium"
             >
-              {t("nav.allCompanions")}
+              所有伙伴
             </Link>
             <Link
               href="/about"
               className="text-gray-700 hover:opacity-80 font-medium"
             >
-              {t("nav.about")}
+              关于我们
             </Link>
             <Link
               href="/companion/create"
               className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
             >
-              {t("nav.joinAsCompanion")}
+              成為陪伴者
             </Link>
-            <LanguageSwitch />
           </nav>
 
           {/* Mobile menu button */}
-          <div className="md:hidden flex items-center space-x-4">
-            <LanguageSwitch />
+          <div className="md:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="text-gray-700 hover:opacity-80 focus:outline-none focus:opacity-80"
@@ -100,28 +95,28 @@ export default function GlobalHeader() {
               className="block px-3 py-2 text-gray-700 hover:bg-gray-50 font-medium rounded-md transition-colors duration-200"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              {t("nav.home")}
+              首页
             </Link>
             <Link
               href="/companions"
               className="block px-3 py-2 text-gray-700 hover:bg-gray-50 font-medium rounded-md transition-colors duration-200"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              {t("nav.allCompanions")}
+              所有伙伴
             </Link>
             <Link
               href="/about"
               className="block px-3 py-2 text-gray-700 hover:bg-gray-50 font-medium rounded-md transition-colors duration-200"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              {t("nav.about")}
+              关于我们
             </Link>
             <Link
               href="/companion/create"
               className="block mx-3 my-2 px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 font-medium rounded-md transition-colors duration-200 text-center"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              {t("nav.joinAsCompanion")}
+              成為陪伴者
             </Link>
           </div>
         </div>

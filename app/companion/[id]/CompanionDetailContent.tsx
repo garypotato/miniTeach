@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { ImageGallery } from "./ImageGallery";
 import MetafieldsDisplay from "./MetafieldsDisplay";
-import { useLanguage } from "../../hooks/useLanguage";
 import { Companion, CompanionImage } from "../../types/companion";
 
 interface CompanionDetailContentProps {
@@ -15,8 +14,6 @@ export default function CompanionDetailContent({
   companion,
   images,
 }: CompanionDetailContentProps) {
-  const { t } = useLanguage();
-
   return (
     <>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -34,18 +31,16 @@ export default function CompanionDetailContent({
                 className="px-3 py-1 rounded-full text-sm font-medium"
                 style={{ backgroundColor: "#AFC8DA", color: "#47709B" }}
               >
-                {t("companionDetail.childCompanion")}
+                儿童伙伴
               </span>
               <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                {t("companionDetail.available")}
+                可用
               </span>
             </div>
           </div>
 
           <div className="prose prose-lg max-w-none">
-            <h3 className="text-xl font-semibold text-gray-900 mb-4">
-              {t("companionDetail.aboutMe")}
-            </h3>
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">关于我</h3>
             <div
               className="text-gray-700 leading-relaxed"
               dangerouslySetInnerHTML={{ __html: companion.body_html }}
@@ -56,7 +51,7 @@ export default function CompanionDetailContent({
           {companion.metafields && (
             <div className="border-t pt-8">
               <h3 className="text-xl font-semibold text-gray-900 mb-6">
-                {t("companionDetail.qualifications")}
+                资格与详情
               </h3>
               <MetafieldsDisplay metafields={companion.metafields} />
             </div>
@@ -64,24 +59,24 @@ export default function CompanionDetailContent({
 
           <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
             <h3 className="text-xl font-semibold text-gray-900 mb-4">
-              {t("companionDetail.contactUs")}
+              联系我们
             </h3>
             <p className="text-gray-600 mb-6">
-              {t("companionDetail.contactDescription")}
+              为保护我们伙伴的隐私，联系信息是私下提供的。请与我们联系以请求联系详情。
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <button
                 className="flex-1 text-white px-6 py-3 rounded-full font-semibold transition-colors hover:opacity-90"
                 style={{ backgroundColor: "#47709B" }}
               >
-                {t("companionDetail.getContactInfo")}
+                获取联系信息
               </button>
               <Link
                 href="/companions"
                 className="flex-1 border-2 px-6 py-3 rounded-full font-semibold transition-colors hover:bg-gray-50 text-center"
                 style={{ borderColor: "#47709B", color: "#47709B" }}
               >
-                {t("nav.allCompanions")}
+                所有伙伴
               </Link>
             </div>
           </div>
@@ -92,9 +87,11 @@ export default function CompanionDetailContent({
       <section className="py-16 mt-16 bg-white border-t rounded-2xl">
         <div className="text-center mb-12">
           <h3 className="text-3xl font-bold text-gray-900 mb-4">
-            {t("companions.title")}
+            认识我们的伙伴
           </h3>
-          <p className="text-lg text-gray-600">{t("companions.description")}</p>
+          <p className="text-lg text-gray-600">
+            发现准备支持您孩子成长旅程的关爱专业人士
+          </p>
         </div>
         <div className="text-center">
           <Link
@@ -102,7 +99,7 @@ export default function CompanionDetailContent({
             className="inline-flex items-center text-white px-8 py-3 rounded-full font-semibold transition-colors hover:opacity-90"
             style={{ backgroundColor: "#47709B" }}
           >
-            {t("nav.allCompanions")}
+            所有伙伴
             <svg
               className="w-5 h-5 ml-2"
               fill="none"

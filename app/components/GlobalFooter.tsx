@@ -1,11 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useLanguage } from "../hooks/useLanguage";
 
 export default function GlobalFooter() {
-  const { t } = useLanguage();
-
   return (
     <footer className="bg-gray-900 text-white py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -15,12 +12,12 @@ export default function GlobalFooter() {
               className="text-2xl font-bold mb-4"
               style={{ color: "#47709B" }}
             >
-              {t("footer.company")}
+              迷你教学
             </h5>
-            <p className="text-gray-400">{t("footer.description")}</p>
+            <p className="text-gray-400">您的AI伙伴智能推荐平台</p>
           </div>
           <div>
-            <h6 className="font-semibold mb-4">{t("footer.services")}</h6>
+            <h6 className="font-semibold mb-4">服务</h6>
             <ul className="space-y-2 text-gray-400">
               <li>
                 <Link
@@ -28,7 +25,7 @@ export default function GlobalFooter() {
                   className="hover:opacity-80"
                   style={{ color: "#AFC8DA" }}
                 >
-                  {t("footer.findCompanions")}
+                  寻找伙伴
                 </Link>
               </li>
               <li>
@@ -37,23 +34,23 @@ export default function GlobalFooter() {
                   className="hover:opacity-80"
                   style={{ color: "#AFC8DA" }}
                 >
-                  {t("footer.aboutUs")}
+                  关于我们
                 </Link>
               </li>
             </ul>
           </div>
           <div>
-            <h6 className="font-semibold mb-4">{t("footer.contact")}</h6>
+            <h6 className="font-semibold mb-4">联系我们</h6>
             <ul className="space-y-2 text-gray-400">
               <li>
                 <span className="text-gray-400">
-                  {t("footer.contactMessage")}
+                  有问题请联系我们的客服团队
                 </span>
               </li>
             </ul>
           </div>
           <div>
-            <h6 className="font-semibold mb-4">{t("footer.connect")}</h6>
+            <h6 className="font-semibold mb-4">关注我们</h6>
             <ul className="space-y-2 text-gray-400">
               <li>
                 <Link
@@ -61,7 +58,7 @@ export default function GlobalFooter() {
                   className="hover:opacity-80"
                   style={{ color: "#AFC8DA" }}
                 >
-                  {t("footer.facebook")}
+                  Facebook
                 </Link>
               </li>
               <li>
@@ -70,7 +67,7 @@ export default function GlobalFooter() {
                   className="hover:opacity-80"
                   style={{ color: "#AFC8DA" }}
                 >
-                  {t("footer.instagram")}
+                  Instagram
                 </Link>
               </li>
               <li>
@@ -79,14 +76,14 @@ export default function GlobalFooter() {
                   className="hover:opacity-80"
                   style={{ color: "#AFC8DA" }}
                 >
-                  {t("footer.twitter")}
+                  Twitter
                 </Link>
               </li>
             </ul>
           </div>
         </div>
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-          <p>{t("footer.copyright")}</p>
+          <p>© 2024 迷你教学. 保留所有权利。</p>
         </div>
       </div>
     </footer>

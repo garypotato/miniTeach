@@ -4,7 +4,6 @@ import {
   formatMetafieldValue,
   METAFIELD_KEYS,
 } from "../../utils/metafields";
-import { useLanguage } from "../../hooks/useLanguage";
 
 interface MetafieldsDisplayProps {
   metafields: CompanionMetafields;
@@ -28,11 +27,23 @@ const FIELD_ORDER = [
 export default function MetafieldsDisplay({
   metafields,
 }: MetafieldsDisplayProps) {
-  const { t } = useLanguage();
-
-  // Function to get translated metafield label
+  // Function to get Chinese metafield label
   const getTranslatedLabel = (key: string): string => {
-    return t(`companionDetail.metafields.${key}`) || key;
+    const labels: Record<string, string> = {
+      wechat_id: "微信号",
+      major: "专业/学习领域",
+      education: "教育水平",
+      language: "语言",
+      age: "年龄",
+      location: "位置",
+      age_group: "适合年龄组",
+      blue_card: "蓝卡 / WWCC",
+      police_check: "无犯罪记录证明",
+      skill: "技能",
+      certification: "认证",
+      availability: "可用性",
+    };
+    return labels[key] || key;
   };
 
   const displayFields = FIELD_ORDER.filter((key) => {
@@ -58,14 +69,14 @@ export default function MetafieldsDisplay({
             />
           </svg>
         </div>
-        <h4 className="text-lg font-semibold text-blue-900 mb-2">
-          {t("companionDetail.noDetails.title")}
-        </h4>
-        <p className="text-blue-700 mb-4">
-          {t("companionDetail.noDetails.description")}
+        <h2 className="text-xl font-bold text-gray-800 mb-4">
+          专业详情即将推出
+        </h2>
+        <p className="text-gray-600 mb-6">
+          此伙伴的详细专业信息目前正在更新中。请稍后再查看或联系我们获取更多信息。
         </p>
-        <div className="text-sm text-blue-600">
-          <p>{t("companionDetail.noDetails.infoWeProvide")}</p>
+        <div>
+          <p>我们通常提供的信息包括:</p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2 text-left max-w-md mx-auto">
             <div className="flex items-center space-x-2">
               <svg
@@ -81,7 +92,7 @@ export default function MetafieldsDisplay({
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span>{t("companionDetail.noDetails.education")}</span>
+              <span>教育</span>
             </div>
             <div className="flex items-center space-x-2">
               <svg
@@ -113,7 +124,7 @@ export default function MetafieldsDisplay({
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span>{t("companionDetail.noDetails.skills")}</span>
+              <span>技能</span>
             </div>
             <div className="flex items-center space-x-2">
               <svg
@@ -129,7 +140,7 @@ export default function MetafieldsDisplay({
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span>{t("companionDetail.noDetails.languages")}</span>
+              <span>语言</span>
             </div>
             <div className="flex items-center space-x-2">
               <svg
@@ -145,7 +156,7 @@ export default function MetafieldsDisplay({
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span>{t("companionDetail.noDetails.certifications")}</span>
+              <span>认证</span>
             </div>
             <div className="flex items-center space-x-2">
               <svg
@@ -161,7 +172,7 @@ export default function MetafieldsDisplay({
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span>{t("companionDetail.noDetails.availability")}</span>
+              <span>可用性</span>
             </div>
           </div>
         </div>

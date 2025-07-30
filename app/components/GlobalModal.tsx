@@ -4,13 +4,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { RootState } from "@/app/store/store";
 import { setSuccess } from "@/app/store/modalSlice";
-import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function GlobalModal() {
   const dispatch = useDispatch();
   const { modalType, isLoading, loadingMessage, isSuccess, successMessage } =
     useSelector((state: RootState) => state.modal);
-  const { t } = useLanguage();
 
   // Auto-close success modal after 5 seconds
   useEffect(() => {
@@ -32,9 +30,9 @@ export default function GlobalModal() {
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
           <div className="text-center">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              {loadingMessage || t("modal.loading")}
+              {loadingMessage || "加载中"}
             </h3>
-            <p className="text-sm text-gray-600">{t("modal.pleaseWait")}</p>
+            <p className="text-sm text-gray-600">请稍等...</p>
           </div>
         </div>
       </div>
@@ -61,11 +59,9 @@ export default function GlobalModal() {
             </svg>
           </div>
           <div className="text-center">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              {t("modal.success")}
-            </h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">成功</h3>
             <p className="text-sm text-gray-600">
-              {successMessage || t("modal.operationCompleted")}
+              {successMessage || "操作完成"}
             </p>
           </div>
         </div>

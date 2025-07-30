@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useLanguage } from "../../../hooks/useLanguage";
+
 import FormField from "./FormField";
 import MultiSelectField from "./MultiSelectField";
 import ImageUpload from "./ImageUpload";
@@ -37,7 +37,6 @@ interface ValidationErrors {
 }
 
 export default function CompanionCreateForm() {
-  const { t } = useLanguage();
   const router = useRouter();
 
   const [formData, setFormData] = useState<FormData>({
@@ -72,42 +71,39 @@ export default function CompanionCreateForm() {
 
     // Required field validation
     if (!formData.first_name.trim()) {
-      newErrors.first_name = t("companionCreate.validation.required");
+      newErrors.first_name = "此欄位為必填";
     }
     if (!formData.last_name.trim()) {
-      newErrors.last_name = t("companionCreate.validation.required");
+      newErrors.last_name = "此欄位為必填";
     }
     if (!formData.user_name.trim()) {
-      newErrors.user_name = t("companionCreate.validation.required");
+      newErrors.user_name = "此欄位為必填";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.user_name)) {
-      newErrors.user_name = t("companionCreate.validation.email");
+      newErrors.user_name = "請輸入有效的電子郵件地址";
     }
     if (!formData.password.trim()) {
-      newErrors.password = t("companionCreate.validation.required");
+      newErrors.password = "此欄位為必填";
     } else if (
       formData.password.length < 8 ||
       !/(?=.*[A-Za-z])(?=.*\d)/.test(formData.password)
     ) {
-      newErrors.password = t("companionCreate.validation.passwordStrength");
+      newErrors.password = "密碼必須至少8個字符，包含字母和數字";
     }
     if (!formData.major.trim()) {
-      newErrors.major = t("companionCreate.validation.required");
+      newErrors.major = "此欄位為必填";
     }
     if (!formData.location.trim()) {
-      newErrors.location = t("companionCreate.validation.required");
+      newErrors.location = "此欄位為必填";
     }
     if (!formData.description.trim()) {
-      newErrors.description = t("companionCreate.validation.required");
+      newErrors.description = "此欄位為必填";
     } else if (formData.description.length < 50) {
-      newErrors.description = t("companionCreate.validation.minLength").replace(
-        "{min}",
-        "50"
-      );
+      newErrors.description = "必須至少50個字符";
     }
 
     // Image validation
     if (formData.images.length > 5) {
-      newErrors.images = t("companionCreate.validation.maxImages");
+      newErrors.images = "最多允許5張圖片";
     }
 
     setErrors(newErrors);
@@ -213,27 +209,27 @@ export default function CompanionCreateForm() {
             </svg>
           </div>
           <h2 className="text-2xl font-bold text-green-900 mb-4">
-            {t("companionCreate.success.title")}
+            檔案創建成功！
           </h2>
           <p className="text-green-700 mb-6">
-            {t("companionCreate.success.message")}
+            您的陪伴者檔案已提交審核。我們將在2-3個工作日內聯絡您進行下一步。
           </p>
           <div className="text-left bg-white rounded-lg p-6 mb-6">
             <h3 className="font-semibold text-gray-900 mb-3">
-              {t("companionCreate.success.nextSteps")}
+              接下來會發生什麼：
             </h3>
             <ol className="list-decimal list-inside space-y-2 text-gray-700">
-              <li>{t("companionCreate.success.step1")}</li>
-              <li>{t("companionCreate.success.step2")}</li>
-              <li>{t("companionCreate.success.step3")}</li>
-              <li>{t("companionCreate.success.step4")}</li>
+              <li>我們團隊審核您的申請</li>
+              <li>我們驗證您的資格和背景</li>
+              <li>審核通過後您的檔案將上線</li>
+              <li>家庭可以找到並聯絡您</li>
             </ol>
           </div>
           <button
             onClick={() => router.push("/")}
             className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
           >
-            {t("companionCreate.success.backToHome")}
+            返回首頁
           </button>
         </div>
       </div>
@@ -259,24 +255,22 @@ export default function CompanionCreateForm() {
               />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-red-900 mb-4">
-            {t("companionCreate.error.title")}
-          </h2>
+          <h2 className="text-2xl font-bold text-red-900 mb-4">創建檔案錯誤</h2>
           <p className="text-red-700 mb-6">
-            {t("companionCreate.error.message")}
+            我們在創建您的檔案時遇到錯誤。請重試。
           </p>
           <div className="space-x-4">
             <button
               onClick={() => setSubmitStatus("idle")}
               className="bg-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors"
             >
-              {t("companionCreate.error.tryAgain")}
+              重試
             </button>
             <button
               onClick={() => router.push("/contact")}
               className="bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-700 transition-colors"
             >
-              {t("companionCreate.error.contactSupport")}
+              聯絡支援
             </button>
           </div>
         </div>
@@ -292,15 +286,15 @@ export default function CompanionCreateForm() {
           <span className="w-8 h-8 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-sm font-bold mr-3">
             *
           </span>
-          {t("companionCreate.form.requiredFields")}
+          必填欄位
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
-            label={t("companionCreate.form.firstName.label")}
+            label="名字"
             name="first_name"
             type="text"
-            placeholder={t("companionCreate.form.firstName.placeholder")}
+            placeholder="請輸入您的名字"
             value={formData.first_name}
             onChange={handleInputChange}
             error={errors.first_name}
@@ -308,10 +302,10 @@ export default function CompanionCreateForm() {
           />
 
           <FormField
-            label={t("companionCreate.form.lastName.label")}
+            label="姓氏"
             name="last_name"
             type="text"
-            placeholder={t("companionCreate.form.lastName.placeholder")}
+            placeholder="請輸入您的姓氏"
             value={formData.last_name}
             onChange={handleInputChange}
             error={errors.last_name}
@@ -319,10 +313,10 @@ export default function CompanionCreateForm() {
           />
 
           <FormField
-            label={t("companionCreate.form.userName.label")}
+            label="電子郵件地址"
             name="user_name"
             type="email"
-            placeholder={t("companionCreate.form.userName.placeholder")}
+            placeholder="請輸入您的電子郵件地址"
             value={formData.user_name}
             onChange={handleInputChange}
             error={errors.user_name}
@@ -330,10 +324,10 @@ export default function CompanionCreateForm() {
           />
 
           <FormField
-            label={t("companionCreate.form.password.label")}
+            label="密碼"
             name="password"
             type="password"
-            placeholder={t("companionCreate.form.password.placeholder")}
+            placeholder="創建一個安全的密碼"
             value={formData.password}
             onChange={handleInputChange}
             error={errors.password}
@@ -341,10 +335,10 @@ export default function CompanionCreateForm() {
           />
 
           <FormField
-            label={t("companionCreate.form.major.label")}
+            label="專業/學習領域"
             name="major"
             type="text"
-            placeholder={t("companionCreate.form.major.placeholder")}
+            placeholder="例如：教育、幼兒發展"
             value={formData.major}
             onChange={handleInputChange}
             error={errors.major}
@@ -352,35 +346,35 @@ export default function CompanionCreateForm() {
           />
 
           <FormField
-            label={t("companionCreate.form.location.label")}
+            label="位置"
             name="location"
             type="select"
-            placeholder={t("companionCreate.form.location.placeholder")}
+            placeholder="選擇您的城市"
             value={formData.location}
             onChange={handleInputChange}
             error={errors.location}
             required
             options={[
-              { value: "", label: "Select your city..." },
+              { value: "", label: "選擇您的城市..." },
               {
                 value: "sydney",
-                label: t("companionCreate.form.location.options.sydney"),
+                label: "悉尼",
               },
               {
                 value: "melbourne",
-                label: t("companionCreate.form.location.options.melbourne"),
+                label: "墨爾本",
               },
               {
                 value: "brisbane",
-                label: t("companionCreate.form.location.options.brisbane"),
+                label: "布里斯班",
               },
               {
                 value: "goldCoast",
-                label: t("companionCreate.form.location.options.goldCoast"),
+                label: "黃金海岸",
               },
               {
                 value: "adelaide",
-                label: t("companionCreate.form.location.options.adelaide"),
+                label: "阿德萊德",
               },
             ]}
           />
@@ -388,10 +382,10 @@ export default function CompanionCreateForm() {
 
         <div className="mt-6">
           <FormField
-            label={t("companionCreate.form.description.label")}
+            label="關於我"
             name="description"
             type="textarea"
-            placeholder={t("companionCreate.form.description.placeholder")}
+            placeholder="告訴家庭關於您自己、您的經驗和兒童照護方法..."
             value={formData.description}
             onChange={handleInputChange}
             error={errors.description}
@@ -403,82 +397,80 @@ export default function CompanionCreateForm() {
 
       {/* Optional Fields Section */}
       <div className="bg-white rounded-xl border border-gray-200 p-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">
-          {t("companionCreate.form.optionalFields")}
-        </h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">選填欄位</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
-            label={t("companionCreate.form.wechatId.label")}
+            label="微信號"
             name="wechat_id"
             type="text"
-            placeholder={t("companionCreate.form.wechatId.placeholder")}
+            placeholder="您的微信識別碼"
             value={formData.wechat_id}
             onChange={handleInputChange}
           />
 
           <FormField
-            label={t("companionCreate.form.education.label")}
+            label="教育程度"
             name="education"
             type="text"
-            placeholder={t("companionCreate.form.education.placeholder")}
+            placeholder="例如：學士學位、碩士學位"
             value={formData.education}
             onChange={handleInputChange}
           />
 
           <FormField
-            label={t("companionCreate.form.age.label")}
+            label="年齡"
             name="age"
             type="number"
-            placeholder={t("companionCreate.form.age.placeholder")}
+            placeholder="您的年齡"
             value={formData.age}
             onChange={handleInputChange}
           />
 
           <FormField
-            label={t("companionCreate.form.blueCard.label")}
+            label="藍卡 / WWCC"
             name="blue_card"
             type="select"
-            placeholder={t("companionCreate.form.blueCard.placeholder")}
+            placeholder="您是否持有藍卡或與兒童工作檢查？"
             value={formData.blue_card}
             onChange={handleInputChange}
             options={[
-              { value: "", label: "Select..." },
+              { value: "", label: "選擇..." },
               {
                 value: "yes",
-                label: t("companionCreate.form.blueCard.options.yes"),
+                label: "是",
               },
               {
                 value: "no",
-                label: t("companionCreate.form.blueCard.options.no"),
+                label: "否",
               },
               {
                 value: "pending",
-                label: t("companionCreate.form.blueCard.options.pending"),
+                label: "申請中",
               },
             ]}
           />
 
           <FormField
-            label={t("companionCreate.form.policeCheck.label")}
+            label="警察檢查"
             name="police_check"
             type="select"
-            placeholder={t("companionCreate.form.policeCheck.placeholder")}
+            placeholder="您是否有有效的警察許可？"
             value={formData.police_check}
             onChange={handleInputChange}
             options={[
-              { value: "", label: "Select..." },
+              { value: "", label: "選擇..." },
               {
                 value: "yes",
-                label: t("companionCreate.form.policeCheck.options.yes"),
+                label: "是",
               },
               {
                 value: "no",
-                label: t("companionCreate.form.policeCheck.options.no"),
+                label: "否",
               },
               {
                 value: "pending",
-                label: t("companionCreate.form.policeCheck.options.pending"),
+                label: "申請中",
               },
             ]}
           />
@@ -486,219 +478,199 @@ export default function CompanionCreateForm() {
 
         <div className="grid grid-cols-1 gap-6 mt-6">
           <MultiSelectField
-            label={t("companionCreate.form.language.label")}
+            label="使用語言"
             name="language"
-            placeholder={t("companionCreate.form.language.placeholder")}
+            placeholder="選擇您會說的語言"
             value={formData.language}
             onChange={handleInputChange}
             options={[
               {
                 value: "english",
-                label: t("companionCreate.form.language.options.english"),
+                label: "英語",
               },
               {
                 value: "mandarin",
-                label: t("companionCreate.form.language.options.mandarin"),
+                label: "普通話",
               },
               {
                 value: "cantonese",
-                label: t("companionCreate.form.language.options.cantonese"),
+                label: "廣東話",
               },
               {
                 value: "spanish",
-                label: t("companionCreate.form.language.options.spanish"),
+                label: "西班牙語",
               },
               {
                 value: "french",
-                label: t("companionCreate.form.language.options.french"),
+                label: "法語",
               },
               {
                 value: "japanese",
-                label: t("companionCreate.form.language.options.japanese"),
+                label: "日語",
               },
               {
                 value: "korean",
-                label: t("companionCreate.form.language.options.korean"),
+                label: "韓語",
               },
               {
                 value: "other",
-                label: t("companionCreate.form.language.options.other"),
+                label: "其他",
               },
             ]}
           />
 
           <MultiSelectField
-            label={t("companionCreate.form.ageGroup.label")}
+            label="偏好年齡組"
             name="age_group"
-            placeholder={t("companionCreate.form.ageGroup.placeholder")}
+            placeholder="您偏好工作的年齡組"
             value={formData.age_group}
             onChange={handleInputChange}
             options={[
               {
                 value: "infants",
-                label: t("companionCreate.form.ageGroup.options.infants"),
+                label: "嬰兒 (0-2歲)",
               },
               {
                 value: "toddlers",
-                label: t("companionCreate.form.ageGroup.options.toddlers"),
+                label: "幼兒 (2-4歲)",
               },
               {
                 value: "preschool",
-                label: t("companionCreate.form.ageGroup.options.preschool"),
+                label: "學前兒童 (4-6歲)",
               },
               {
                 value: "schoolAge",
-                label: t("companionCreate.form.ageGroup.options.schoolAge"),
+                label: "學齡兒童 (6-12歲)",
               },
               {
                 value: "teenagers",
-                label: t("companionCreate.form.ageGroup.options.teenagers"),
+                label: "青少年 (12歲以上)",
               },
             ]}
           />
 
           <MultiSelectField
-            label={t("companionCreate.form.skill.label")}
+            label="技能"
             name="skill"
-            placeholder={t("companionCreate.form.skill.placeholder")}
+            placeholder="選擇您的技能"
             value={formData.skill}
             onChange={handleInputChange}
             options={[
               {
                 value: "musicLessons",
-                label: t("companionCreate.form.skill.options.musicLessons"),
+                label: "音樂課程",
               },
               {
                 value: "artCrafts",
-                label: t("companionCreate.form.skill.options.artCrafts"),
+                label: "藝術和工藝",
               },
               {
                 value: "cooking",
-                label: t("companionCreate.form.skill.options.cooking"),
+                label: "烹飪",
               },
               {
                 value: "sportsFitness",
-                label: t("companionCreate.form.skill.options.sportsFitness"),
+                label: "運動和健身",
               },
               {
                 value: "languageTutoring",
-                label: t("companionCreate.form.skill.options.languageTutoring"),
+                label: "語言輔導",
               },
               {
                 value: "homeworkHelp",
-                label: t("companionCreate.form.skill.options.homeworkHelp"),
+                label: "作業輔助",
               },
               {
                 value: "specialNeeds",
-                label: t("companionCreate.form.skill.options.specialNeeds"),
+                label: "特殊需求支援",
               },
               {
                 value: "firstAid",
-                label: t("companionCreate.form.skill.options.firstAid"),
+                label: "急救認證",
               },
             ]}
           />
 
           <MultiSelectField
-            label={t("companionCreate.form.certification.label")}
+            label="認證"
             name="certification"
-            placeholder={t("companionCreate.form.certification.placeholder")}
+            placeholder="選擇您的認證"
             value={formData.certification}
             onChange={handleInputChange}
             options={[
               {
                 value: "earlyChildhood",
-                label: t(
-                  "companionCreate.form.certification.options.earlyChildhood"
-                ),
+                label: "幼兒教育",
               },
               {
                 value: "firstAid",
-                label: t("companionCreate.form.certification.options.firstAid"),
+                label: "急救",
               },
               {
                 value: "cpr",
-                label: t("companionCreate.form.certification.options.cpr"),
+                label: "心肺復甦術",
               },
               {
                 value: "specialEducation",
-                label: t(
-                  "companionCreate.form.certification.options.specialEducation"
-                ),
+                label: "特殊教育",
               },
               {
                 value: "tefl",
-                label: t("companionCreate.form.certification.options.tefl"),
+                label: "TEFL/TESOL",
               },
               {
                 value: "montessori",
-                label: t(
-                  "companionCreate.form.certification.options.montessori"
-                ),
+                label: "蒙特梭利",
               },
               {
                 value: "musicEducation",
-                label: t(
-                  "companionCreate.form.certification.options.musicEducation"
-                ),
+                label: "音樂教育",
               },
               {
                 value: "other",
-                label: t("companionCreate.form.certification.options.other"),
+                label: "其他專業認證",
               },
             ]}
           />
 
           <MultiSelectField
-            label={t("companionCreate.form.availability.label")}
+            label="可用性"
             name="availability"
-            placeholder={t("companionCreate.form.availability.placeholder")}
+            placeholder="您何時有空？"
             value={formData.availability}
             onChange={handleInputChange}
             options={[
               {
                 value: "weekdayMornings",
-                label: t(
-                  "companionCreate.form.availability.options.weekdayMornings"
-                ),
+                label: "工作日早上",
               },
               {
                 value: "weekdayAfternoons",
-                label: t(
-                  "companionCreate.form.availability.options.weekdayAfternoons"
-                ),
+                label: "工作日下午",
               },
               {
                 value: "weekdayEvenings",
-                label: t(
-                  "companionCreate.form.availability.options.weekdayEvenings"
-                ),
+                label: "工作日晚上",
               },
               {
                 value: "weekendMornings",
-                label: t(
-                  "companionCreate.form.availability.options.weekendMornings"
-                ),
+                label: "週末早上",
               },
               {
                 value: "weekendAfternoons",
-                label: t(
-                  "companionCreate.form.availability.options.weekendAfternoons"
-                ),
+                label: "週末下午",
               },
               {
                 value: "weekendEvenings",
-                label: t(
-                  "companionCreate.form.availability.options.weekendEvenings"
-                ),
+                label: "週末晚上",
               },
               {
                 value: "holidays",
-                label: t("companionCreate.form.availability.options.holidays"),
+                label: "學校假期",
               },
               {
                 value: "emergency",
-                label: t("companionCreate.form.availability.options.emergency"),
+                label: "緊急照護",
               },
             ]}
           />
@@ -707,9 +679,7 @@ export default function CompanionCreateForm() {
 
       {/* Image Upload Section */}
       <div className="bg-white rounded-xl border border-gray-200 p-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">
-          {t("companionCreate.form.images.label")}
-        </h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">檔案照片</h2>
         <ImageUpload
           images={formData.images}
           onChange={(images: File[]) => handleInputChange("images", images)}
@@ -725,7 +695,7 @@ export default function CompanionCreateForm() {
             onClick={() => router.back()}
             className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
           >
-            {t("companionCreate.buttons.cancel")}
+            取消
           </button>
           <button
             type="submit"
@@ -733,9 +703,7 @@ export default function CompanionCreateForm() {
             className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
           >
             {isSubmitting && <LoadingSpinner className="w-4 h-4 mr-2" />}
-            {isSubmitting
-              ? t("companionCreate.buttons.submitting")
-              : t("companionCreate.buttons.submit")}
+            {isSubmitting ? "正在創建檔案..." : "創建檔案"}
           </button>
         </div>
       </div>
