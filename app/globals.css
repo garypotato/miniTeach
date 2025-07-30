@@ -42,45 +42,47 @@ html:has(.no-scroll) {
   overflow: hidden !important;
 }
 
-/* CSS Grid Masonry Layout - No JavaScript needed */
+/* True Waterfall/Masonry Layout using CSS columns */
 .companions-masonry-container {
   width: 100%;
   max-width: 100%;
 }
 
 .companions-masonry-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  column-count: 2;
+  column-gap: 20px;
   width: 100%;
 }
 
 .companion-card-grid {
   break-inside: avoid;
+  margin-bottom: 20px;
   transition: transform 0.2s ease-in-out;
   box-sizing: border-box;
+  width: 100%;
+  display: inline-block;
 }
 
 .companion-card-grid:hover {
   transform: translateY(-2px);
 }
 
-/* Responsive columns */
+/* Responsive columns for true waterfall */
 @media (min-width: 640px) {
   .companions-masonry-grid {
-    grid-template-columns: repeat(3, 1fr);
+    column-count: 3;
   }
 }
 
 @media (min-width: 1024px) {
   .companions-masonry-grid {
-    grid-template-columns: repeat(4, 1fr);
+    column-count: 4;
   }
 }
 
 @media (min-width: 1280px) {
   .companions-masonry-grid {
-    grid-template-columns: repeat(5, 1fr);
+    column-count: 5;
   }
 }
 
