@@ -198,7 +198,7 @@ export default function CompanionsSection({
       id="companions-section"
       className="py-16 w-full"
       style={{
-        background: "linear-gradient(to bottom, #f8fafc, #f1f5f9)",
+        background: "linear-gradient(135deg, #e6f3ff 0%, #f0f9ff 100%)",
       }}
     >
       <div className="w-full">
@@ -271,11 +271,11 @@ export default function CompanionsSection({
                             <div className="w-full h-full flex items-center justify-center">
                               <div
                                 className="w-14 h-14 rounded-full flex items-center justify-center"
-                                style={{ backgroundColor: "#AFC8DA" }}
+                                style={{ backgroundColor: "#e0e7ff" }}
                               >
                                 <span
                                   className="text-lg font-bold"
-                                  style={{ color: "#47709B" }}
+                                  style={{ color: "#667eea" }}
                                 >
                                   {companion.title?.charAt(0)?.toUpperCase() ||
                                     "?"}
@@ -362,7 +362,7 @@ export default function CompanionsSection({
                   onClick={loadMoreCompanions}
                   disabled={loadingMore}
                   className="inline-flex items-center text-white px-8 py-3 rounded-full font-semibold transition-colors hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{ backgroundColor: "#47709B" }}
+                  style={{ backgroundColor: "#667eea" }}
                 >
                   {loadingMore ? (
                     <>
@@ -401,8 +401,8 @@ export default function CompanionsSection({
                 </p>
                 <button
                   onClick={resetCompanions}
-                  className="inline-flex items-center border-2 px-8 py-3 rounded-full font-semibold transition-colors hover:bg-gray-50"
-                  style={{ borderColor: "#47709B", color: "#47709B" }}
+                  className="inline-flex items-center border-2 px-8 py-3 rounded-full font-semibold transition-colors hover:bg-blue-50"
+                  style={{ borderColor: "#667eea", color: "#667eea" }}
                 >
                   <svg
                     className="w-5 h-5 mr-2"

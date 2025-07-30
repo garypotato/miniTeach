@@ -6,10 +6,15 @@ export default function FAQSection() {
   const { t } = useLanguage();
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+    <section
+      className="py-16 px-4 sm:px-6 lg:px-8"
+      style={{
+        background: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
+      }}
+    >
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
-          <h3 className="text-3xl font-bold mb-4" style={{ color: "#47709B" }}>
+          <h3 className="text-3xl font-bold mb-4 text-gray-800">
             {t("faq.title")}
           </h3>
         </div>

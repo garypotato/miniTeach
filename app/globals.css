@@ -3,9 +3,11 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --primary-blue: #47709b;
-  --light-blue: #afc8da;
+  --primary-blue: #667eea;
+  --secondary-purple: #764ba2;
+  --light-blue: #e0e7ff;
   --accent-white: #feffff;
+  --neutral-gray: #f8f9fa;
 }
 
 @theme inline {
@@ -90,4 +92,14 @@ html:has(.no-scroll) {
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* Harmonious section transitions */
+section {
+  transition: background-color 0.3s ease;
+}
+
+/* Add subtle borders for better section separation */
+section:not(:first-child) {
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
 }

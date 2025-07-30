@@ -23,12 +23,7 @@ interface HomePageProps {
 
 export default function HomePage({ initialCompanions }: HomePageProps) {
   return (
-    <div
-      className="min-h-screen"
-      style={{
-        background: "linear-gradient(to bottom right, #f8fafc, #e2e8f0)",
-      }}
-    >
+    <div className="min-h-screen">
       <HeroSection />
       <FeaturesSection />
       <HowItWorksSection />

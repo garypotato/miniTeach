@@ -7,7 +7,7 @@ export default function FeaturesSection() {
   const { t } = useLanguage();
 
   return (
-    <section className="py-8 px-4 sm:px-6 lg:px-8 bg-white">
+    <section className="py-8 px-4 sm:px-6 lg:px-8 bg-gray-50">
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
           {/* Left side - Actual SVG illustration */}
@@ -34,10 +34,7 @@ export default function FeaturesSection() {
           {/* Right side - Detailed content based on platform.md */}
           <div className="order-1 lg:order-2 flex flex-col justify-center">
             <div className="mb-6">
-              <h2
-                className="text-2xl lg:text-3xl font-bold mb-3 leading-tight"
-                style={{ color: "#8FA89E" }}
-              >
+              <h2 className="text-2xl lg:text-3xl font-bold mb-3 leading-tight text-gray-800">
                 {t("features.title")}
               </h2>
               <p className="text-sm lg:text-base text-gray-600 leading-relaxed">
