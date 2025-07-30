@@ -439,7 +439,7 @@ export default function SearchFilter({
                     </p>
                   </div>
                   <button
-                    onClick={() => dispatch(closeModal())}
+                    onClick={() => closeModal()}
                     disabled={isLoading}
                     className="p-2 text-white hover:scale-150 hover:bg-opacity-10 rounded-full transition-all duration-200 disabled:opacity-50"
                   >
@@ -671,7 +671,7 @@ export default function SearchFilter({
 
                 <div className="flex flex-col sm:flex-row gap-3 sm:space-x-3 w-full sm:w-auto">
                   <button
-                    onClick={() => dispatch(closeModal())}
+                    onClick={() => closeModal()}
                     disabled={isLoading}
                     className="w-full sm:w-auto px-6 py-3 text-sm font-medium text-gray-700 bg-white border-2 border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >

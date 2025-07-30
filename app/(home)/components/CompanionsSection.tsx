@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { getCompanionsAction } from "../../actions/shopify";
@@ -80,7 +80,7 @@ export default function CompanionsSection({
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     setCompanions(shuffled);
-  }, []);
+  }, [initialCompanions]);
 
   const loadMoreCompanions = async () => {
     setLoadingMore(true);
