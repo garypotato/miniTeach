@@ -8,22 +8,7 @@ This is a **Next.js** project designed to assist **parents** in finding suitable
 
 ## Website State Management
 
-Use Redux to manage the state
-
----
-
-## Pages
-
-This project consists of three main pages:
-
-- **`/pages`**  
-  Provides general information about the platform. It also lists a selection of companions and allows users to view more.
-
-- **`/companions/page`**  
-  Displays a paginated list of all companions. Includes a search filter for quick and easy searching.
-
-- **`/companion/page`**  
-  Shows the detailed profile of a selected companion.
+- Use **Redux** to manage the application state.
 
 ---
 
@@ -31,7 +16,7 @@ This project consists of three main pages:
 
 The project uses **Shopify** as the backend database.
 
-### Collections in use:
+### Collections in Use
 
 1. **Companion**
 2. **Q & A**
@@ -52,24 +37,87 @@ Each **companion** is stored as a product under the `Companion` collection and i
 - `skill`
 - `certification`
 - `availability`
+- `user_name`
+- `password`
+- `last_name`
+- `first_name`
 
-The [`shopify-api-node`](https://github.com/MONEI/Shopify-api-node) package is used to fetch products (companions) from Shopify. All necessary API keys are securely stored in the `.env` file.
+> Uses [`shopify-api-node`](https://github.com/MONEI/Shopify-api-node) to fetch products from Shopify.  
+> All API credentials are securely stored in the `.env` file.
 
 ---
 
 ## Code Standards
 
-- **Server-side rendering (SSR)** and **server-side data fetching** must be prioritised. Use client-side rendering/fetching only when necessary.
-
+- Use **Server-side Rendering (SSR)** and **server-side data fetching** as the default.
+- Use **client-side fetching** only when absolutely necessary.
 - Use the `GlobalModal` component to:
-
-  - Display loading indicators when fetching data
-  - Wrap components such as the `SearchFilter`
-
+  - Show loading indicators during data fetching
+  - Wrap components like `SearchFilter`
 - Follow the **DRY (Don’t Repeat Yourself)** principle:
-
-  - Reuse existing shared components and utility functions before creating new ones.
-
-- All Shopify API logic must be encapsulated within a dedicated folder (e.g. `lib/shopify/` or `services/shopify/`).
+  - Reuse shared components and utilities before building new ones.
+- Encapsulate all Shopify API logic inside a dedicated folder:
+  - `lib/shopify/` or `services/shopify/`
 
 ---
+
+## Pages
+
+### `/pages`
+
+- General info about the platform
+- Lists a selection of companions
+- Option to view more companions
+
+### `/companions/page`
+
+- Paginated list of all companions
+- Includes a search filter for convenience
+
+### `/companion/page`
+
+- Detailed profile of a selected companion
+
+### `/companion/create`
+
+- Form to create a draft companion record
+
+---
+
+## Companion Creation Fields
+
+### Required Fields
+
+| Field           | Description                                 | Shopify Key   |
+| --------------- | ------------------------------------------- | ------------- |
+| **User Name**   | Email address of the user                   | `user_name`   |
+| **First Name**  | Given name of the companion                 | `first_name`  |
+| **Last Name**   | Family name of the companion                | `last_name`   |
+| **Major**       | Area of study or specialisation             | `major`       |
+| **Location**    | City or region where the companion is based | `location`    |
+| **Password**    | bcrypt the password                         | `password`    |
+| **Description** | Companion's self-introduction               | `description` |
+
+---
+
+### Optional Fields
+
+| Field                | Description                                                | Shopify Key     |
+| -------------------- | ---------------------------------------------------------- | --------------- |
+| **WeChat ID**        | WeChat identifier                                          | `wechat_id`     |
+| **Education**        | Education background                                       | `education`     |
+| **Language**         | Languages spoken                                           | `language`      |
+| **Age**              | Age of the companion                                       | `age`           |
+| **Age Group**        | Preferred age group for working with                       | `age_group`     |
+| **Blue Card / WWCC** | Holds a Blue Card or Working With Children Check (Boolean) | `blue_card`     |
+| **Police Check**     | Has a valid police clearance (Boolean)                     | `police_check`  |
+| **Skill**            | Possesses additional skills (Boolean)                      | `skill`         |
+| **Certification**    | Relevant certifications held                               | `certification` |
+| **Availability**     | General availability (e.g. weekdays, weekends)             | `availability`  |
+
+---
+
+## Notes
+
+- The `title` field should be a combination of `first_name` + `last_name`.
+- Include an **image uploader** that accepts a **maximum of 5 pictures**.

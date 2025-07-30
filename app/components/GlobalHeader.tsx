@@ -43,6 +43,12 @@ export default function GlobalHeader() {
             >
               {t("nav.about")}
             </Link>
+            <Link
+              href="/companion/create"
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            >
+              {t("nav.joinAsCompanion")}
+            </Link>
             <LanguageSwitch />
           </nav>
 
@@ -109,6 +115,13 @@ export default function GlobalHeader() {
               onClick={() => setIsMobileMenuOpen(false)}
             >
               {t("nav.about")}
+            </Link>
+            <Link
+              href="/companion/create"
+              className="block mx-3 my-2 px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 font-medium rounded-md transition-colors duration-200 text-center"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              {t("nav.joinAsCompanion")}
             </Link>
           </div>
         </div>

@@ -66,11 +66,14 @@ export function processMetafields(
 
     if (!value || value === "") return;
 
-    // Map actual Shopify keys to our expected structure
-    switch (key) {
+    // Remove 'custom.' prefix if present and map actual Shopify keys to our expected structure
+    const cleanKey = key.startsWith("custom.") ? key.substring(7) : key;
+
+    switch (cleanKey) {
       case "wechat_id":
         processed.wechat_id = value;
         break;
+      case "major":
       case "school_major_you_re_studying":
         processed.major = value;
         break;

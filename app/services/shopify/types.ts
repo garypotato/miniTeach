@@ -58,6 +58,17 @@ export interface CompanionMetafields {
   skill?: string[];
   certification?: string[];
   availability?: string[];
+  user_name?: string; // Email - required for creation but optional for display
+  first_name?: string; // Required for creation but optional for display
+  last_name?: string; // Required for creation but optional for display
+  password?: string; // Required for creation but not displayed
+}
+
+export interface CompanionCreateMetafields extends CompanionMetafields {
+  user_name: string; // Required for creation
+  first_name: string; // Required for creation
+  last_name: string; // Required for creation
+  password: string; // Required for creation
 }
 
 export interface ProductFilters {

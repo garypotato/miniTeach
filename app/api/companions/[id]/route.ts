@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getProductWithMetafields, transformProductToCompanion } from "../../../services/shopify";
+import {
+  getProductWithMetafields,
+  transformProductToCompanion,
+} from "../../../services/shopify";
 import shopifyClient from "../../../services/shopify/client";
 
 // GET - Fetch single companion by ID
@@ -32,10 +35,9 @@ export async function GET(
       success: true,
       data: companion,
     });
-
   } catch (error) {
     console.error("Error fetching companion:", error);
-    
+
     let errorMessage = "Failed to fetch companion";
     if (error instanceof Error) {
       errorMessage = error.message;
@@ -56,7 +58,7 @@ export async function PUT(
   try {
     const { id: companionId } = await params;
     const formData = await request.formData();
-    
+
     if (!companionId) {
       return NextResponse.json(
         { success: false, error: "Companion ID is required" },
@@ -65,36 +67,49 @@ export async function PUT(
     }
 
     // Extract form fields
-    const title = formData.get('title') as string;
-    const body_html = formData.get('body_html') as string;
-    const vendor = formData.get('vendor') as string;
-    const product_type = formData.get('product_type') as string;
-    const tags = formData.get('tags') as string;
-    
+    const title = formData.get("title") as string;
+    const body_html = formData.get("body_html") as string;
+    const vendor = formData.get("vendor") as string;
+    const product_type = formData.get("product_type") as string;
+    const tags = formData.get("tags") as string;
+
     // Extract metafields based on new spec
     const metafields = {
-      wechat_id: formData.get('metafields.wechat_id') as string || '',
-      major: formData.get('metafields.major') as string || '',
-      education: formData.get('metafields.education') as string || '',
-      language: JSON.parse(formData.get('metafields.language') as string || '[]'),
-      age: formData.get('metafields.age') as string || '',
-      location: formData.get('metafields.location') as string || '',
-      age_group: JSON.parse(formData.get('metafields.age_group') as string || '[]'),
-      blue_card: formData.get('metafields.blue_card') as string || '',
-      police_check: formData.get('metafields.police_check') as string || '',
-      skill: JSON.parse(formData.get('metafields.skill') as string || '[]'),
-      certification: JSON.parse(formData.get('metafields.certification') as string || '[]'),
-      availability: JSON.parse(formData.get('metafields.availability') as string || '[]'),
+      wechat_id: (formData.get("metafields.wechat_id") as string) || "",
+      major: (formData.get("metafields.major") as string) || "",
+      education: (formData.get("metafields.education") as string) || "",
+      language: JSON.parse(
+        (formData.get("metafields.language") as string) || "[]"
+      ),
+      age: (formData.get("metafields.age") as string) || "",
+      location: (formData.get("metafields.location") as string) || "",
+      age_group: JSON.parse(
+        (formData.get("metafields.age_group") as string) || "[]"
+      ),
+      blue_card: (formData.get("metafields.blue_card") as string) || "",
+      police_check: (formData.get("metafields.police_check") as string) || "",
+      skill: JSON.parse((formData.get("metafields.skill") as string) || "[]"),
+      certification: JSON.parse(
+        (formData.get("metafields.certification") as string) || "[]"
+      ),
+      availability: JSON.parse(
+        (formData.get("metafields.availability") as string) || "[]"
+      ),
     };
-    
+
     // Extract images
-    const newImages = formData.getAll('images') as File[];
-    const existingImages = JSON.parse(formData.get('existing_images') as string || '[]');
+    const newImages = formData.getAll("images") as File[];
+    const existingImages = JSON.parse(
+      (formData.get("existing_images") as string) || "[]"
+    );
 
     // Validate required fields
     if (!title || !body_html) {
       return NextResponse.json(
-        { success: false, error: "Missing required fields: title or body_html" },
+        {
+          success: false,
+          error: "Missing required fields: title or body_html",
+        },
         { status: 400 }
       );
     }
@@ -113,23 +128,27 @@ export async function PUT(
             const bytes = await image.arrayBuffer();
             const buffer = Buffer.from(bytes);
             return {
-              attachment: buffer.toString('base64'),
+              attachment: buffer.toString("base64"),
               filename: image.name,
               alt: `${title} - Profile Image ${index + 1}`,
-              position: existingImages.length + index + 1
+              position: existingImages.length + index + 1,
             };
           }
           return null;
         });
         const results = await Promise.all(imagePromises);
-        processedNewImages = results.filter((img): img is {
-          attachment: string;
-          filename: string;
-          alt: string;
-          position: number;
-        } => img !== null);
+        processedNewImages = results.filter(
+          (
+            img
+          ): img is {
+            attachment: string;
+            filename: string;
+            alt: string;
+            position: number;
+          } => img !== null
+        );
       } catch (imageError) {
-        console.warn('Error processing new images:', imageError);
+        console.warn("Error processing new images:", imageError);
         processedNewImages = [];
       }
     }
@@ -138,9 +157,9 @@ export async function PUT(
     const allImages = [
       ...existingImages.map((img: { id: number }, index: number) => ({
         id: img.id,
-        position: index + 1
+        position: index + 1,
       })),
-      ...processedNewImages
+      ...processedNewImages,
     ];
 
     // Update the product data
@@ -153,12 +172,15 @@ export async function PUT(
       tags: tags || "companion,childcare,education",
       // Add images if we have them
       ...(allImages.length > 0 && {
-        images: allImages
-      })
+        images: allImages,
+      }),
     };
 
     // Update the product
-    const updatedProduct = await shopifyClient.product.update(parseInt(companionId, 10), productData);
+    const updatedProduct = await shopifyClient.product.update(
+      parseInt(companionId, 10),
+      productData
+    );
 
     if (!updatedProduct || !updatedProduct.id) {
       return NextResponse.json(
@@ -168,7 +190,11 @@ export async function PUT(
     }
 
     // Fetch existing metafields to update them
-    let existingMetafields: Array<{ id: number; namespace: string; key: string }> = [];
+    let existingMetafields: Array<{
+      id: number;
+      namespace: string;
+      key: string;
+    }> = [];
     try {
       existingMetafields = await shopifyClient.metafield.list({
         owner_resource: "product",
@@ -183,7 +209,7 @@ export async function PUT(
       {
         owner_resource: "product",
         owner_id: parseInt(companionId, 10),
-        namespace: "companion",
+        namespace: "custom",
         key: "wechat_id",
         value: metafields.wechat_id,
         type: "single_line_text_field",
@@ -191,7 +217,7 @@ export async function PUT(
       {
         owner_resource: "product",
         owner_id: parseInt(companionId, 10),
-        namespace: "companion",
+        namespace: "custom",
         key: "major",
         value: metafields.major,
         type: "single_line_text_field",
@@ -199,7 +225,7 @@ export async function PUT(
       {
         owner_resource: "product",
         owner_id: parseInt(companionId, 10),
-        namespace: "companion",
+        namespace: "custom",
         key: "education",
         value: metafields.education,
         type: "single_line_text_field",
@@ -207,7 +233,7 @@ export async function PUT(
       {
         owner_resource: "product",
         owner_id: parseInt(companionId, 10),
-        namespace: "companion",
+        namespace: "custom",
         key: "language",
         value: JSON.stringify(metafields.language),
         type: "json",
@@ -215,7 +241,7 @@ export async function PUT(
       {
         owner_resource: "product",
         owner_id: parseInt(companionId, 10),
-        namespace: "companion",
+        namespace: "custom",
         key: "age",
         value: metafields.age,
         type: "single_line_text_field",
@@ -223,7 +249,7 @@ export async function PUT(
       {
         owner_resource: "product",
         owner_id: parseInt(companionId, 10),
-        namespace: "companion",
+        namespace: "custom",
         key: "location",
         value: metafields.location,
         type: "single_line_text_field",
@@ -231,7 +257,7 @@ export async function PUT(
       {
         owner_resource: "product",
         owner_id: parseInt(companionId, 10),
-        namespace: "companion",
+        namespace: "custom",
         key: "age_group",
         value: JSON.stringify(metafields.age_group),
         type: "json",
@@ -239,7 +265,7 @@ export async function PUT(
       {
         owner_resource: "product",
         owner_id: parseInt(companionId, 10),
-        namespace: "companion",
+        namespace: "custom",
         key: "blue_card",
         value: metafields.blue_card,
         type: "single_line_text_field",
@@ -247,7 +273,7 @@ export async function PUT(
       {
         owner_resource: "product",
         owner_id: parseInt(companionId, 10),
-        namespace: "companion",
+        namespace: "custom",
         key: "police_check",
         value: metafields.police_check,
         type: "single_line_text_field",
@@ -255,7 +281,7 @@ export async function PUT(
       {
         owner_resource: "product",
         owner_id: parseInt(companionId, 10),
-        namespace: "companion",
+        namespace: "custom",
         key: "skill",
         value: JSON.stringify(metafields.skill),
         type: "json",
@@ -263,7 +289,7 @@ export async function PUT(
       {
         owner_resource: "product",
         owner_id: parseInt(companionId, 10),
-        namespace: "companion",
+        namespace: "custom",
         key: "certification",
         value: JSON.stringify(metafields.certification),
         type: "json",
@@ -271,7 +297,7 @@ export async function PUT(
       {
         owner_resource: "product",
         owner_id: parseInt(companionId, 10),
-        namespace: "companion",
+        namespace: "custom",
         key: "availability",
         value: JSON.stringify(metafields.availability),
         type: "json",
@@ -284,22 +310,30 @@ export async function PUT(
       try {
         // Find existing metafield
         const existingMetafield = existingMetafields.find(
-          (mf) => mf.namespace === metafieldData.namespace && mf.key === metafieldData.key
+          (mf) =>
+            mf.namespace === metafieldData.namespace &&
+            mf.key === metafieldData.key
         );
 
         if (existingMetafield) {
           // Update existing metafield
           if (metafieldData.value !== "" && metafieldData.value !== "[]") {
-            const updated = await shopifyClient.metafield.update(existingMetafield.id, {
-              value: metafieldData.value,
-            });
+            const updated = await shopifyClient.metafield.update(
+              existingMetafield.id,
+              {
+                value: metafieldData.value,
+              }
+            );
             updatedMetafields.push(updated);
           } else {
             // Delete empty metafield
             try {
               await shopifyClient.metafield.delete(existingMetafield.id);
             } catch (deleteError) {
-              console.warn(`Failed to delete metafield ${metafieldData.key}:`, deleteError);
+              console.warn(
+                `Failed to delete metafield ${metafieldData.key}:`,
+                deleteError
+              );
             }
           }
         } else {
@@ -310,7 +344,10 @@ export async function PUT(
           }
         }
       } catch (metafieldError) {
-        console.warn(`Failed to update metafield ${metafieldData.key}:`, metafieldError);
+        console.warn(
+          `Failed to update metafield ${metafieldData.key}:`,
+          metafieldError
+        );
         // Continue with other metafields even if one fails
       }
     }
@@ -325,10 +362,9 @@ export async function PUT(
       },
       message: "Companion updated successfully",
     });
-
   } catch (error) {
     console.error("Error updating companion:", error);
-    
+
     let errorMessage = "Failed to update companion";
     if (error instanceof Error) {
       errorMessage = error.message;
@@ -343,15 +379,9 @@ export async function PUT(
 
 // Handle unsupported methods
 export async function POST() {
-  return NextResponse.json(
-    { error: "Method not allowed" },
-    { status: 405 }
-  );
+  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
 }
 
 export async function DELETE() {
-  return NextResponse.json(
-    { error: "Method not allowed" },
-    { status: 405 }
-  );
+  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
 }

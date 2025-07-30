@@ -239,7 +239,7 @@ export async function getProductWithMetafields(
         ...product,
         metafields: metafields.map((field) => ({
           id: field.id?.toString(),
-          namespace: field.namespace || "companion",
+          namespace: field.namespace || "custom",
           key: field.key,
           value: field.value,
           type: field.type || "single_line_text_field",
