@@ -287,6 +287,44 @@ const enTranslations: TranslationsType = {
         "Yes, companions can update their profiles at any time through our companion portal. This ensures all information remains current and accurate, including availability, skills, and contact preferences.",
     },
   },
+  about: {
+    hero: {
+      title: "About Mini-Teach",
+      subtitle:
+        "Connecting passionate education students with families who value meaningful child companionship",
+    },
+    story: {
+      title: "Our Story",
+      introduction:
+        "Mini-Teach is a child companionship initiative founded by education students studying abroad.",
+      paragraph1:
+        "We aim to help students studying education, early childhood, languages, and related fields in Australia find flexible, meaningful work opportunities that align with their professional expertise.",
+      paragraph2:
+        "At the same time, we want to help families find companions with educational backgrounds and genuine care, bringing peace of mind and inspiration to their children.",
+      paragraph3:
+        "This small platform was born from our personal experiences. When we were studying education, we worked hard to find jobs related to our studies, but always faced various limitations: visa restrictions, packed class schedules, lack of connections, and even no opportunities to showcase ourselves.",
+    },
+    mission: {
+      title: "Our Mission",
+      forStudents: {
+        title: "For Education Students",
+        description:
+          "We understand the challenges international students face - visa limitations, packed schedules, and lack of networking opportunities. We provide a platform where your educational expertise is valued and can create meaningful impact.",
+      },
+      forFamilies: {
+        title: "For Families",
+        description:
+          "We know families want more than just 'someone to watch the kids.' You want companions who will truly listen, understand, and inspire your children through meaningful interactions. These special companions are rare, but that's exactly what we help you find.",
+      },
+    },
+    cta: {
+      title: "Join Our Community",
+      description:
+        "Whether you're an education student looking for meaningful work or a family seeking an inspiring companion, we're here to connect you.",
+      browseCompanions: "Find Companions",
+      contactUs: "Contact Us",
+    },
+  },
 };
 
 export default enTranslations;

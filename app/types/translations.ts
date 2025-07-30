@@ -254,4 +254,34 @@ export interface TranslationsType {
       description: string;
     };
   };
+  about: {
+    hero: {
+      title: string;
+      subtitle: string;
+    };
+    story: {
+      title: string;
+      introduction: string;
+      paragraph1: string;
+      paragraph2: string;
+      paragraph3: string;
+    };
+    mission: {
+      title: string;
+      forStudents: {
+        title: string;
+        description: string;
+      };
+      forFamilies: {
+        title: string;
+        description: string;
+      };
+    };
+    cta: {
+      title: string;
+      description: string;
+      browseCompanions: string;
+      contactUs: string;
+    };
+  };
 }

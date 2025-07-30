@@ -31,6 +31,15 @@ export default function GlobalFooter() {
                   {t("footer.findCompanions")}
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/about"
+                  className="hover:opacity-80"
+                  style={{ color: "#AFC8DA" }}
+                >
+                  {t("footer.aboutUs")}
+                </Link>
+              </li>
             </ul>
           </div>
           <div>

@@ -26,8 +26,8 @@ export default function HomePage({ initialCompanions }: HomePageProps) {
     <div className="min-h-screen">
       <HeroSection />
       <FeaturesSection />
-      <HowItWorksSection />
       <CompanionsSection initialCompanions={initialCompanions} />
+      <HowItWorksSection />
       <FAQSection />
     </div>
   );

@@ -37,6 +37,12 @@ export default function GlobalHeader() {
             >
               {t("nav.allCompanions")}
             </Link>
+            <Link
+              href="/about"
+              className="text-gray-700 hover:opacity-80 font-medium"
+            >
+              {t("nav.about")}
+            </Link>
             <LanguageSwitch />
           </nav>
 
@@ -96,6 +102,13 @@ export default function GlobalHeader() {
               onClick={() => setIsMobileMenuOpen(false)}
             >
               {t("nav.allCompanions")}
+            </Link>
+            <Link
+              href="/about"
+              className="block px-3 py-2 text-gray-700 hover:bg-gray-50 font-medium rounded-md transition-colors duration-200"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              {t("nav.about")}
             </Link>
           </div>
         </div>
