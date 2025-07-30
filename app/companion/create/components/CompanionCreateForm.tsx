@@ -2,11 +2,10 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-
 import FormField from "./FormField";
 import MultiSelectField from "./MultiSelectField";
-import ImageUpload from "./ImageUpload";
 import LoadingSpinner from "./LoadingSpinner";
+import ImageUpload from "./ImageUpload";
 
 interface FormData {
   // Required fields
