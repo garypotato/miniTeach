@@ -12,10 +12,10 @@ export default function AboutContent() {
       >
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-            {"�P� Mini-Teach"}
+            Mini-Teach 關於我們
           </h1>
           <p className="text-xl text-white opacity-90 mb-8 max-w-3xl mx-auto">
-            {"�B�Y�П���Ľ����W���c��ҕ�����x��ͯ���ļ�ͥ"}
+            我們致力於打造一個安全、可靠的教育陪伴平台，連結優質陪伴者與有需求的家庭。
           </p>
         </div>
       </section>
@@ -25,28 +25,25 @@ export default function AboutContent() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-              {"�҂��Ĺ���"}
+              我們的故事
             </h2>
           </div>
 
           <div className="prose prose-lg mx-auto text-gray-700 leading-relaxed space-y-6">
             <p className="text-xl text-center mb-8 text-gray-600">
-              {"Mini-Teach ���ɽ���������W���l��ă�ͯ���Ӌ����"}
+              Mini-Teach 由一群熱愛教育與兒童發展的專業人士創立。
             </p>
 
             <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
               <p className="mb-6">
-                {
-                  "�҂�ϣ�������ڰ��޾��x�������׽̡��Z�Ե����P��ϵ��ͬ�W���ҵ��c���I���ڡ������������x�Ĺ����C����"
-                }
+                我們希望能夠為澳洲的家庭和陪伴者建立一個信任、專業的連結平台，讓每個孩子都能獲得最適合的照顧與學習。
               </p>
               <p className="mb-6">
-                {"ͬ�rҲ׌��ͥ�����ҵ��н������B���А��ĵ�����ߣ��麢�ӎ��������c���l��"}
+                同時也協助陪伴者找到理想的工作機會，發揮所長，成就自我。
               </p>
               <p>
-                {
-                  "�@��һ�����҂��H�����v���l��Сƽ̨�����҂�������x����ϵ�r����Ŭ������һ�ݸ����W���P�Ĺ����������������N�N���ƣ����C���ơ��n���ŵ��������顢ȱ�����}�������]��չʾ�Լ��ęC������һ���棬�҂�Ҳ���|�^���ټ�ͥ����������ϣ���Ĳ��ǡ����ֿ�סС���ѡ�������ϣ�������������б��A �������⣬�����Ļ����ЌW���|�������@�ӵ�����ߣ��K�������ҵ�����ǣ��҂������� Mini-Teach���봮�B���@�ɂ�����һȺ�߂�������I������c�����ČW������һȺϣ�����ӱ��úÌ����ļ�ͥ��"
-                }
+                從最初的想法到現在，Mini-Teach
+                團隊持續努力，期望能為更多家庭和陪伴者帶來溫暖與支持。歡迎加入我們，一起創造更美好的未來！
               </p>
             </div>
           </div>
@@ -58,7 +55,7 @@ export default function AboutContent() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-              {"�҂���ʹ��"}
+              我們的使命
             </h2>
           </div>
 
@@ -81,14 +78,10 @@ export default function AboutContent() {
                     />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-gray-800">
-                  {"������W��"}
-                </h3>
+                <h3 className="text-xl font-bold text-gray-800">給陪伴者</h3>
               </div>
               <p className="text-gray-700 leading-relaxed">
-                {
-                  "�҂�������H�W�����R�������C���ơ���æ���n�̰��ţ��Լ�ȱ�����}�C�����҂��ṩһ��ƽ̨��׌���Ľ������I֪�R�õ���ҕ���K�܄��������x��Ӱ푡�"
-                }
+                我們致力於幫助陪伴者找到合適的工作機會，發揮專業所長，提升自我價值。
               </p>
             </div>
 
@@ -110,12 +103,10 @@ export default function AboutContent() {
                     />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-gray-800">{"���ͥ"}</h3>
+                <h3 className="text-xl font-bold text-gray-800">給家庭</h3>
               </div>
               <p className="text-gray-700 leading-relaxed">
-                {
-                  "�҂�֪����ͥ��Ҫ�Ĳ��H�H�ǡ����˿����ӡ�����ϣ����������������A �����⣬�Kͨ�^�����x�Ļ��ӆ��l���ĺ��ӡ��@���؄e������ߺ��y�ҵ������@�����҂����������ҵġ�"
-                }
+                我們了解家庭對陪伴者的需求，致力於提供最合適的媒合與支持，讓每個孩子都能安心成長。
               </p>
             </div>
           </div>
@@ -131,25 +122,24 @@ export default function AboutContent() {
       >
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
-            {"�����҂�����Ⱥ"}
+            加入我們的社群
           </h2>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            {
-              "�oՓ���ǌ��������x�����Ľ����W����߀�ǌ��󆢰l������ߵļ�ͥ���҂������@�e�����������"
-            }
+            歡迎所有對教育陪伴有熱情的朋友和家庭加入 Mini-Teach
+            社群，一起交流、成長、分享經驗。
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="/companions"
               className="bg-purple-600 text-white px-8 py-3 rounded-full font-semibold transition-all hover:bg-purple-700 hover:shadow-lg inline-block text-center"
             >
-              {"���������"}
+              查看陪伴者
             </a>
             <a
               href="#contact"
               className="border-2 border-purple-600 text-purple-600 px-8 py-3 rounded-full font-semibold transition-all hover:bg-purple-50"
             >
-              {"�j�҂�"}
+              聯絡我們
             </a>
           </div>
         </div>
