@@ -15,7 +15,8 @@
       "Bash(node test-shopify.js)",
       "Bash(node:*)",
       "Bash(find:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": []
   }

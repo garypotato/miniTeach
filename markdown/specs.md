@@ -4,6 +4,10 @@
 
 This is a **Next.js** project designed to assist **parents** in finding suitable **companions** to look after their children. The platform displays a list of companions along with their details. If a parent wishes to obtain a companion's contact information, they must contact us directly. We will provide the necessary details privately.
 
+--- state Management
+
+## Redux
+
 ---
 
 ## Data Source
@@ -13,9 +17,8 @@ The project uses **Shopify** as the backend database.
 ### Collections in Use
 
 1. **Companion**
-2. **Q & A**
-3. **Information**
-4. **Parent**
+2. **Information**
+3. **Parent**
 
 Each **companion** is stored as a product under the `Companion` collection and includes the following **metafields**:
 
@@ -138,3 +141,7 @@ Each **companion** is stored as a product under the `Companion` collection and i
 - **Product Title**: Combination of `first_name` + `last_name`
 - **Initial Status**: Created as "active" then updated to "draft" for review
 - **Collection**: Automatically added to Companion collection (ID: 491355177275)
+
+## `/companion/login`
+
+-
