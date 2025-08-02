@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 export default function AboutContent() {
   return (
     <div className="min-h-screen">
@@ -189,18 +191,18 @@ export default function AboutContent() {
             如果你也认同我们的理念，欢迎加入 Mini-Teach！ 🤗 ↓
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
+            <Link
               href="/companions"
               className="bg-purple-600 text-white px-8 py-3 rounded-full font-semibold transition-all hover:bg-purple-700 hover:shadow-lg inline-block text-center"
             >
               查看陪伴师
-            </a>
-            <a
+            </Link>
+            <Link
               href="/companion/create"
               className="border-2 border-purple-600 text-purple-600 px-8 py-3 rounded-full font-semibold transition-all hover:bg-purple-50"
             >
               成为陪伴师
-            </a>
+            </Link>
           </div>
         </div>
       </section>

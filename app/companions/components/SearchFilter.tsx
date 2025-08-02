@@ -91,7 +91,7 @@ export default function SearchFilter({
   };
 
   const handleClear = () => {
-    setLoading(true, "清除筛选中...");
+    dispatch(setLoading({ loading: true, message: "清除筛选中..." }));
     setSearchInput("");
     setSelectedCities([]);
     setTempSearchInput("");
