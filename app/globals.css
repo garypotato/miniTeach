@@ -52,6 +52,8 @@ html:has(.no-scroll) {
   column-count: 2;
   column-gap: 20px;
   width: 100%;
+  max-width: 600px; /* Start with smaller max-width for 2 columns */
+  margin: 0 auto; /* Center the grid */
 }
 
 .companion-card-grid {
@@ -67,22 +69,54 @@ html:has(.no-scroll) {
   transform: translateY(-2px);
 }
 
-/* Responsive columns for true waterfall */
+/* Responsive columns with progressive max-widths to center content */
 @media (min-width: 640px) {
   .companions-masonry-grid {
     column-count: 3;
+    max-width: 840px; /* 3 columns: ~260px per column + gaps */
+    margin: 0 auto;
   }
 }
 
 @media (min-width: 1024px) {
   .companions-masonry-grid {
     column-count: 4;
+    max-width: 1120px; /* 4 columns: ~260px per column + gaps */
+    margin: 0 auto;
   }
 }
 
 @media (min-width: 1280px) {
   .companions-masonry-grid {
-    column-count: 5;
+    column-count: 4;
+    max-width: 1120px; /* 4 columns: ~260px per column + gaps */
+    margin: 0 auto;
+    column-fill: balance; /* Force balanced columns */
+  }
+}
+
+/* Strict enforcement: Never more than 4 columns */
+@media (min-width: 1400px) {
+  .companions-masonry-grid {
+    column-count: 4 !important;
+    max-width: 1120px !important;
+    margin: 0 auto !important;
+  }
+}
+
+@media (min-width: 1600px) {
+  .companions-masonry-grid {
+    column-count: 4 !important;
+    max-width: 1120px !important;
+    margin: 0 auto !important;
+  }
+}
+
+@media (min-width: 1920px) {
+  .companions-masonry-grid {
+    column-count: 4 !important;
+    max-width: 1120px !important;
+    margin: 0 auto !important;
   }
 }
 

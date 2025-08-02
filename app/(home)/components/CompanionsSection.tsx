@@ -123,7 +123,7 @@ export default function CompanionsSection({
           [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
         }
 
-        // Show first 8 shuffled companions
+        // Show first 8 shuffled companions  
         setCompanions(shuffled.slice(0, 8));
         setHasMoreAvailable(true);
       } else {
@@ -178,7 +178,7 @@ export default function CompanionsSection({
           </p>
         </div>
 
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="companions-masonry-container">
             {/* CSS Grid Masonry Layout - No JS needed */}
             <div className="companions-masonry-grid">

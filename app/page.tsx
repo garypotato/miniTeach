@@ -33,7 +33,7 @@ async function getInitialCompanions(): Promise<Companion[]> {
       // Server-side shuffle for different companions each visit
       const shuffledData = shuffleArray(transformedData);
       
-      // Return first 8 shuffled companions
+      // Return first 8 shuffled companions for optimal 4-column layout
       return shuffledData.slice(0, 8);
     }
     return [];
