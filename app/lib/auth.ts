@@ -19,7 +19,9 @@ export const authOptions: NextAuthOptions = {
           const baseUrl =
             process.env.NODE_ENV === "development"
               ? "http://localhost:3000"
-              : `https://${process.env.VERCEL_URL}`;
+              : "https://www.miniteach.org";
+
+          console.log("Auth baseUrl:", baseUrl);
 
           const response = await fetch(`${baseUrl}/api/companion/login`, {
             method: "POST",
@@ -33,6 +35,7 @@ export const authOptions: NextAuthOptions = {
           });
 
           const result = await response.json();
+          console.log("Auth response:", response.status, result);
 
           if (result.success && result.companion) {
             return {
