@@ -129,6 +129,25 @@ html:has(.no-scroll) {
   overflow: hidden;
 }
 
+/* Enhanced placeholder text styling for better visibility */
+input::placeholder,
+textarea::placeholder,
+select::placeholder {
+  color: #6b7280 !important; /* gray-500 - more visible than default */
+  opacity: 1 !important; /* Ensure full opacity across browsers */
+}
+
+/* Additional placeholder styling for form inputs */
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+input[type="password"]::placeholder,
+input[type="number"]::placeholder,
+textarea::placeholder {
+  color: #6b7280 !important;
+  opacity: 1 !important;
+  font-weight: 400;
+}
+
 /* Harmonious section transitions */
 section {
   transition: background-color 0.3s ease;

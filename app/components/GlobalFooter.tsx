@@ -14,7 +14,7 @@ export default function GlobalFooter() {
             >
               迷你教学
             </h5>
-            <p className="text-gray-400">您的AI伙伴智能推荐平台</p>
+            <p className="text-gray-400">您的AI陪伴师智能推荐平台</p>
           </div>
           <div>
             <h6 className="font-semibold mb-4">服务</h6>
@@ -25,7 +25,7 @@ export default function GlobalFooter() {
                   className="hover:opacity-80"
                   style={{ color: "#AFC8DA" }}
                 >
-                  寻找伙伴
+                  寻找陪伴师
                 </Link>
               </li>
               <li>
@@ -58,7 +58,7 @@ export default function GlobalFooter() {
                   className="hover:opacity-80"
                   style={{ color: "#AFC8DA" }}
                 >
-                  Facebook
+                  脸书
                 </Link>
               </li>
               <li>
@@ -76,7 +76,7 @@ export default function GlobalFooter() {
                   className="hover:opacity-80"
                   style={{ color: "#AFC8DA" }}
                 >
-                  Twitter
+                  推特
                 </Link>
               </li>
             </ul>

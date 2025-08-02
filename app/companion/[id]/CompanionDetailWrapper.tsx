@@ -46,7 +46,7 @@ export default function CompanionDetailWrapper({
                   href="/companions"
                   className="text-gray-500 hover:opacity-80"
                 >
-                  所有伙伴
+                  所有陪伴师
                 </Link>
               </li>
               <li>

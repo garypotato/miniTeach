@@ -1,5 +1,3 @@
-"use client";
-
 export default function FAQSection() {
   return (
     <section
@@ -38,24 +36,24 @@ export default function FAQSection() {
               </p>
               <ol className="list-decimal list-inside space-y-2 ml-4">
                 <li>
-                  <strong>伙伴注册：</strong>{" "}
-                  潜在伙伴完成详细的入职问卷调查，涵盖他们的教育、技能和认证。
+                  <strong>陪伴师注册：</strong>{" "}
+                  潜在陪伴师完成详细的入职问卷调查，涵盖他们的教育、技能和认证。
                 </li>
                 <li>
                   <strong>验证流程：</strong>{" "}
-                  我们的支持团队彻底审查每份申请。只有经过验证的伙伴才会在平台上列出。
+                  我们的支持团队彻底审查每份申请。只有经过验证的陪伴师才会在平台上列出。
                 </li>
                 <li>
                   <strong>浏览探索：</strong>{" "}
-                  家长浏览详细的伙伴档案，为孩子的需求找到完美匹配。
+                  家长浏览详细的陪伴师档案，为孩子的需求找到完美匹配。
                 </li>
                 <li>
                   <strong>请求联系：</strong>{" "}
-                  使用我们的安全系统为选定的伙伴请求联系信息。
+                  使用我们的安全系统为选定的陪伴师请求联系信息。
                 </li>
                 <li>
                   <strong>直接连接：</strong>{" "}
-                  直接与伙伴联系，安排会面并讨论具体要求。
+                  直接与陪伴师联系，安排会面并讨论具体要求。
                 </li>
               </ol>
             </div>
@@ -81,7 +79,7 @@ export default function FAQSection() {
             </summary>
             <div className="px-6 pb-6 text-gray-600 leading-relaxed">
               <p>
-                我们的平台对家长来说完全免费，可以浏览和联系伙伴。没有会员费、注册费用或访问伙伴档案或请求联系信息的隐藏费用。
+                我们的平台对家长来说完全免费，可以浏览和联系陪伴师。没有会员费、注册费用或访问陪伴师档案或请求联系信息的隐藏费用。
               </p>
             </div>
           </details>
@@ -89,7 +87,7 @@ export default function FAQSection() {
           {/* Q3: How are companions verified? */}
           <details className="group border border-gray-200 rounded-lg">
             <summary className="flex justify-between items-center cursor-pointer p-6 font-medium text-gray-900 hover:bg-gray-50">
-              <span>伙伴如何验证？</span>
+              <span>陪伴师如何验证？</span>
               <svg
                 className="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180"
                 fill="none"
@@ -106,7 +104,7 @@ export default function FAQSection() {
             </summary>
             <div className="px-6 pb-6 text-gray-600 leading-relaxed">
               <p className="mb-3">
-                我们有严格的验证流程来确保伙伴的安全性和质量：
+                我们有严格的验证流程来确保陪伴师的安全性和质量：
               </p>
               <ul className="list-disc list-inside space-y-1 ml-4">
                 <li>教育资格验证</li>
@@ -115,7 +113,7 @@ export default function FAQSection() {
                 <li>技能和认证评估</li>
               </ul>
               <p className="mt-3">
-                只有通过所有验证步骤的伙伴才能获准加入我们的平台。
+                只有通过所有验证步骤的陪伴师才能获准加入我们的平台。
               </p>
             </div>
           </details>
@@ -139,11 +137,11 @@ export default function FAQSection() {
               </svg>
             </summary>
             <div className="px-6 pb-6 text-gray-600 leading-relaxed">
-              <p className="mb-3">一旦您请求伙伴的联系信息：</p>
+              <p className="mb-3">一旦您请求陪伴师的联系信息：</p>
               <ul className="list-disc list-inside space-y-1 ml-4">
                 <li>我们收到您的请求并验证您的详细信息</li>
-                <li>伙伴的联系信息会安全地发送给您</li>
-                <li>然后您可以直接联系伙伴讨论您的需求</li>
+                <li>陪伴师的联系信息会安全地发送给您</li>
+                <li>然后您可以直接联系陪伴师讨论您的需求</li>
               </ul>
               <p className="mt-3">
                 此过程通常需要1-2个工作日来确保所有相关方的安全和隐私。
@@ -154,7 +152,7 @@ export default function FAQSection() {
           {/* Q5: Can companions update their profiles? */}
           <details className="group border border-gray-200 rounded-lg">
             <summary className="flex justify-between items-center cursor-pointer p-6 font-medium text-gray-900 hover:bg-gray-50">
-              <span>伙伴可以更新他们的档案吗？</span>
+              <span>陪伴师可以更新他们的档案吗？</span>
               <svg
                 className="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180"
                 fill="none"
@@ -171,7 +169,7 @@ export default function FAQSection() {
             </summary>
             <div className="px-6 pb-6 text-gray-600 leading-relaxed">
               <p>
-                是的，伙伴可以随时通过我们的伙伴门户更新他们的档案。这确保所有信息保持当前和准确，包括可用性、技能和联系偏好。
+                是的，陪伴师可以随时通过我们的陪伴师门户更新他们的档案。这确保所有信息保持当前和准确，包括可用性、技能和联系偏好。
               </p>
             </div>
           </details>

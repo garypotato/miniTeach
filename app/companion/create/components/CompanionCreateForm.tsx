@@ -72,41 +72,41 @@ export default function CompanionCreateForm() {
 
     // Required field validation
     if (!formData.first_name.trim()) {
-      newErrors.first_name = "此欄位為必填";
+      newErrors.first_name = "此栏位为必填";
     }
     if (!formData.last_name.trim()) {
-      newErrors.last_name = "此欄位為必填";
+      newErrors.last_name = "此栏位为必填";
     }
     if (!formData.user_name.trim()) {
-      newErrors.user_name = "此欄位為必填";
+      newErrors.user_name = "此栏位为必填";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.user_name)) {
-      newErrors.user_name = "請輸入有效的電子郵件地址";
+      newErrors.user_name = "请输入有效的电子邮件地址";
     }
     if (!formData.password.trim()) {
-      newErrors.password = "此欄位為必填";
+      newErrors.password = "此栏位为必填";
     } else if (
       formData.password.length < 8 ||
       !/(?=.*[A-Za-z])(?=.*\d)/.test(formData.password)
     ) {
-      newErrors.password = "密碼必須至少8個字符，包含字母和數字";
+      newErrors.password = "密码必须至少8个字符，包含字母和数字";
     }
     if (!formData.major.trim()) {
-      newErrors.major = "此欄位為必填";
+      newErrors.major = "此栏位为必填";
     }
     if (!formData.location.trim()) {
-      newErrors.location = "此欄位為必填";
+      newErrors.location = "此栏位为必填";
     }
     if (!formData.description.trim()) {
-      newErrors.description = "此欄位為必填";
+      newErrors.description = "此栏位为必填";
     } else if (formData.description.length < 50) {
-      newErrors.description = "必須至少50個字符";
+      newErrors.description = "必须至少50个字符";
     }
 
     // Image validation
     if (formData.images.length === 0) {
-      newErrors.images = "至少需要上傳1張照片";
+      newErrors.images = "至少需要上传1张照片";
     } else if (formData.images.length > 5) {
-      newErrors.images = "最多允許5張圖片";
+      newErrors.images = "最多允许5张图片";
     }
 
     setErrors(newErrors);
@@ -120,26 +120,29 @@ export default function CompanionCreateForm() {
 
     setIsCheckingEmail(true);
     try {
-      const response = await fetch('/api/companions/check-email', {
-        method: 'POST',
+      const response = await fetch("/api/companions/check-email", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email }),
       });
 
       const result = await response.json();
-      
+
       if (!result.available) {
-        setErrors(prev => ({ ...prev, user_name: "此電子郵件地址已被使用，請使用其他電子郵件地址" }));
+        setErrors((prev) => ({
+          ...prev,
+          user_name: "此电子邮件地址已被使用，请使用其他电子邮件地址",
+        }));
         return false;
       }
-      
+
       // Clear email error if available
-      setErrors(prev => ({ ...prev, user_name: "" }));
+      setErrors((prev) => ({ ...prev, user_name: "" }));
       return true;
     } catch (error) {
-      console.error('Error checking email uniqueness:', error);
+      console.error("Error checking email uniqueness:", error);
       return true; // Allow submission on check failure
     } finally {
       setIsCheckingEmail(false);
@@ -151,19 +154,19 @@ export default function CompanionCreateForm() {
     value: string | string[] | File[]
   ) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
-    
+
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
 
     // Check email uniqueness when user_name changes
-    if (name === 'user_name' && typeof value === 'string') {
+    if (name === "user_name" && typeof value === "string") {
       // Clear previous timeout
       if (emailCheckTimeoutRef.current) {
         clearTimeout(emailCheckTimeoutRef.current);
       }
-      
+
       // Debounce the email check
       emailCheckTimeoutRef.current = setTimeout(() => {
         checkEmailUniqueness(value);
@@ -256,27 +259,27 @@ export default function CompanionCreateForm() {
             </svg>
           </div>
           <h2 className="text-2xl font-bold text-green-900 mb-4">
-            檔案創建成功！
+            档案创建成功！
           </h2>
           <p className="text-green-700 mb-6">
-            您的陪伴者檔案已提交審核。我們將在2-3個工作日內聯絡您進行下一步。
+            您的陪伴师档案已提交审核。我们将在2-3个工作日内联系您进行下一步。
           </p>
           <div className="text-left bg-white rounded-lg p-6 mb-6">
             <h3 className="font-semibold text-gray-900 mb-3">
-              接下來會發生什麼：
+              接下来会发生什么：
             </h3>
             <ol className="list-decimal list-inside space-y-2 text-gray-700">
-              <li>我們團隊審核您的申請</li>
-              <li>我們驗證您的資格和背景</li>
-              <li>審核通過後您的檔案將上線</li>
-              <li>家庭可以找到並聯絡您</li>
+              <li>我们团队审核您的申请</li>
+              <li>我们验证您的资格和背景</li>
+              <li>审核通过后您的档案将上线</li>
+              <li>家庭可以找到并联系您</li>
             </ol>
           </div>
           <button
             onClick={() => router.push("/")}
             className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
           >
-            返回首頁
+            返回首页
           </button>
         </div>
       </div>
@@ -302,22 +305,22 @@ export default function CompanionCreateForm() {
               />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-red-900 mb-4">創建檔案錯誤</h2>
+          <h2 className="text-2xl font-bold text-red-900 mb-4">创建档案错误</h2>
           <p className="text-red-700 mb-6">
-            我們在創建您的檔案時遇到錯誤。請重試。
+            我们在创建您的档案时遇到错误。请重试。
           </p>
           <div className="space-x-4">
             <button
               onClick={() => setSubmitStatus("idle")}
               className="bg-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors"
             >
-              重試
+              重试
             </button>
             <button
               onClick={() => router.push("/contact")}
               className="bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-700 transition-colors"
             >
-              聯絡支援
+              联系支持
             </button>
           </div>
         </div>
@@ -333,7 +336,7 @@ export default function CompanionCreateForm() {
           <span className="w-8 h-8 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-sm font-bold mr-3">
             *
           </span>
-          必填欄位
+          必填栏位
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -341,7 +344,7 @@ export default function CompanionCreateForm() {
             label="名字"
             name="first_name"
             type="text"
-            placeholder="請輸入您的名字"
+            placeholder="请输入您的名字"
             value={formData.first_name}
             onChange={handleInputChange}
             error={errors.first_name}
@@ -352,7 +355,7 @@ export default function CompanionCreateForm() {
             label="姓氏"
             name="last_name"
             type="text"
-            placeholder="請輸入您的姓氏"
+            placeholder="请输入您的姓氏"
             value={formData.last_name}
             onChange={handleInputChange}
             error={errors.last_name}
@@ -361,10 +364,10 @@ export default function CompanionCreateForm() {
 
           <div className="relative">
             <FormField
-              label="電子郵件地址"
+              label="电子邮件地址"
               name="user_name"
               type="email"
-              placeholder="請輸入您的電子郵件地址"
+              placeholder="请输入您的电子邮件地址"
               value={formData.user_name}
               onChange={handleInputChange}
               error={errors.user_name}
@@ -374,7 +377,7 @@ export default function CompanionCreateForm() {
             {isCheckingEmail && (
               <div className="absolute right-3 top-9 flex items-center">
                 <LoadingSpinner className="w-4 h-4 text-blue-600" />
-                <span className="ml-2 text-sm text-gray-500">檢查中...</span>
+                <span className="ml-2 text-sm text-gray-500">检查中...</span>
               </div>
             )}
           </div>
@@ -383,7 +386,7 @@ export default function CompanionCreateForm() {
             label="密碼"
             name="password"
             type="password"
-            placeholder="創建一個安全的密碼"
+            placeholder="创建一个安全的密码"
             value={formData.password}
             onChange={handleInputChange}
             error={errors.password}
@@ -391,10 +394,10 @@ export default function CompanionCreateForm() {
           />
 
           <FormField
-            label="專業/學習領域"
+            label="专业/学习领域"
             name="major"
             type="text"
-            placeholder="例如：教育、幼兒發展"
+            placeholder="例如：教育、幼儿发展"
             value={formData.major}
             onChange={handleInputChange}
             error={errors.major}
@@ -405,32 +408,32 @@ export default function CompanionCreateForm() {
             label="位置"
             name="location"
             type="select"
-            placeholder="選擇您的城市"
+            placeholder="选择您的城市"
             value={formData.location}
             onChange={handleInputChange}
             error={errors.location}
             required
             options={[
-              { value: "", label: "Select your city..." },
+              { value: "", label: "选择您的城市..." },
               {
                 value: "sydney",
-                label: "Sydney",
+                label: "悉尼",
               },
               {
                 value: "melbourne",
-                label: "Melbourne",
+                label: "墨尔本",
               },
               {
                 value: "brisbane",
-                label: "Brisbane",
+                label: "布里斯班",
               },
               {
                 value: "goldCoast",
-                label: "Gold Coast",
+                label: "黄金海岸",
               },
               {
                 value: "adelaide",
-                label: "Adelaide",
+                label: "阿德莱德",
               },
             ]}
           />
@@ -441,7 +444,7 @@ export default function CompanionCreateForm() {
             label="關於我"
             name="description"
             type="textarea"
-            placeholder="告訴家庭關於您自己、您的經驗和兒童照護方法..."
+            placeholder="告诉家庭关于您自己、您的经验和儿童照护方法..."
             value={formData.description}
             onChange={handleInputChange}
             error={errors.description}
@@ -456,10 +459,10 @@ export default function CompanionCreateForm() {
             <span className="w-6 h-6 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-xs font-bold mr-3">
               *
             </span>
-            檔案照片
+            档案照片
           </h3>
           <p className="text-gray-600 text-sm mb-4">
-            請上傳至少1張照片，最多5張 (每張圖片最大5MB)
+            请上传至少1张照片，最多5张 (每张图片最大5MB)
           </p>
           <ImageUpload
             images={formData.images}
@@ -471,14 +474,14 @@ export default function CompanionCreateForm() {
 
       {/* Optional Fields Section */}
       <div className="bg-white rounded-xl border border-gray-200 p-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">選填欄位</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">选填栏位</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
-            label="微信號"
+            label="微信号"
             name="wechat_id"
             type="text"
-            placeholder="您的微信識別碼"
+            placeholder="您的微信识别码"
             value={formData.wechat_id}
             onChange={handleInputChange}
           />
@@ -486,16 +489,16 @@ export default function CompanionCreateForm() {
           <TagsInput
             label="教育程度"
             name="education"
-            placeholder="例如：學士學位、碩士學位"
+            placeholder="例如：学士学位、硕士学位"
             value={formData.education}
             onChange={handleInputChange}
           />
 
           <FormField
-            label="年齡"
+            label="年龄"
             name="age"
             type="number"
-            placeholder="您的年齡"
+            placeholder="您的年龄"
             value={formData.age}
             onChange={handleInputChange}
           />
@@ -504,11 +507,11 @@ export default function CompanionCreateForm() {
             label="藍卡 / WWCC"
             name="blue_card"
             type="select"
-            placeholder="您是否持有藍卡或與兒童工作檢查？"
+            placeholder="您是否持有蓝卡或与儿童工作检查？"
             value={formData.blue_card}
             onChange={handleInputChange}
             options={[
-              { value: "", label: "選擇..." },
+              { value: "", label: "选择..." },
               {
                 value: "yes",
                 label: "是",
@@ -519,20 +522,20 @@ export default function CompanionCreateForm() {
               },
               {
                 value: "pending",
-                label: "申請中",
+                label: "申请中",
               },
             ]}
           />
 
           <FormField
-            label="警察檢查"
+            label="警察检查"
             name="police_check"
             type="select"
-            placeholder="您是否有有效的警察許可？"
+            placeholder="您是否有有效的警察许可？"
             value={formData.police_check}
             onChange={handleInputChange}
             options={[
-              { value: "", label: "選擇..." },
+              { value: "", label: "选择..." },
               {
                 value: "yes",
                 label: "是",
@@ -543,7 +546,7 @@ export default function CompanionCreateForm() {
               },
               {
                 value: "pending",
-                label: "申請中",
+                label: "申请中",
               },
             ]}
           />
@@ -551,17 +554,17 @@ export default function CompanionCreateForm() {
 
         <div className="grid grid-cols-1 gap-6 mt-6">
           <TagsInput
-            label="使用語言"
+            label="使用语言"
             name="language"
-            placeholder="請輸入您會說的語言"
+            placeholder="请输入您会说的语言"
             value={formData.language}
             onChange={handleInputChange}
           />
 
           <TagsInput
-            label="偏好年齡組"
+            label="偏好年龄组"
             name="age_group"
-            placeholder="請輸入您偏好工作的年齡組"
+            placeholder="请输入您偏好工作的年龄组"
             value={formData.age_group}
             onChange={handleInputChange}
           />
@@ -569,15 +572,15 @@ export default function CompanionCreateForm() {
           <TagsInput
             label="技能"
             name="skill"
-            placeholder="請輸入您的技能"
+            placeholder="请输入您的技能"
             value={formData.skill}
             onChange={handleInputChange}
           />
 
           <TagsInput
-            label="認證"
+            label="认证"
             name="certification"
-            placeholder="請輸入您的認證"
+            placeholder="请输入您的认证"
             value={formData.certification}
             onChange={handleInputChange}
           />
@@ -585,13 +588,12 @@ export default function CompanionCreateForm() {
           <TagsInput
             label="可用性"
             name="availability"
-            placeholder="請輸入您的可用時間"
+            placeholder="请输入您的可用时间"
             value={formData.availability}
             onChange={handleInputChange}
           />
         </div>
       </div>
-
 
       {/* Submit Section */}
       <div className="bg-white rounded-xl border border-gray-200 p-8">
@@ -609,7 +611,7 @@ export default function CompanionCreateForm() {
             className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
           >
             {isSubmitting && <LoadingSpinner className="w-4 h-4 mr-2" />}
-            {isSubmitting ? "正在創建檔案..." : "創建檔案"}
+            {isSubmitting ? "正在创建档案..." : "创建档案"}
           </button>
         </div>
       </div>

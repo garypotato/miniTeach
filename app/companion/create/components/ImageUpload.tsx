@@ -24,11 +24,11 @@ export default function ImageUpload({
 
     Array.from(files).forEach((file) => {
       if (!allowedTypes.includes(file.type)) {
-        alert("只允許JPG、PNG和GIF檔案");
+        alert("只允许JPG、PNG和GIF文件");
         return;
       }
       if (file.size > maxSize) {
-        alert("每張圖片必須小於5MB");
+        alert("每张图片必须小于5MB");
         return;
       }
       validFiles.push(file);
@@ -36,7 +36,7 @@ export default function ImageUpload({
 
     const totalFiles = [...images, ...validFiles];
     if (totalFiles.length > 5) {
-      alert("最多允許5張圖片");
+      alert("最多允许5张图片");
       onChange([...images, ...validFiles.slice(0, 5 - images.length)]);
     } else {
       onChange([...images, ...validFiles]);
@@ -120,7 +120,7 @@ export default function ImageUpload({
               onClick={() => fileInputRef.current?.click()}
               className="mt-2 text-blue-600 hover:text-blue-500 font-medium"
             >
-              Browse files
+              浏览文件
             </button>
           </div>
 

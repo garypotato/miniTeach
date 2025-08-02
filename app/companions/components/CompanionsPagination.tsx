@@ -3,7 +3,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useModal } from "@/app/contexts/ModalContext";
+import { useAppDispatch } from "@/app/store/hooks";
+import { setLoading } from "@/app/store/modalSlice";
 
 interface Companion {
   id: number;
@@ -90,7 +91,7 @@ export default function CompanionsPagination({
   searchQuery = "",
 }: CompanionsPaginationProps) {
   const router = useRouter();
-  const { setLoading } = useModal();
+  const dispatch = useAppDispatch();
 
   const pageNumbers = generatePageNumbers(currentPage, totalPages);
 
@@ -160,7 +161,7 @@ export default function CompanionsPagination({
                             color: "#47709B",
                           }}
                         >
-                          儿童伙伴
+                          儿童陪伴师
                         </span>
                       </div>
 
@@ -430,7 +431,9 @@ export default function CompanionsPagination({
                 value={currentPage}
                 onChange={(e) => {
                   const page = parseInt(e.target.value);
-                  setLoading(true, "正在加载页面...");
+                  dispatch(
+                    setLoading({ loading: true, message: "正在加载页面..." })
+                  );
                   router.push(buildPageUrl(page));
                 }}
                 className="text-sm border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"

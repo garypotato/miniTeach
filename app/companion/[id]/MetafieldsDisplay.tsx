@@ -73,7 +73,7 @@ export default function MetafieldsDisplay({
           专业详情即将推出
         </h2>
         <p className="text-gray-600 mb-6">
-          此伙伴的详细专业信息目前正在更新中。请稍后再查看或联系我们获取更多信息。
+          此陪伴师的详细专业信息目前正在更新中。请稍后再查看或联系我们获取更多信息。
         </p>
         <div>
           <p>我们通常提供的信息包括:</p>
@@ -108,7 +108,7 @@ export default function MetafieldsDisplay({
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span>Location</span>
+              <span>地点</span>
             </div>
             <div className="flex items-center space-x-2">
               <svg

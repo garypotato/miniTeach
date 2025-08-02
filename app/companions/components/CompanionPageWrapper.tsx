@@ -52,7 +52,7 @@ export default function CompanionPageWrapper({
                 </svg>
               </li>
               <li>
-                <span className="text-gray-700 font-medium">所有伙伴</span>
+                <span className="text-gray-700 font-medium">所有陪伴师</span>
               </li>
             </ol>
           </nav>
@@ -62,9 +62,9 @@ export default function CompanionPageWrapper({
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">所有伙伴</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">所有陪伴师</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            浏览我们完整的合格儿童伙伴和教育工作者收藏。为您的孩子找到完美匹配。
+            浏览我们完整的合格儿童陪伴师和教育工作者收藏。为您的孩子找到完美匹配。
           </p>
         </div>
 
@@ -90,18 +90,18 @@ export default function CompanionPageWrapper({
               </svg>
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              未找到伙伴
+              未找到陪伴师
             </h3>
             <div className="space-y-4">
               <p className="text-gray-600">
                 {selectedCities.length > 0 &&
                 companionsWithLocation.length === 0
-                  ? `位置筛选目前不可用，因为伙伴位置数据正在更新中。 ${allCompanions.length} 个伙伴可用，但还没有位置信息。`
+                  ? `位置筛选目前不可用，因为陪伴师位置数据正在更新中。 ${allCompanions.length} 个陪伴师可用，但还没有位置信息。`
                   : selectedCities.length > 0
-                  ? `在所选城市中未找到伙伴: ${selectedCities.join(
+                  ? `在所选城市中未找到陪伴师: ${selectedCities.join(
                       ", "
                     )}。尝试扩展您的搜索或移除位置筛选。`
-                  : "我们无法找到符合您搜索条件的伙伴。"}
+                  : "我们无法找到符合您搜索条件的陪伴师。"}
               </p>
 
               {selectedCities.length > 0 &&
@@ -124,7 +124,7 @@ export default function CompanionPageWrapper({
                       <p className="text-sm text-yellow-800">
                         <strong>位置筛选暂时禁用</strong>
                         <br />
-                        伙伴位置数据正在更新
+                        陪伴师位置数据正在更新
                       </p>
                     </div>
                   </div>

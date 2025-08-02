@@ -2,9 +2,9 @@ import { Metadata } from "next";
 import CompanionCreateForm from "./components/CompanionCreateForm";
 
 export const metadata: Metadata = {
-  title: "創建您的陪伴者檔案 | 迷你教學",
+  title: "创建您的陪伴师档案 | 迷你教学",
   description:
-    "加入我們合格的兒童陪伴者社群。創建您的檔案並與尋求教育支援的家庭建立聯繫。",
+    "加入我们合格的儿童陪伴师社群。创建您的档案并与寻求教育支持的家庭建立联系。",
 };
 
 export default function CompanionCreatePage() {
@@ -15,13 +15,13 @@ export default function CompanionCreatePage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              創建您的陪伴者檔案
+              创建您的陪伴师档案
             </h1>
             <p className="text-xl text-gray-600 mb-2">
-              加入我們合格的兒童陪伴者社群
+              加入我们合格的儿童陪伴师社群
             </p>
             <p className="text-gray-500">
-              填寫下面的表格創建您的陪伴者檔案。所有資訊將在您的檔案上線前進行審核。
+              填写下面的表格创建您的陪伴师档案。所有信息将在您的档案上线前进行审核。
             </p>
           </div>
         </div>

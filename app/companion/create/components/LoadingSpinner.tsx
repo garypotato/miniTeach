@@ -11,7 +11,7 @@ export default function LoadingSpinner({
     <div
       className={`animate-spin rounded-full border-2 border-transparent border-t-current ${className}`}
     >
-      <span className="sr-only">Loading...</span>
+      <span className="sr-only">加载中...</span>
     </div>
   );
 }

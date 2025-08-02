@@ -1,5 +1,3 @@
-"use client";
-
 import CompanionsSection from "./CompanionsSection";
 import HeroSection from "./HeroSection";
 import FeaturesSection from "./FeaturesSection";

@@ -2,7 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useModal } from "@/app/contexts/ModalContext";
+import { useAppSelector, useAppDispatch } from "@/app/store/hooks";
+import {
+  openModal,
+  closeModal,
+  setLoading,
+  clearLoading,
+} from "@/app/store/modalSlice";
 
 interface SearchFilterProps {
   initialSearch: string;
@@ -17,7 +23,10 @@ export default function SearchFilter({
 }: SearchFilterProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { modalOpen, modalType, isLoading, openModal, closeModal, setLoading } = useModal();
+  const dispatch = useAppDispatch();
+  const { modalOpen, modalType, isLoading } = useAppSelector(
+    (state) => state.modal
+  );
 
   const [searchInput, setSearchInput] = useState(initialSearch);
   const [selectedCities, setSelectedCities] = useState<string[]>(initialCities);
@@ -30,14 +39,14 @@ export default function SearchFilter({
     setSelectedCities(initialCities);
     setTempSearchInput(initialSearch);
     setTempSelectedCities(initialCities);
-    setLoading(false); // Reset loading when new data arrives
-  }, [initialSearch, initialCities, setLoading]);
+    dispatch(clearLoading()); // Reset loading when new data arrives
+  }, [initialSearch, initialCities, dispatch]);
 
   const handleSearch = (
     name: string = searchInput,
     cities: string[] = selectedCities
   ) => {
-    setLoading(true, "正在搜索伙伴...");
+    dispatch(setLoading({ loading: true, message: "正在搜索陪伴师..." }));
     const params = new URLSearchParams(searchParams);
 
     if (name.trim()) {
@@ -65,7 +74,7 @@ export default function SearchFilter({
     setSearchInput(tempSearchInput);
     setSelectedCities(tempSelectedCities);
     handleSearch(tempSearchInput, tempSelectedCities);
-    closeModal();
+    dispatch(closeModal());
   };
 
   const handleCityToggle = (city: string) => {
@@ -82,7 +91,7 @@ export default function SearchFilter({
   };
 
   const handleClear = () => {
-    setLoading(true, "Clearing filters...");
+    setLoading(true, "清除筛选中...");
     setSearchInput("");
     setSelectedCities([]);
     setTempSearchInput("");
@@ -101,7 +110,7 @@ export default function SearchFilter({
   const openFilterModal = () => {
     setTempSearchInput(searchInput);
     setTempSelectedCities(selectedCities);
-    openModal("filter");
+    dispatch(openModal({ type: "filter" }));
   };
 
   const hasActiveFilters = searchInput || selectedCities.length > 0;
@@ -112,10 +121,10 @@ export default function SearchFilter({
         {/* Hero Search Section */}
         <div className="text-center mb-8">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            找到您的完美陪伴者
+            找到您的完美陪伴师
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            在澳大利亚寻找有经验的儿童陪伴者
+            在澳大利亚寻找有经验的儿童陪伴师
           </p>
 
           {/* Main Search Button */}
@@ -145,7 +154,7 @@ export default function SearchFilter({
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                   />
                 </svg>
-                <span>搜索陪伴者</span>
+                <span>搜索陪伴师</span>
                 <svg
                   className="h-5 w-5 group-hover:translate-x-1 transition-transform"
                   fill="none"
@@ -233,9 +242,7 @@ export default function SearchFilter({
                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                       />
                     </svg>
-                    <span>
-                      名称: &ldquo;{searchInput}&rdquo;
-                    </span>
+                    <span>名称: &ldquo;{searchInput}&rdquo;</span>
                     <button
                       type="button"
                       disabled={isLoading}
@@ -285,9 +292,7 @@ export default function SearchFilter({
                         d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                       />
                     </svg>
-                    <span>
-                      地点: {city}
-                    </span>
+                    <span>地点: {city}</span>
                     <button
                       type="button"
                       disabled={isLoading}
@@ -341,9 +346,7 @@ export default function SearchFilter({
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-blue-800">
-                  实时搜索
-                </p>
+                <p className="text-sm font-medium text-blue-800">实时搜索</p>
                 <p className="text-xs text-blue-600">高效过滤</p>
               </div>
             </div>
@@ -373,9 +376,7 @@ export default function SearchFilter({
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-purple-800">
-                  地理筛选
-                </p>
+                <p className="text-sm font-medium text-purple-800">地理筛选</p>
                 <p className="text-xs text-purple-600">精准定位</p>
               </div>
             </div>
@@ -399,9 +400,7 @@ export default function SearchFilter({
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-green-800">
-                  智能收藏
-                </p>
+                <p className="text-sm font-medium text-green-800">智能收藏</p>
                 <p className="text-xs text-green-600">多样选择</p>
               </div>
             </div>
@@ -415,7 +414,7 @@ export default function SearchFilter({
             onMouseDown={(e) => {
               // Only close if clicking the backdrop itself
               if (e.target === e.currentTarget) {
-                closeModal();
+                dispatch(closeModal());
               }
             }}
           >
@@ -433,13 +432,13 @@ export default function SearchFilter({
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-2xl font-bold mb-2">搜索伙伴</h2>
+                    <h2 className="text-2xl font-bold mb-2">搜索陪伴师</h2>
                     <p className="text-blue-100 text-sm">
-                      找到您的完美AI伙伴，按地点筛选
+                      找到您的完美AI陪伴师，按地点筛选
                     </p>
                   </div>
                   <button
-                    onClick={() => closeModal()}
+                    onClick={() => dispatch(closeModal())}
                     disabled={isLoading}
                     className="p-2 text-white hover:scale-150 hover:bg-opacity-10 rounded-full transition-all duration-200 disabled:opacity-50"
                   >
@@ -496,7 +495,7 @@ export default function SearchFilter({
                       onChange={(e) => setTempSearchInput(e.target.value)}
                       onFocus={(e) => e.stopPropagation()}
                       onClick={(e) => e.stopPropagation()}
-                      placeholder="输入伙伴名称..."
+                      placeholder="输入陪伴师名称..."
                       className="block w-full px-5 py-4 text-lg border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500 focus:ring-opacity-20 focus:border-blue-500 focus:outline-none transition-all placeholder-gray-400"
                     />
                     <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
@@ -671,7 +670,7 @@ export default function SearchFilter({
 
                 <div className="flex flex-col sm:flex-row gap-3 sm:space-x-3 w-full sm:w-auto">
                   <button
-                    onClick={() => closeModal()}
+                    onClick={() => dispatch(closeModal())}
                     disabled={isLoading}
                     className="w-full sm:w-auto px-6 py-3 text-sm font-medium text-gray-700 bg-white border-2 border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
@@ -699,7 +698,7 @@ export default function SearchFilter({
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                       />
                     </svg>
-                    <span>{isLoading ? "搜索中" : "搜索伙伴"}</span>
+                    <span>{isLoading ? "搜索中" : "搜索陪伴师"}</span>
                   </button>
                 </div>
               </div>

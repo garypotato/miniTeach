@@ -1,5 +1,3 @@
-"use client";
-
 export default function FeaturesSection() {
   const features = [
     {
@@ -41,7 +39,7 @@ export default function FeaturesSection() {
       ),
       title: "高质量、高性价比 – 但常被忽视",
       description:
-        "教育学生拥有技能和潜力，但由于签证或时间安排限制，往往缺乏机会。我们的平台以公平的价格将家庭与可靠的高质量伙伴联系起来。",
+        "教育学生拥有技能和潜力，但由于签证或时间安排限制，往往缺乏机会。我们的平台以公平的价格将家庭与可靠的高质量陪伴师联系起来。",
       color: "from-green-500 to-teal-600",
     },
     {
@@ -62,7 +60,7 @@ export default function FeaturesSection() {
       ),
       title: "合法签证和安全背景",
       description:
-        "每位伙伴都持有有效的澳大利亚学生签证，并已完成WWCC、Blue Card或警察检查——让您更加安心。",
+        "每位陪伴师都持有有效的澳大利亚学生签证，并已完成WWCC、Blue Card或警察检查——让您更加安心。",
       color: "from-purple-500 to-pink-600",
     },
     {
@@ -83,7 +81,7 @@ export default function FeaturesSection() {
       ),
       title: "灵活且无承诺",
       description:
-        "我们不收取佣金或要求您签订合同。费率和工作方式由您和伙伴商定——灵活、透明、无压力。",
+        "我们不收取佣金或要求您签订合同。费率和工作方式由您和陪伴师商定——灵活、透明、无压力。",
       color: "from-orange-500 to-red-600",
     },
     {
@@ -104,7 +102,7 @@ export default function FeaturesSection() {
       ),
       title: "双语支持 – 非常适合华人家庭",
       description:
-        "我们的平台支持中英文。许多伙伴会说普通话或粤语，确保沟通顺畅，没有语言障碍。",
+        "我们的平台支持中英文。许多陪伴师会说普通话或粤语，确保沟通顺畅，没有语言障碍。",
       color: "from-indigo-500 to-blue-600",
     },
     {
@@ -125,7 +123,7 @@ export default function FeaturesSection() {
       ),
       title: "不仅仅是照顾 – 更是互动学习",
       description:
-        "伙伴通过游戏、阅读和对话与孩子互动。这种体验超越监督——是关于激发成长和共同学习。",
+        "陪伴师通过游戏、阅读和对话与孩子互动。这种体验超越监督——是关于激发成长和共同学习。",
       color: "from-teal-500 to-green-600",
     },
   ];
@@ -158,11 +156,9 @@ export default function FeaturesSection() {
                     </div>
                     <div className="text-left">
                       <div className="text-sm font-semibold text-gray-700">
-                        Mini-Teach Platform
+                        迷你教学平台
                       </div>
-                      <div className="text-xs text-gray-500">
-                        Features & Benefits
-                      </div>
+                      <div className="text-xs text-gray-500">功能与优势</div>
                     </div>
                   </div>
                 </div>
@@ -171,7 +167,7 @@ export default function FeaturesSection() {
                   为什么选择我们？
                 </h2>
                 <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-8">
-                  因为每个家庭都应该享有优质、关爱的儿童伙伴服务
+                  因为每个家庭都应该享有优质、关爱的儿童陪伴师服务
                 </p>
 
                 {/* Feature highlights */}
@@ -179,19 +175,19 @@ export default function FeaturesSection() {
                   <div className="flex items-center bg-purple-50 rounded-full px-4 py-2 border border-purple-100">
                     <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
                     <span className="text-sm font-medium text-purple-700">
-                      Verified Companions
+                      验证陪伴
                     </span>
                   </div>
                   <div className="flex items-center bg-blue-50 rounded-full px-4 py-2 border border-blue-100">
                     <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
                     <span className="text-sm font-medium text-blue-700">
-                      Safe & Secure
+                      安全可靠
                     </span>
                   </div>
                   <div className="flex items-center bg-teal-50 rounded-full px-4 py-2 border border-teal-100">
                     <div className="w-2 h-2 bg-teal-500 rounded-full mr-2"></div>
                     <span className="text-sm font-medium text-teal-700">
-                      24/7 Support
+                      24/7支持
                     </span>
                   </div>
                 </div>
@@ -234,7 +230,7 @@ export default function FeaturesSection() {
                   {/* Hover indicator */}
                   <div className="mt-4 md:mt-5 xl:mt-6 flex items-center text-purple-500 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
                     <span className="text-xs md:text-sm font-semibold mr-2">
-                      Learn More
+                      了解更多
                     </span>
                     <svg
                       className="w-3 h-3 md:w-4 md:h-4 transform group-hover:translate-x-1 transition-transform duration-300"

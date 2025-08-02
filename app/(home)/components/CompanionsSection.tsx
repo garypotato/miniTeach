@@ -48,7 +48,7 @@ async function fetchMoreCompanions(excludeIds: number[]): Promise<Companion[]> {
 
       // Simple shuffle using Math.random()
       const shuffled = [...availableCompanions];
-      
+
       for (let i = shuffled.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
@@ -113,23 +113,23 @@ export default function CompanionsSection({
     try {
       // Fetch all companions again for a completely fresh set
       const result = await getCompanionsAction();
-      
+
       if (result.success && result.data) {
         // Simple shuffle for fresh selection
         const shuffled = [...result.data];
-        
+
         for (let i = shuffled.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
           [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
         }
 
-        // Show first 8 shuffled companions  
+        // Show first 8 shuffled companions
         setCompanions(shuffled.slice(0, 8));
         setHasMoreAvailable(true);
       } else {
         // Fallback to shuffling initial companions
         const shuffled = [...initialCompanions];
-        
+
         for (let i = shuffled.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
           [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
@@ -142,7 +142,7 @@ export default function CompanionsSection({
       console.error("Error resetting companions:", error);
       // Fallback to shuffling initial companions
       const shuffled = [...initialCompanions];
-      
+
       for (let i = shuffled.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
@@ -171,7 +171,7 @@ export default function CompanionsSection({
       <div className="w-full">
         <div className="text-center mb-12 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="text-3xl font-bold text-gray-900 mb-4">
-            认识我们的伙伴
+            认识我们的陪伴师
           </h3>
           <p className="text-lg text-gray-600">
             发现准备支持您孩子成长旅程的关爱专业人士
@@ -185,7 +185,7 @@ export default function CompanionsSection({
               {companions.map((companion, index) => {
                 // Fixed heights for image and footer
                 const imageHeight = 220;
-                const titleHeight = 40; 
+                const titleHeight = 40;
                 const footerHeight = 35;
                 const padding = 16;
 
@@ -337,11 +337,11 @@ export default function CompanionsSection({
                   {loadingMore ? (
                     <>
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                      Loading More...
+                      加载更多...
                     </>
                   ) : (
                     <>
-                      View More Companions
+                      查看更多陪伴师
                       <svg
                         className="w-5 h-5 ml-2"
                         fill="none"
@@ -359,7 +359,7 @@ export default function CompanionsSection({
                   )}
                 </button>
                 <p className="text-gray-500 text-sm mt-3">
-                  Showing {companions.length} companions
+                  显示 {companions.length} 个陪伴师
                 </p>
               </div>
             )}
@@ -367,7 +367,7 @@ export default function CompanionsSection({
             {!hasMoreAvailable && companions.length > 8 && (
               <div className="text-center mt-12">
                 <p className="text-gray-600 mb-4">
-                  {`You've seen ${companions.length} companions!`}
+                  {`您已查看 ${companions.length} 个陪伴师！`}
                 </p>
                 <button
                   onClick={resetCompanions}
@@ -387,7 +387,7 @@ export default function CompanionsSection({
                       d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                     />
                   </svg>
-                  Show Different Companions
+                  显示不同陪伴师
                 </button>
               </div>
             )}

@@ -11,11 +11,17 @@ export default function AboutContent() {
         }}
       >
         <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-            Mini-Teach 關於我們
-          </h1>
-          <p className="text-xl text-white opacity-90 mb-8 max-w-3xl mx-auto">
-            我們致力於打造一個安全、可靠的教育陪伴平台，連結優質陪伴者與有需求的家庭。
+          <div className="flex items-center justify-center mb-6">
+            <span className="text-5xl mr-4">🌱</span>
+            <h1 className="text-4xl md:text-6xl font-bold text-white">
+              关于我们 | About Mini-Teach
+            </h1>
+          </div>
+          <p className="text-xl text-white opacity-90 mb-8 max-w-4xl mx-auto leading-relaxed">
+            Mini-Teach 是一个专为教育 /
+            幼教背景学生与时间人家庭打造的「教育型儿童陪伴平台」。
+            <br />
+            我们相信：陪伴不只是「照顾」，更是一场能启发孩子成长的互动体验。
           </p>
         </div>
       </section>
@@ -23,27 +29,20 @@ export default function AboutContent() {
       {/* Our Story Section */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-              我們的故事
-            </h2>
-          </div>
-
-          <div className="prose prose-lg mx-auto text-gray-700 leading-relaxed space-y-6">
-            <p className="text-xl text-center mb-8 text-gray-600">
-              Mini-Teach 由一群熱愛教育與兒童發展的專業人士創立。
-            </p>
-
-            <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
-              <p className="mb-6">
-                我們希望能夠為澳洲的家庭和陪伴者建立一個信任、專業的連結平台，讓每個孩子都能獲得最適合的照顧與學習。
+          <div className="bg-white rounded-xl p-8 shadow-lg border border-gray-100">
+            <div className="mb-8">
+              <p className="text-lg text-gray-700 leading-relaxed mb-6">
+                这个计划由一位在澳洲就读 Early Childhood Education 的学生 Nana
+                发起，来自她亲身经历的困难：
               </p>
-              <p className="mb-6">
-                同時也協助陪伴者找到理想的工作機會，發揮所長，成就自我。
+              <p className="text-lg text-gray-700 leading-relaxed mb-6">
+                在学期间找不到既能发挥专业经验，又有弹性又合法的教育相关兼职。
               </p>
-              <p>
-                從最初的想法到現在，Mini-Teach
-                團隊持續努力，期望能為更多家庭和陪伴者帶來溫暖與支持。歡迎加入我們，一起創造更美好的未來！
+              <p className="text-lg text-gray-700 leading-relaxed mb-6">
+                而很多家庭，也找不到具备教育、有素养、又有爱心的陪伴师。
+              </p>
+              <p className="text-lg text-gray-700 leading-relaxed">
+                所以我们建立了 Mini-Teach，连接双方的需要，创造「双赢」：
               </p>
             </div>
           </div>
@@ -54,60 +53,122 @@ export default function AboutContent() {
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-              我們的使命
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4 flex items-center justify-center">
+              <span className="mr-3">🎯</span>
+              我们的理念
             </h2>
           </div>
 
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 text-center">
+              <div className="text-3xl mb-4">📚</div>
+              <h3 className="text-lg font-bold text-gray-800 mb-2">
+                教育专业 × 温柔陪伴
+              </h3>
+            </div>
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 text-center">
+              <div className="text-3xl mb-4">🤝</div>
+              <h3 className="text-lg font-bold text-gray-800 mb-2">
+                社群互信 × 合理报酬
+              </h3>
+            </div>
+            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 text-center">
+              <div className="text-3xl mb-4">🏠</div>
+              <h3 className="text-lg font-bold text-gray-800 mb-2">
+                家庭自由选择 × 学生弹性发挥
+              </h3>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* For Students */}
             <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-8 border border-gray-100">
               <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                  <svg
-                    className="w-6 h-6 text-blue-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold text-gray-800">給陪伴者</h3>
+                <div className="text-2xl mr-4">🎓</div>
+                <h3 className="text-xl font-bold text-gray-800">
+                  给学生：提供一个实践专业所学、弹性接案、合法打工的机会
+                </h3>
               </div>
-              <p className="text-gray-700 leading-relaxed">
-                我們致力於幫助陪伴者找到合適的工作機會，發揮專業所長，提升自我價值。
-              </p>
             </div>
 
-            {/* For Families */}
             <div className="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl p-8 border border-gray-100">
               <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
-                  <svg
-                    className="w-6 h-6 text-green-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold text-gray-800">給家庭</h3>
+                <div className="text-2xl mr-4">👨‍👩‍👧‍👦</div>
+                <h3 className="text-xl font-bold text-gray-800">
+                  给家长：帮助孩子找到安全、有素养、有耐心的陪伴师
+                </h3>
               </div>
-              <p className="text-gray-700 leading-relaxed">
-                我們了解家庭對陪伴者的需求，致力於提供最合適的媒合與支持，讓每個孩子都能安心成長。
-              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Qualifications Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4 flex items-center justify-center">
+              <span className="mr-3">✅</span>
+              我们的陪伴师都有：
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 text-center">
+              <div className="text-3xl mb-4">📖</div>
+              <h3 className="font-semibold text-gray-800">
+                教育／幼教系在学背景
+              </h3>
+            </div>
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 text-center">
+              <div className="text-3xl mb-4">🇦🇺</div>
+              <h3 className="font-semibold text-gray-800">合法澳洲学生签证</h3>
+            </div>
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 text-center">
+              <div className="text-3xl mb-4">🛡️</div>
+              <h3 className="font-semibold text-gray-800">
+                WWCC（Blue Card）或 Police Check
+              </h3>
+            </div>
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 text-center">
+              <div className="text-3xl mb-4">👥</div>
+              <h3 className="font-semibold text-gray-800">
+                丰富个人简介与经验年龄证明
+              </h3>
+            </div>
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 text-center">
+              <div className="text-3xl mb-4">🗣️</div>
+              <h3 className="font-semibold text-gray-800">
+                多数支援中英双语（部分提供广东话）
+              </h3>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* What We Don't Do Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4 flex items-center justify-center">
+              <span className="mr-3">👀</span>
+              我们不是...
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-red-50 rounded-xl p-6 text-center border border-red-100">
+              <div className="text-3xl mb-4">❌</div>
+              <h3 className="font-semibold text-gray-800">一般保姆媒合平台</h3>
+            </div>
+            <div className="bg-red-50 rounded-xl p-6 text-center border border-red-100">
+              <div className="text-3xl mb-4">❌</div>
+              <h3 className="font-semibold text-gray-800">没审核的社群名单</h3>
+            </div>
+            <div className="bg-red-50 rounded-xl p-6 text-center border border-red-100">
+              <div className="text-3xl mb-4">❌</div>
+              <h3 className="font-semibold text-gray-800">
+                抽佣或绑约的仲介模式
+              </h3>
             </div>
           </div>
         </div>
@@ -122,24 +183,23 @@ export default function AboutContent() {
       >
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
-            加入我們的社群
+            我们正在一步步扩大服务，并希望保持温度的真诚
           </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            歡迎所有對教育陪伴有熱情的朋友和家庭加入 Mini-Teach
-            社群，一起交流、成長、分享經驗。
+          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            如果你也认同我们的理念，欢迎加入 Mini-Teach！ 🤗 ↓
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="/companions"
               className="bg-purple-600 text-white px-8 py-3 rounded-full font-semibold transition-all hover:bg-purple-700 hover:shadow-lg inline-block text-center"
             >
-              查看陪伴者
+              查看陪伴师
             </a>
             <a
-              href="#contact"
+              href="/companion/create"
               className="border-2 border-purple-600 text-purple-600 px-8 py-3 rounded-full font-semibold transition-all hover:bg-purple-50"
             >
-              聯絡我們
+              成为陪伴师
             </a>
           </div>
         </div>

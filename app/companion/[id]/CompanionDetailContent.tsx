@@ -31,7 +31,7 @@ export default function CompanionDetailContent({
                 className="px-3 py-1 rounded-full text-sm font-medium"
                 style={{ backgroundColor: "#AFC8DA", color: "#47709B" }}
               >
-                儿童伙伴
+                儿童陪伴师
               </span>
               <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
                 可用
@@ -62,7 +62,7 @@ export default function CompanionDetailContent({
               联系我们
             </h3>
             <p className="text-gray-600 mb-6">
-              为保护我们伙伴的隐私，联系信息是私下提供的。请与我们联系以请求联系详情。
+              为保护我们陪伴师的隐私，联系信息是私下提供的。请与我们联系以请求联系详情。
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <button
@@ -76,7 +76,7 @@ export default function CompanionDetailContent({
                 className="flex-1 border-2 px-6 py-3 rounded-full font-semibold transition-colors hover:bg-gray-50 text-center"
                 style={{ borderColor: "#47709B", color: "#47709B" }}
               >
-                所有伙伴
+                所有陪伴师
               </Link>
             </div>
           </div>
@@ -87,7 +87,7 @@ export default function CompanionDetailContent({
       <section className="py-16 mt-16 bg-white border-t rounded-2xl">
         <div className="text-center mb-12">
           <h3 className="text-3xl font-bold text-gray-900 mb-4">
-            认识我们的伙伴
+            认识我们的陪伴师
           </h3>
           <p className="text-lg text-gray-600">
             发现准备支持您孩子成长旅程的关爱专业人士
@@ -99,7 +99,7 @@ export default function CompanionDetailContent({
             className="inline-flex items-center text-white px-8 py-3 rounded-full font-semibold transition-colors hover:opacity-90"
             style={{ backgroundColor: "#47709B" }}
           >
-            所有伙伴
+            所有陪伴师
             <svg
               className="w-5 h-5 ml-2"
               fill="none"

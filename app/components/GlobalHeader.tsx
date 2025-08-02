@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 export default function GlobalHeader() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  
+
   const isOnCreatePage = pathname === "/companion/create";
 
   return (
@@ -15,12 +15,22 @@ export default function GlobalHeader() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <Link
-              href="/"
-              className="text-2xl font-bold hover:opacity-80"
-              style={{ color: "#47709B" }}
-            >
-              MiniTeach
+            <Link href="/" className="flex items-center hover:opacity-80">
+              <div className="mr-3 text-3xl">🎓👶</div>
+              <div className="flex flex-col">
+                <span
+                  className="text-lg font-bold leading-tight"
+                  style={{ color: "#47709B" }}
+                >
+                  学霸带娃
+                </span>
+                <span
+                  className="text-sm font-medium leading-tight opacity-80"
+                  style={{ color: "#47709B" }}
+                >
+                  MiniTeach
+                </span>
+              </div>
             </Link>
           </div>
 
@@ -36,7 +46,7 @@ export default function GlobalHeader() {
               href="/companions"
               className="text-gray-700 hover:opacity-80 font-medium"
             >
-              所有伙伴
+              所有陪伴师
             </Link>
             <Link
               href="/about"
@@ -46,14 +56,14 @@ export default function GlobalHeader() {
             </Link>
             {isOnCreatePage ? (
               <span className="bg-gray-400 text-white px-4 py-2 rounded-lg font-medium cursor-not-allowed">
-                成為陪伴者
+                成为陪伴师
               </span>
             ) : (
               <Link
                 href="/companion/create"
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
               >
-                成為陪伴者
+                成为陪伴师
               </Link>
             )}
           </nav>
@@ -112,7 +122,7 @@ export default function GlobalHeader() {
               className="block px-3 py-2 text-gray-700 hover:bg-gray-50 font-medium rounded-md transition-colors duration-200"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              所有伙伴
+              所有陪伴师
             </Link>
             <Link
               href="/about"
@@ -123,7 +133,7 @@ export default function GlobalHeader() {
             </Link>
             {isOnCreatePage ? (
               <span className="block mx-3 my-2 px-3 py-2 bg-gray-400 text-white font-medium rounded-md text-center cursor-not-allowed">
-                成為陪伴者
+                成为陪伴师
               </span>
             ) : (
               <Link
@@ -131,7 +141,7 @@ export default function GlobalHeader() {
                 className="block mx-3 my-2 px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 font-medium rounded-md transition-colors duration-200 text-center"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                成為陪伴者
+                成为陪伴师
               </Link>
             )}
           </div>

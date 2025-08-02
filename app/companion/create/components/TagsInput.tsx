@@ -105,13 +105,13 @@ export default function TagsInput({
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           placeholder={tags.length === 0 ? placeholder : ""}
-          className="flex-1 min-w-[120px] outline-none bg-transparent text-gray-900 placeholder-gray-500 text-sm"
+          className="flex-1 min-w-[120px] outline-none bg-transparent text-gray-900 placeholder-gray-600 text-sm"
         />
       </div>
 
       {/* Helper text */}
       <p className="text-xs text-gray-500">
-        輸入文字後加逗號自動創建標籤，或按 Enter 鍵添加。點擊 × 移除標籤。
+        输入文字后加逗号自动创建标签，或按 Enter 键添加。点击 × 移除标签。
       </p>
 
       {/* Error message */}
