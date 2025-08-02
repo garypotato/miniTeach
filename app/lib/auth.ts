@@ -19,7 +19,7 @@ export const authOptions: NextAuthOptions = {
           const baseUrl =
             process.env.NODE_ENV === "development"
               ? "http://localhost:3000"
-              : "https://www.miniteach.org";
+              : process.env.SERVER_URL;
 
           console.log("Auth baseUrl:", baseUrl);
 
