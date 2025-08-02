@@ -16,23 +16,21 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          const response = await fetch(
-            `${
-              process.env.NODE_ENV === "development"
-                ? "http://localhost:3000"
-                : process.env.VERCEL_URL
-            }/api/companion/login`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                user_name: credentials.user_name,
-                password: credentials.password,
-              }),
-            }
-          );
+          const baseUrl =
+            process.env.NODE_ENV === "development"
+              ? "http://localhost:3000"
+              : `https://${process.env.VERCEL_URL}`;
+
+          const response = await fetch(`${baseUrl}/api/companion/login`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              user_name: credentials.user_name,
+              password: credentials.password,
+            }),
+          });
 
           const result = await response.json();
 
