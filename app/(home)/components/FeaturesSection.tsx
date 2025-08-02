@@ -175,7 +175,7 @@ export default function FeaturesSection() {
                   <div className="flex items-center bg-purple-50 rounded-full px-4 py-2 border border-purple-100">
                     <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
                     <span className="text-sm font-medium text-purple-700">
-                      验证陪伴
+                      真人验证
                     </span>
                   </div>
                   <div className="flex items-center bg-blue-50 rounded-full px-4 py-2 border border-blue-100">

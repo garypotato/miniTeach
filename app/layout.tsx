@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./store/providers";
+import SessionProvider from "./components/SessionProvider";
 import GlobalModal from "./components/GlobalModal";
 import GlobalHeader from "./components/GlobalHeader";
 import GlobalFooter from "./components/GlobalFooter";
@@ -33,15 +34,17 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-background text-foreground`}
       >
-        <Providers>
-          <div className="min-h-screen flex flex-col">
-            <GlobalHeader />
-            <main className="flex-1">{children}</main>
-            <GlobalFooter />
-            <GoToTop />
-          </div>
-          <GlobalModal />
-        </Providers>
+        <SessionProvider>
+          <Providers>
+            <div className="min-h-screen flex flex-col">
+              <GlobalHeader />
+              <main className="flex-1 pt-16">{children}</main>
+              <GlobalFooter />
+              <GoToTop />
+            </div>
+            <GlobalModal />
+          </Providers>
+        </SessionProvider>
       </body>
     </html>
   );

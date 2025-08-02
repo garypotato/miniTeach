@@ -4,11 +4,11 @@
 
 This is a **Next.js** project designed to assist **parents** in finding suitable **companions** to look after their children. The platform displays a list of companions along with their details. If a parent wishes to obtain a companion's contact information, they must contact us directly. We will provide the necessary details privately.
 
---- state Management
+## Tech
 
-## Redux
-
----
+- `Redux`: state management
+- `database`: Shopify
+- `Next-auth.js`: front-end Authentication for Next.js
 
 ## Data Source
 
@@ -20,7 +20,7 @@ The project uses **Shopify** as the backend database.
 2. **Information**
 3. **Parent**
 
-Each **companion** is stored as a product under the `Companion` collection and includes the following **metafields**:
+Each **companion** is stored as a product under the `Companion` collection. For shopify standard file, I used `title` and `body_html`, and create the following **metafields**:
 
 - `wechat_id`
 - `major`
@@ -142,6 +142,83 @@ Each **companion** is stored as a product under the `Companion` collection and i
 - **Initial Status**: Created as "active" then updated to "draft" for review
 - **Collection**: Automatically added to Companion collection (ID: 491355177275)
 
-## `/companion/login`
+## `/companion/login` ✅ COMPLETED
 
--
+- ✅ **Login UI**: Fully functional login form with User Name and Password fields
+- ✅ **Authentication Logic**: Supports both standard login (`user_name`/`password`) and WeChat fallback (`wechat_id` for both fields)
+- ✅ **API Route**: `/api/companion/login` validates credentials and returns JWT token
+- ✅ **Password Security**: Supports both bcrypt hashed passwords and plain text (legacy)
+- ✅ **Next-auth.js Integration**: JWT handling with next-auth.js for session management
+- ✅ **Redirect Logic**: Redirects to `/companion/dashboard` after successful login
+- ✅ **Public Route**: Accessible without authentication
+
+**Implementation Details:**
+- Uses `getProductsWithMetafields()` to fetch companion data via GraphQL
+- JWT secret stored in `.env` as `JWT_SECRET`
+- Session strategy: JWT with 7-day expiration
+- Error handling with Chinese localized messages
+
+## `/companion/dashboard` ✅ COMPLETED
+
+- ✅ **Dashboard Layout**: Professional dashboard UI with left sidebar navigation
+- ✅ **Protected Route**: JWT authentication required for access
+- ✅ **Navigation**: Left panel with Profile tab (expandable for future features)
+- ✅ **Auto-redirect**: Automatically redirects to profile page by default
+- ✅ **Responsive Design**: Works on both desktop and mobile devices
+
+**Implementation Details:**
+- Protected by companion layout with session validation
+- Automatic redirect to `/companion/dashboard/profile`
+- Branded header with MiniTeach logo and user info
+
+## `/companion/dashboard/profile` ✅ COMPLETED
+
+- ✅ **Profile Display**: Comprehensive view of companion information using metafields
+- ✅ **Server Component**: Implemented as Next.js server component for optimal performance
+- ✅ **Data Source**: Displays all metafields plus Shopify product `body_html` (ignores `title`)
+- ✅ **Protected Route**: JWT authentication required
+- ✅ **Responsive Layout**: Grid-based layout with profile images and detailed information sections
+
+**Features Implemented:**
+- **Basic Information**: Name, email, major, location, age, WeChat ID
+- **About Section**: Rich HTML content from `body_html`
+- **Skills & Qualifications**: Education, languages, certifications, blue card status
+- **Preferences**: Age groups, availability
+- **Profile Images**: Grid display of uploaded photos
+- **Error Handling**: User-friendly error messages in Chinese
+
+**Technical Implementation:**
+- Server-side authentication with `getServerAuthSession()`
+- Server action for data fetching (`getCompanionProfile()`)
+- Reuses existing Shopify service functions
+- Type-safe with TypeScript interfaces
+- Performance optimized (497B bundle vs 2.34kB client component)
+
+---
+
+## Authentication System Architecture ✅ COMPLETED
+
+### Server-Side Components
+- **`app/lib/auth.ts`**: Shared NextAuth configuration and server session utilities
+- **`app/actions/profile.ts`**: Server actions for companion profile operations
+- **`app/api/auth/[...nextauth]/route.ts`**: NextAuth API routes
+- **`app/api/companion/login/route.ts`**: Custom login validation endpoint
+
+### Client-Side Components
+- **`app/components/AuthButton.tsx`**: Authentication UI with hydration handling
+- **`app/components/NavigationButtons.tsx`**: Conditional navigation based on auth state
+- **`app/components/MobileMenu.tsx`**: Mobile navigation with auth integration
+
+### Security Features
+- JWT tokens with 7-day expiration
+- bcrypt password hashing support
+- Server-side session validation
+- Automatic redirect for unauthenticated access
+- Secure token storage in HTTP-only cookies
+
+### UI/UX Features
+- Conditional button display (hides "成为陪伴师" and "陪伴师登录" when logged in)
+- Hydration-safe rendering with loading placeholders
+- Responsive design for all screen sizes
+- Chinese localized error messages
+- Professional dashboard with sidebar navigation
