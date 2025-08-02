@@ -70,10 +70,14 @@ export default function FormField({
           value={value}
           onChange={handleChange}
           disabled={disabled}
-          className={`${baseClasses} ${errorClasses} ${disabledClasses}`}
+          className={`${baseClasses} ${errorClasses} ${disabledClasses} text-gray-900`}
         >
           {options.map((option) => (
-            <option key={option.value} value={option.value}>
+            <option 
+              key={option.value} 
+              value={option.value}
+              className="text-gray-900 bg-white py-2 px-4"
+            >
               {option.label}
             </option>
           ))}

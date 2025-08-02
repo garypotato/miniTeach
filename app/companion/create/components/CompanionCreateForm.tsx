@@ -417,23 +417,23 @@ export default function CompanionCreateForm() {
               { value: "", label: "选择您的城市..." },
               {
                 value: "sydney",
-                label: "悉尼",
+                label: "Sydney",
               },
               {
                 value: "melbourne",
-                label: "墨尔本",
+                label: "Melbourne",
               },
               {
                 value: "brisbane",
-                label: "布里斯班",
+                label: "Brisbane",
               },
               {
                 value: "goldCoast",
-                label: "黄金海岸",
+                label: "Gold Coast",
               },
               {
                 value: "adelaide",
-                label: "阿德莱德",
+                label: "Adelaide",
               },
             ]}
           />
