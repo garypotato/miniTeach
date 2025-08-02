@@ -21,8 +21,6 @@ export const authOptions: NextAuthOptions = {
               ? "http://localhost:3000"
               : process.env.SERVER_URL;
 
-          console.log("Auth baseUrl:", baseUrl);
-
           const response = await fetch(`${baseUrl}/api/companion/login`, {
             method: "POST",
             headers: {
@@ -35,13 +33,16 @@ export const authOptions: NextAuthOptions = {
           });
 
           const result = await response.json();
-          console.log("Auth response:", response.status, result);
 
           if (result.success && result.companion) {
             return {
               id: result.companion.id.toString(),
               email: result.companion.user_name,
-              name: `${result.companion.first_name} ${result.companion.last_name}`,
+              name: `${
+                result.companion.first_name ? result.companion.first_name : ""
+              } ${
+                result.companion.last_name ? result.companion.last_name : ""
+              }`.trim(),
               token: result.token,
             };
           }

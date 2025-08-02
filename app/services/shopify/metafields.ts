@@ -149,27 +149,14 @@ export function processMetafields(
           processed.availability = [value];
         }
         break;
-      // Keep the original keys as fallback
-      case METAFIELD_KEYS.WECHAT_ID:
-        processed.wechat_id = value;
+      case "user_name":
+        processed.user_name = value;
         break;
-      case METAFIELD_KEYS.MAJOR:
-        processed.major = value;
+      case "first_name":
+        processed.first_name = value;
         break;
-      case METAFIELD_KEYS.EDUCATION:
-        processed.education = value;
-        break;
-      case METAFIELD_KEYS.AGE:
-        processed.age = value;
-        break;
-      case METAFIELD_KEYS.LOCATION:
-        processed.location = value;
-        break;
-      case METAFIELD_KEYS.BLUE_CARD:
-        processed.blue_card = value;
-        break;
-      case METAFIELD_KEYS.POLICE_CHECK:
-        processed.police_check = value;
+      case "last_name":
+        processed.last_name = value;
         break;
     }
   });

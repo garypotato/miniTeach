@@ -237,14 +237,16 @@ export async function getProductWithMetafields(
       success: true,
       data: {
         ...product,
-        metafields: metafields.map((field) => ({
-          id: field.id?.toString(),
-          namespace: field.namespace || "custom",
-          key: field.key,
-          value: field.value,
-          type: field.type || "single_line_text_field",
-          description: field.description,
-        })),
+        metafields: metafields.map((field) => {
+          return {
+            id: field.id?.toString(),
+            namespace: field.namespace || "custom",
+            key: field.key,
+            value: field.value,
+            type: field.type || "single_line_text_field",
+            description: field.description,
+          };
+        }),
       },
       error: null,
     };
