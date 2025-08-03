@@ -23,7 +23,7 @@ export default function GlobalModal() {
   if (modalType === "filter" || (!isLoading && !isSuccess)) return null;
 
   if (isLoading) {
-    return <LoadingSpinner message={loadingMessage || "加载中"} backdrop="light" />;
+    return <LoadingSpinner message={loadingMessage || "加载中"} backdrop="dark" />;
   }
 
   if (isSuccess) {
