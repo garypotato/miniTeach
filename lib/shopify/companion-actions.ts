@@ -5,10 +5,12 @@ import {
   createCompanionProduct, 
   createProductMetafields,
   addProductToCollection,
-  updateProductStatus
+  updateProductStatus,
+  updateProductMetafields
 } from "./products";
 import bcrypt from "bcryptjs";
 import { redirect } from "next/navigation";
+import { getServerAuthSession } from "@/lib/auth";
 
 
 export async function checkEmailAvailability(email: string): Promise<{
@@ -433,5 +435,78 @@ export async function createCompanionAndRedirect(formData: FormData) {
     redirect("/companion/create?success=true");
   } else {
     redirect(`/companion/create?error=${encodeURIComponent(result.error || "Unknown error")}`);
+  }
+}
+
+export async function updateCompanionLoginCredentials(
+  user_name: string,
+  password: string,
+  confirm_password: string
+): Promise<{
+  success: boolean;
+  message?: string;
+  error?: string;
+}> {
+  try {
+    // Get the current session server-side
+    const session = await getServerAuthSession();
+    
+    if (!session?.user) {
+      return { success: false, error: "未授权访问" };
+    }
+
+    const companionId = (session.user as { id?: string })?.id;
+    
+    if (!companionId) {
+      return { success: false, error: "用户ID未找到" };
+    }
+
+    // Validation
+    if (!user_name || !password || !confirm_password) {
+      return { success: false, error: "所有字段都是必需的" };
+    }
+
+    if (password !== confirm_password) {
+      return { success: false, error: "两次输入的密码不匹配" };
+    }
+
+    // Check if email already exists
+    const emailExists = await checkUserNameExists(user_name);
+    if (emailExists) {
+      return { success: false, error: "该邮箱地址已被使用" };
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    // Update metafields using the updateProductMetafields function
+    const metafieldsToUpdate = [
+      {
+        namespace: "custom",
+        key: "user_name",
+        value: user_name,
+        type: "single_line_text_field",
+      },
+      {
+        namespace: "custom",
+        key: "password",
+        value: hashedPassword,
+        type: "single_line_text_field",
+      },
+    ];
+
+    const result = await updateProductMetafields(parseInt(companionId), metafieldsToUpdate);
+
+    if (!result.success) {
+      return { success: false, error: "更新登录信息失败" };
+    }
+
+    return { success: true, message: "登录信息更新成功" };
+  } catch (error) {
+    console.error("Error updating login credentials:", error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : "更新登录信息失败" 
+    };
   }
 }

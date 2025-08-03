@@ -442,3 +442,77 @@ export async function updateProductStatus(
   }
 }
 
+export async function updateProductMetafields(
+  productId: number,
+  metafields: Array<{
+    namespace: string;
+    key: string;
+    value: string;
+    type: string;
+  }>
+): Promise<ShopifyResponse<Array<unknown>>> {
+  try {
+    const updatedMetafields = [];
+
+    // First, get existing metafields for this product
+    const existingProduct = await getProductWithMetafields(productId.toString());
+    if (!existingProduct.success || !existingProduct.data) {
+      throw new Error("Failed to fetch existing product data");
+    }
+
+    const existingMetafields = existingProduct.data.metafields || [];
+
+    for (const metafieldData of metafields) {
+      try {
+        if (metafieldData.value !== "" && metafieldData.value !== "[]") {
+          // Check if metafield already exists
+          const existingMetafield = existingMetafields.find(
+            (existing) => 
+              existing.namespace === metafieldData.namespace && 
+              existing.key === metafieldData.key
+          );
+
+          let metafield;
+          if (existingMetafield && existingMetafield.id) {
+            // Update existing metafield
+            metafield = await shopify.metafield.update(parseInt(existingMetafield.id), {
+              value: metafieldData.value,
+              type: metafieldData.type,
+            });
+          } else {
+            // Create new metafield
+            metafield = await shopify.metafield.create({
+              owner_resource: "product",
+              owner_id: productId,
+              namespace: metafieldData.namespace,
+              key: metafieldData.key,
+              value: metafieldData.value,
+              type: metafieldData.type,
+            });
+          }
+          updatedMetafields.push(metafield);
+        }
+      } catch (singleMetafieldError) {
+        console.warn(
+          `Failed to update metafield ${metafieldData.key}:`,
+          singleMetafieldError
+        );
+      }
+    }
+
+    return {
+      success: true,
+      data: updatedMetafields,
+      error: null,
+    };
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    return {
+      success: false,
+      data: null,
+      error: errorMessage,
+    };
+  }
+}
+

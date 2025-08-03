@@ -182,6 +182,9 @@ export function processMetafields(
       case "user_name":
         processed.user_name = value;
         break;
+      case "password":
+        processed.password = value;
+        break;
       case "first_name":
         processed.first_name = value;
         break;

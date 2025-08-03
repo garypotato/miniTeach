@@ -2,12 +2,20 @@
 
 import { useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "@/app/store/hooks";
-import { clearSuccess } from "@/app/store/modalSlice";
+import { clearSuccess, closeModal } from "@/app/store/modalSlice";
 import LoadingSpinner from "./LoadingSpinner";
+import LoginCredentialsForm from "./LoginCredentialsForm";
 
 export default function GlobalModal() {
   const dispatch = useAppDispatch();
-  const { modalType, isLoading, loadingMessage, isSuccess, successMessage } = useAppSelector((state) => state.modal);
+  const { modalType, modalOpen, isLoading, loadingMessage, isSuccess, successMessage } = useAppSelector((state) => state.modal);
+
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    // Close modal if clicking on the backdrop (not the modal content)
+    if (e.target === e.currentTarget && modalType === "login_credentials") {
+      dispatch(closeModal());
+    }
+  };
 
   // Auto-close success modal after 5 seconds
   useEffect(() => {
@@ -20,10 +28,21 @@ export default function GlobalModal() {
   }, [isSuccess, dispatch]);
 
   // Don't show modal for filter type (handled by SearchFilter component)
-  if (modalType === "filter" || (!isLoading && !isSuccess)) return null;
+  if (modalType === "filter" || (!isLoading && !isSuccess && !modalOpen)) return null;
 
   if (isLoading) {
     return <LoadingSpinner message={loadingMessage || "加载中"} backdrop="dark" />;
+  }
+
+  if (modalType === "login_credentials" && modalOpen) {
+    return (
+      <div 
+        className="fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center z-40 p-4"
+        onClick={handleBackdropClick}
+      >
+        <LoginCredentialsForm onClose={() => dispatch(closeModal())} />
+      </div>
+    );
   }
 
   if (isSuccess) {

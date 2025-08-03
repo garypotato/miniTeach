@@ -33,3 +33,4 @@ export async function getCompanionProfile() {
     throw new Error("Failed to fetch companion profile");
   }
 }
+

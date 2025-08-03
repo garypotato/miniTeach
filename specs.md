@@ -227,6 +227,7 @@ app/                        # Next.js app directory
 - ✅ **Data Source**: Displays all metafields plus Shopify product `body_html`
 - ✅ **Protected Route**: JWT authentication required
 - ✅ **Responsive Layout**: Grid-based layout with profile images
+- ✅ **Login Credentials Modal**: Modal appears when companion lacks `user_name` or `password` metafields
 
 **Features Implemented:**
 
@@ -235,12 +236,16 @@ app/                        # Next.js app directory
 - **Skills & Qualifications**: Education, languages, certifications, blue card status
 - **Preferences**: Age groups, availability
 - **Profile Images**: Grid display of uploaded photos
+- **Login Credentials Modal**: Integrated with GlobalModal system for missing `user_name` or `password`
 - **Error Handling**: User-friendly error messages in Chinese
 
 **Technical Implementation:**
 
 - Server-side authentication with `getServerAuthSession()`
 - Server action for data fetching (`getCompanionProfile()`)
+- Server action for updating login credentials (`updateCompanionLoginCredentials()`)
+- Integrated GlobalModal system with click-outside-to-close functionality
+- Smart metafield processing that properly handles `password` field
 - Type-safe with TypeScript interfaces
 - Performance optimized server component
 

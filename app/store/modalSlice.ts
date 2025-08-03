@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 export interface ModalState {
   // Modal state
   modalOpen: boolean;
-  modalType?: "loading" | "filter" | "confirmation" | "success";
+  modalType?: "loading" | "filter" | "confirmation" | "success" | "login_credentials";
   modalData?: Record<string, unknown>;
   
   // Loading state
@@ -31,7 +31,7 @@ const modalSlice = createSlice({
   name: 'modal',
   initialState,
   reducers: {
-    openModal: (state, action: PayloadAction<{ type: "loading" | "filter" | "confirmation" | "success", data?: Record<string, unknown> }>) => {
+    openModal: (state, action: PayloadAction<{ type: "loading" | "filter" | "confirmation" | "success" | "login_credentials", data?: Record<string, unknown> }>) => {
       state.modalOpen = true;
       state.modalType = action.payload.type;
       state.modalData = action.payload.data;
