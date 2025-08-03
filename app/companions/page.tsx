@@ -58,6 +58,7 @@ export default async function CompanionsPage({
   const selectedCities = citiesParam
     ? citiesParam.split(",").filter((city: string) => city.trim())
     : [];
+  console.log("Selected Cities:", selectedCities);
   const companionsPerPage = 8;
 
   if (page < 1) {
@@ -109,12 +110,11 @@ export default async function CompanionsPage({
           melbourne: ["melbourne", "墨尔本"],
           brisbane: ["brisbane", "布里斯班", "布里斯本"],
           adelaide: ["adelaide", "阿德莱德", "阿德雷德"],
+          "gold coast": ["gold coast", "黄金海岸", "Gold Coast", "goldCoast"],
         };
-
         return selectedCities.some((city: string) => {
           const cityLower = city.toLowerCase();
           const searchTerms = cityNameMapping[cityLower] || [cityLower];
-
           return searchTerms.some((term) =>
             companionLocation.includes(term.toLowerCase())
           );
