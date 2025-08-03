@@ -1,0 +1,437 @@
+"use server";
+
+import { 
+  checkUserNameExists, 
+  createCompanionProduct, 
+  createProductMetafields,
+  addProductToCollection,
+  updateProductStatus
+} from "./products";
+import bcrypt from "bcryptjs";
+import { redirect } from "next/navigation";
+
+
+export async function checkEmailAvailability(email: string): Promise<{
+  success: boolean;
+  available?: boolean;
+  message?: string;
+  error?: string;
+}> {
+  try {
+    if (!email) {
+      return { success: false, error: "Email is required" };
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return { success: false, error: "Invalid email format" };
+    }
+
+    // Check if user_name (email) already exists using GraphQL
+    const exists = await checkUserNameExists(email);
+    
+    if (exists) {
+      return {
+        success: true,
+        available: false,
+        message: "此電子郵件地址已被使用"
+      };
+    }
+
+    return {
+      success: true,
+      available: true,
+      message: "電子郵件地址可用"
+    };
+  } catch (error) {
+    console.error("Error checking email availability:", error);
+    return { 
+      success: false, 
+      error: "無法驗證電子郵件唯一性，請稍後重試" 
+    };
+  }
+}
+
+export async function createCompanion(formData: FormData): Promise<{
+  success: boolean;
+  data?: {
+    id: number;
+    title: string;
+    status: string;
+    metafields: number;
+    images: number;
+  };
+  message?: string;
+  error?: string;
+}> {
+  try {
+    // Extract required fields
+    const first_name = formData.get("first_name") as string;
+    const last_name = formData.get("last_name") as string;
+    const user_name = formData.get("user_name") as string; // email
+    const major = formData.get("major") as string;
+    const location = formData.get("location") as string;
+    const password = formData.get("password") as string;
+    const description = formData.get("description") as string;
+
+    // Validate required fields
+    if (
+      !first_name ||
+      !last_name ||
+      !user_name ||
+      !major ||
+      !location ||
+      !password ||
+      !description
+    ) {
+      return { success: false, error: "Missing required fields" };
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(user_name)) {
+      return { success: false, error: "Invalid email format" };
+    }
+
+    // Check if user_name (email) already exists
+    const exists = await checkUserNameExists(user_name);
+    if (exists) {
+      return { 
+        success: false, 
+        error: "此電子郵件地址已被使用，請使用其他電子郵件地址" 
+      };
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    // Extract optional metafields
+    const metafields = {
+      wechat_id: (formData.get("wechat_id") as string) || "",
+      education: (formData.get("education") as string) || "",
+      language: ((formData.get("language") as string) || "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
+      age: (formData.get("age") as string) || "",
+      age_group: ((formData.get("age_group") as string) || "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
+      blue_card: (formData.get("blue_card") as string) || "",
+      police_check: (formData.get("police_check") as string) || "",
+      skill: ((formData.get("skill") as string) || "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
+      certification: ((formData.get("certification") as string) || "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
+      availability: ((formData.get("availability") as string) || "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
+    };
+
+    // Extract images
+    const images = formData.getAll("images") as File[];
+
+    // Validate images are provided
+    if (!images || images.length === 0 || images.every(img => img.size === 0)) {
+      return { success: false, error: "至少需要上傳1張照片" };
+    }
+
+    // Validate max 5 images
+    if (images.length > 5) {
+      return { success: false, error: "最多允許5張圖片" };
+    }
+
+    // Prepare title (first_name + last_name)
+    const title = `${first_name} ${last_name}`;
+
+    // Process images
+    let processedImages: Array<{
+      attachment: string;
+      filename: string;
+      alt: string;
+      position: number;
+    }> = [];
+
+    try {
+      const imagePromises = images.map(async (image, index) => {
+        if (image.size > 0) {
+          const bytes = await image.arrayBuffer();
+          const base64 = Buffer.from(bytes).toString("base64");
+          return {
+            attachment: base64,
+            filename: image.name || `companion-image-${index + 1}.jpg`,
+            alt: `${title} - Image ${index + 1}`,
+            position: index + 1,
+          };
+        }
+        return null;
+      });
+
+      const resolvedImages = await Promise.all(imagePromises);
+      processedImages = resolvedImages.filter(
+        (img) => img !== null
+      ) as typeof processedImages;
+    } catch (imageError) {
+      console.error("Error processing images:", imageError);
+      return { success: false, error: "圖片處理失敗" };
+    }
+
+    // Create companion product using server action
+    const companionProductData = {
+      title,
+      body_html: description,
+      vendor: "Mini-Teach",
+      product_type: "Companion", 
+      tags: "companion,child-care,education",
+      images: processedImages,
+    };
+
+    const productResult = await createCompanionProduct(companionProductData);
+    if (!productResult.success || !productResult.data) {
+      return { success: false, error: productResult.error || "Failed to create product" };
+    }
+
+    const createdProduct = productResult.data;
+
+    // Prepare metafields data
+    const metafieldsData = [
+      // Required fields as metafields
+      {
+        owner_resource: "product",
+        owner_id: createdProduct.id,
+        namespace: "custom",
+        key: "user_name",
+        value: user_name,
+        type: "single_line_text_field",
+      },
+      {
+        owner_resource: "product",
+        owner_id: createdProduct.id,
+        namespace: "custom",
+        key: "first_name",
+        value: first_name,
+        type: "single_line_text_field",
+      },
+      {
+        owner_resource: "product",
+        owner_id: createdProduct.id,
+        namespace: "custom",
+        key: "last_name",
+        value: last_name,
+        type: "single_line_text_field",
+      },
+      {
+        owner_resource: "product",
+        owner_id: createdProduct.id,
+        namespace: "custom",
+        key: "password",
+        value: hashedPassword,
+        type: "single_line_text_field",
+      },
+      {
+        owner_resource: "product",
+        owner_id: createdProduct.id,
+        namespace: "custom",
+        key: "major",
+        value: major,
+        type: "single_line_text_field",
+      },
+      {
+        owner_resource: "product",
+        owner_id: createdProduct.id,
+        namespace: "custom",
+        key: "location",
+        value: location,
+        type: "single_line_text_field",
+      },
+      // Optional fields (only create if not empty)
+      ...(metafields.wechat_id
+        ? [
+            {
+              owner_resource: "product",
+              owner_id: createdProduct.id,
+              namespace: "custom",
+              key: "wechat_id",
+              value: metafields.wechat_id,
+              type: "single_line_text_field",
+            },
+          ]
+        : []),
+      ...(metafields.education
+        ? [
+            {
+              owner_resource: "product",
+              owner_id: createdProduct.id,
+              namespace: "custom",
+              key: "education",
+              value: JSON.stringify([metafields.education]),
+              type: "list.single_line_text_field",
+            },
+          ]
+        : []),
+      ...(metafields.language.length > 0
+        ? [
+            {
+              owner_resource: "product",
+              owner_id: createdProduct.id,
+              namespace: "custom",
+              key: "language",
+              value: JSON.stringify(metafields.language),
+              type: "list.single_line_text_field",
+            },
+          ]
+        : []),
+      ...(metafields.age
+        ? [
+            {
+              owner_resource: "product",
+              owner_id: createdProduct.id,
+              namespace: "custom",
+              key: "age",
+              value: Number(metafields.age) || 0,
+              type: "number_integer",
+            },
+          ]
+        : []),
+      ...(metafields.age_group.length > 0
+        ? [
+            {
+              owner_resource: "product",
+              owner_id: createdProduct.id,
+              namespace: "custom",
+              key: "age_group",
+              value: metafields.age_group.join(" "),
+              type: "single_line_text_field",
+            },
+          ]
+        : []),
+      ...(metafields.blue_card
+        ? [
+            {
+              owner_resource: "product",
+              owner_id: createdProduct.id,
+              namespace: "custom",
+              key: "blue_card",
+              value: ["yes", "true", "是"].includes(
+                metafields.blue_card.toLowerCase()
+              )
+                ? "true"
+                : "false",
+              type: "boolean",
+            },
+          ]
+        : []),
+      ...(metafields.police_check
+        ? [
+            {
+              owner_resource: "product",
+              owner_id: createdProduct.id,
+              namespace: "custom",
+              key: "police_check",
+              value: ["yes", "true", "是"].includes(
+                metafields.police_check.toLowerCase()
+              )
+                ? "true"
+                : "false",
+              type: "boolean",
+            },
+          ]
+        : []),
+      ...(metafields.skill.length > 0
+        ? [
+            {
+              owner_resource: "product",
+              owner_id: createdProduct.id,
+              namespace: "custom",
+              key: "skill",
+              value: JSON.stringify(metafields.skill),
+              type: "list.single_line_text_field",
+            },
+          ]
+        : []),
+      ...(metafields.certification.length > 0
+        ? [
+            {
+              owner_resource: "product",
+              owner_id: createdProduct.id,
+              namespace: "custom",
+              key: "certification",
+              value: JSON.stringify(metafields.certification),
+              type: "list.single_line_text_field",
+            },
+          ]
+        : []),
+      ...(metafields.availability.length > 0
+        ? [
+            {
+              owner_resource: "product",
+              owner_id: createdProduct.id,
+              namespace: "custom",
+              key: "availability",
+              value: metafields.availability.join(" "),
+              type: "single_line_text_field",
+            },
+          ]
+        : []),
+    ];
+
+    // Create metafields using server action
+    const metafieldsToCreate = metafieldsData.map(field => ({
+      namespace: field.namespace,
+      key: field.key,
+      value: String(field.value), // Ensure all values are strings
+      type: field.type,
+    }));
+
+    const metafieldsResult = await createProductMetafields(createdProduct.id, metafieldsToCreate);
+    if (!metafieldsResult.success) {
+      console.warn("Failed to create some metafields:", metafieldsResult.error);
+    }
+
+    // Add product to companion collection using server action
+    const collectionResult = await addProductToCollection(createdProduct.id, 491355177275);
+    if (!collectionResult.success) {
+      console.warn("Failed to add product to companion collection:", collectionResult.error);
+      // Continue even if collection assignment fails
+    }
+
+    // Update product status to draft for review using server action
+    const statusResult = await updateProductStatus(createdProduct.id, "draft");
+    if (!statusResult.success) {
+      console.warn("Failed to update product status to draft:", statusResult.error);
+      // Continue even if status update fails
+    }
+
+    return {
+      success: true,
+      data: {
+        id: createdProduct.id,
+        title: createdProduct.title,
+        status: "draft",
+        metafields: metafieldsToCreate.length,
+        images: processedImages.length,
+      },
+      message: "Companion profile created successfully and is pending review",
+    };
+  } catch (error) {
+    console.error("Error creating companion:", error);
+    return { success: false, error: "Failed to create companion profile" };
+  }
+}
+
+export async function createCompanionAndRedirect(formData: FormData) {
+  const result = await createCompanion(formData);
+  
+  if (result.success) {
+    redirect("/companion/create?success=true");
+  } else {
+    redirect(`/companion/create?error=${encodeURIComponent(result.error || "Unknown error")}`);
+  }
+}

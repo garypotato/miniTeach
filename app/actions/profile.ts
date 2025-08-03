@@ -1,5 +1,5 @@
-import { getServerAuthSession } from "@/app/lib/auth";
-import { getProductWithMetafields, transformProductToCompanion } from "@/app/services/shopify";
+import { getServerAuthSession } from "@/lib/auth";
+import { getProductWithMetafields, transformProductToCompanion } from "@/lib/shopify";
 import { redirect } from "next/navigation";
 
 export async function getCompanionProfile() {

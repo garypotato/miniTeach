@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { getCompanionsAction } from "../../actions/shopify";
+// Client component - use fetch API for data
 
 interface Companion {
   id: number;
@@ -38,8 +38,13 @@ const extractTextFromHtml = (html: string) => {
 
 async function fetchMoreCompanions(excludeIds: number[]): Promise<Companion[]> {
   try {
-    const result = await getCompanionsAction();
-
+    const response = await fetch('/api/companions');
+    if (!response.ok) {
+      throw new Error('Failed to fetch companions');
+    }
+    
+    const result = await response.json();
+    
     if (result.success && result.data) {
       // Filter out companions that are already displayed
       const availableCompanions = result.data.filter(

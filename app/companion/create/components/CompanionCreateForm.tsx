@@ -6,6 +6,7 @@ import FormField from "./FormField";
 import LoadingSpinner from "./LoadingSpinner";
 import ImageUpload from "./ImageUpload";
 import TagsInput from "./TagsInput";
+import { checkEmailAvailability, createCompanion } from "../actions";
 
 interface FormData {
   // Required fields
@@ -32,7 +33,8 @@ interface FormData {
 }
 
 interface ValidationErrors {
-  [key: string]: string;
+  [key: string]: string | undefined;
+  general?: string;
 }
 
 export default function CompanionCreateForm() {
@@ -175,15 +177,7 @@ export default function CompanionCreateForm() {
 
     setIsCheckingEmail(true);
     try {
-      const response = await fetch("/api/companions/check-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      const result = await response.json();
+      const result = await checkEmailAvailability(email);
 
       if (!result.available) {
         setErrors((prev) => ({
@@ -237,6 +231,7 @@ export default function CompanionCreateForm() {
     }
 
     setIsSubmitting(true);
+    setErrors({}); // Clear any previous errors
 
     try {
       const submitData = new FormData();
@@ -273,18 +268,20 @@ export default function CompanionCreateForm() {
         submitData.append("images", image);
       });
 
-      const response = await fetch("/api/companions", {
-        method: "POST",
-        body: submitData,
-      });
-
-      const result = await response.json();
+      // Use server action for form submission
+      const result = await createCompanion(submitData);
 
       if (result.success) {
         setSubmitStatus("success");
+        // Optional: redirect after showing success
+        setTimeout(() => {
+          router.push("/companions");
+        }, 2000);
       } else {
         setSubmitStatus("error");
         console.error("Form submission error:", result.error);
+        // Show error message to user
+        setErrors({ general: result.error || "创建档案失败，请重试" });
       }
     } catch (error) {
       console.error("Form submission error:", error);
@@ -390,6 +387,28 @@ export default function CompanionCreateForm() {
         <h2 className="text-2xl font-bold text-gray-900 mb-8 flex items-center">
           创建陪伴师档案
         </h2>
+
+        {/* General Error Display */}
+        {errors.general && (
+          <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="flex">
+              <svg
+                className="w-5 h-5 text-red-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <p className="ml-2 text-sm text-red-700">{errors.general}</p>
+            </div>
+          </div>
+        )}
 
         {/* Personal Information */}
         <div className="mb-10">

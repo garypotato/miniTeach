@@ -13,6 +13,10 @@ export const METAFIELD_KEYS = {
   SKILL: "skill",
   CERTIFICATION: "certification",
   AVAILABILITY: "availability",
+  USER_NAME: "user_name",
+  FIRST_NAME: "first_name",
+  LAST_NAME: "last_name",
+  PASSWORD: "password",
 } as const;
 
 export const METAFIELD_LABELS = {
@@ -28,6 +32,9 @@ export const METAFIELD_LABELS = {
   [METAFIELD_KEYS.SKILL]: "Skills",
   [METAFIELD_KEYS.CERTIFICATION]: "Certifications",
   [METAFIELD_KEYS.AVAILABILITY]: "Availability",
+  [METAFIELD_KEYS.USER_NAME]: "User Name (Email)",
+  [METAFIELD_KEYS.FIRST_NAME]: "First Name",
+  [METAFIELD_KEYS.LAST_NAME]: "Last Name",
 } as const;
 
 export const METAFIELD_ICONS = {

@@ -3,7 +3,7 @@ import {
   getProductWithMetafields,
   transformProductToCompanion,
   Companion,
-} from "../../services/shopify";
+} from "../../../lib/shopify";
 import CompanionDetailWrapper from "./CompanionDetailWrapper";
 import CompanionDetailContent from "./CompanionDetailContent";
 

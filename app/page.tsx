@@ -3,7 +3,7 @@ import {
   getProducts,
   transformProductToCompanion,
   Companion,
-} from "./services/shopify";
+} from "../lib/shopify";
 
 // Simple server-side shuffle using Math.random() 
 function shuffleArray<T>(array: T[]): T[] {

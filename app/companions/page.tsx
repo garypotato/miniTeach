@@ -6,7 +6,7 @@ import {
   getProductsWithMetafields,
   transformProductToCompanion,
   Companion,
-} from "../services/shopify";
+} from "../../lib/shopify";
 
 interface CompanionsPageProps {
   searchParams: Promise<{

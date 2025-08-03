@@ -15,7 +15,13 @@ interface SearchFilterProps {
   initialCities: string[];
 }
 
-const AUSTRALIAN_CITIES = ["Sydney", "Melbourne", "Brisbane", "Adelaide"];
+const AUSTRALIAN_CITIES = [
+  "Sydney",
+  "Melbourne",
+  "Brisbane",
+  "Adelaide",
+  "Gold Coast",
+];
 
 export default function SearchFilter({
   initialSearch,

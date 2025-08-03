@@ -1,11 +1,11 @@
+"use server";
+
 import shopify from "./client";
 import {
   ShopifyProduct,
   ProductFilters,
   ShopifyResponse,
-  Companion,
 } from "./types";
-import { processMetafields } from "./metafields";
 
 export async function getProducts(
   options?: ProductFilters
@@ -267,9 +267,15 @@ export async function createCompanionProduct(productData: {
   vendor?: string;
   product_type?: string;
   tags?: string;
+  images?: Array<{
+    attachment: string;
+    filename: string;
+    alt: string;
+    position: number;
+  }>;
 }): Promise<ShopifyResponse<ShopifyProduct>> {
   try {
-    const product = await shopify.product.create({
+    const productCreateData = {
       title: productData.title,
       body_html: productData.body_html,
       vendor: productData.vendor || "MiniTeach",
@@ -278,7 +284,10 @@ export async function createCompanionProduct(productData: {
       status: "active",
       published: true,
       published_scope: "web",
-    });
+      ...(productData.images && { images: productData.images }),
+    };
+
+    const product = await shopify.product.create(productCreateData);
 
     return {
       success: true,
@@ -345,27 +354,91 @@ export async function createProductMetafields(
   }
 }
 
-export function transformProductToCompanion(
-  product: ShopifyProduct
-): Companion {
-  return {
-    id: product.id,
-    title: product.title,
-    body_html: product.body_html,
-    handle: product.handle,
-    image:
-      product.images && product.images.length > 0
-        ? {
-            src: product.images[0].src,
-            alt: product.images[0].alt || product.title,
+export async function checkUserNameExists(email: string): Promise<boolean> {
+  const query = `
+    query($query: String!) {
+      products(first: 250, query: $query) {
+        edges {
+          node {
+            id
+            metafield(namespace: "custom", key: "user_name") {
+              value
+            }
           }
-        : undefined,
-    images: product.images?.map((img) => ({
-      src: img.src,
-      alt: img.alt || product.title,
-    })),
-    metafields: product.metafields
-      ? processMetafields(product.metafields)
-      : undefined,
-  };
+        }
+      }
+    }
+  `;
+
+  try {
+    const response = await shopify.graphql(query, {
+      query: `product_type:Companion`
+    });
+
+    const products = response.products.edges;
+
+    for (const edge of products) {
+      const product = edge.node;
+      if (product.metafield && product.metafield.value === email) {
+        return true;
+      }
+    }
+
+    return false;
+  } catch (error) {
+    console.error("Error checking user_name uniqueness:", error);
+    throw error;
+  }
 }
+
+export async function addProductToCollection(
+  productId: number,
+  collectionId: number
+): Promise<ShopifyResponse<unknown>> {
+  try {
+    const collect = await shopify.collect.create({
+      product_id: productId,
+      collection_id: collectionId,
+    });
+
+    return {
+      success: true,
+      data: collect,
+      error: null,
+    };
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    return {
+      success: false,
+      data: null,
+      error: errorMessage,
+    };
+  }
+}
+
+export async function updateProductStatus(
+  productId: number,
+  status: "active" | "archived" | "draft"
+): Promise<ShopifyResponse<unknown>> {
+  try {
+    const updatedProduct = await shopify.product.update(productId, {
+      status: status,
+    });
+
+    return {
+      success: true,
+      data: updatedProduct,
+      error: null,
+    };
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    return {
+      success: false,
+      data: null,
+      error: errorMessage,
+    };
+  }
+}
+
