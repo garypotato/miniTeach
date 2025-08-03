@@ -7,6 +7,7 @@ if (!process.env.SHOP_NAME || !process.env.API_ACCESS_TOKEN) {
 const shopify = new Shopify({
   shopName: process.env.SHOP_NAME || "placeholder",
   accessToken: process.env.API_ACCESS_TOKEN || "placeholder",
+  apiVersion: "2024-10", // Use latest stable API version for better metafield support
 });
 
 export default shopify;

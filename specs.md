@@ -238,14 +238,20 @@ app/                        # Next.js app directory
 - **Profile Images**: Grid display of uploaded photos
 - **Login Credentials Modal**: Integrated with GlobalModal system for missing `user_name` or `password`
 - **Error Handling**: User-friendly error messages in Chinese
+- ✅ **Profile Edit Mode**: Edit button toggles edit mode with form fields matching create companion page layout
 
 **Technical Implementation:**
 
 - Server-side authentication with `getServerAuthSession()`
 - Server action for data fetching (`getCompanionProfile()`)
 - Server action for updating login credentials (`updateCompanionLoginCredentials()`)
+- Server action for updating profile data (`updateCompanionProfile()`)
 - Integrated GlobalModal system with click-outside-to-close functionality
-- Smart metafield processing that properly handles `password` field
+- Password confirmation modal for secure profile updates
+- Edit mode with form fields matching create companion page layout
+- `wechat_id` field disabled for editing (security requirement)
+- Smart metafield processing that properly handles all field types
+- Email uniqueness validation during profile updates
 - Type-safe with TypeScript interfaces
 - Performance optimized server component
 

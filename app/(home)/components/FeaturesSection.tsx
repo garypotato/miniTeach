@@ -79,9 +79,9 @@ export default function FeaturesSection() {
           />
         </svg>
       ),
-      title: "灵活且无承诺",
+      title: "灵活且无压力",
       description:
-        "我们不介入家长与陪伴师之间的费用安排，也不要求签订平台合约 。合作方式由双方自行协商 ——— 灵活、透明、无压力。",
+        "我们不介入家长与陪伴师之间的费用安排，也不要求签订平台合约。合作方式由双方自行协商 ——— 灵活、透明、无压力。",
       color: "from-orange-500 to-red-600",
     },
     {

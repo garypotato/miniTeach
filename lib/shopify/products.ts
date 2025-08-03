@@ -452,60 +452,84 @@ export async function updateProductMetafields(
   }>
 ): Promise<ShopifyResponse<Array<unknown>>> {
   try {
-    const updatedMetafields = [];
+    // Filter out empty metafields
+    const validMetafields = metafields.filter(
+      (field) => field.value !== "" && field.value !== "[]"
+    );
 
-    // First, get existing metafields for this product
-    const existingProduct = await getProductWithMetafields(productId.toString());
-    if (!existingProduct.success || !existingProduct.data) {
-      throw new Error("Failed to fetch existing product data");
+    if (validMetafields.length === 0) {
+      return {
+        success: true,
+        data: [],
+        error: null,
+      };
     }
 
-    const existingMetafields = existingProduct.data.metafields || [];
-
-    for (const metafieldData of metafields) {
-      try {
-        if (metafieldData.value !== "" && metafieldData.value !== "[]") {
-          // Check if metafield already exists
-          const existingMetafield = existingMetafields.find(
-            (existing) => 
-              existing.namespace === metafieldData.namespace && 
-              existing.key === metafieldData.key
-          );
-
-          let metafield;
-          if (existingMetafield && existingMetafield.id) {
-            // Update existing metafield
-            metafield = await shopify.metafield.update(parseInt(existingMetafield.id), {
-              value: metafieldData.value,
-              type: metafieldData.type,
-            });
-          } else {
-            // Create new metafield
-            metafield = await shopify.metafield.create({
-              owner_resource: "product",
-              owner_id: productId,
-              namespace: metafieldData.namespace,
-              key: metafieldData.key,
-              value: metafieldData.value,
-              type: metafieldData.type,
-            });
-          }
-          updatedMetafields.push(metafield);
-        }
-      } catch (singleMetafieldError) {
-        console.warn(
-          `Failed to update metafield ${metafieldData.key}:`,
-          singleMetafieldError
-        );
+    // Prepare metafield inputs for GraphQL
+    const metafieldInputs = validMetafields.map((field) => {
+      // Convert value based on type
+      let processedValue: string | number = field.value;
+      if (field.type === "number_integer") {
+        processedValue = parseInt(field.value) || 0;
       }
+
+      return {
+        ownerId: `gid://shopify/Product/${productId}`,
+        namespace: field.namespace,
+        key: field.key,
+        value: String(processedValue),
+        type: field.type,
+      };
+    });
+
+    // Use GraphQL metafieldsSet mutation for better reliability
+    const mutation = `
+      mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {
+        metafieldsSet(metafields: $metafields) {
+          metafields {
+            id
+            namespace
+            key
+            value
+            type
+          }
+          userErrors {
+            field
+            message
+            code
+          }
+        }
+      }
+    `;
+
+    const response = await shopify.graphql(mutation, {
+      metafields: metafieldInputs,
+    });
+
+    // Check for GraphQL errors
+    if (response.metafieldsSet?.userErrors?.length > 0) {
+      const errors = response.metafieldsSet.userErrors;
+      console.error("GraphQL metafields errors:", errors);
+      
+      // Log specific errors for debugging
+      errors.forEach((error: { field?: string; message: string; code?: string }) => {
+        console.error(`Metafield error - ${error.field}: ${error.message} (${error.code})`);
+      });
+
+      return {
+        success: false,
+        data: null,
+        error: errors.map((err: { field?: string; message: string }) => `${err.field}: ${err.message}`).join(", "),
+      };
     }
 
     return {
       success: true,
-      data: updatedMetafields,
+      data: response.metafieldsSet?.metafields || [],
       error: null,
     };
   } catch (error) {
+    console.error("GraphQL metafield update error:", error);
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
     return {

@@ -6,8 +6,10 @@ import {
   createProductMetafields,
   addProductToCollection,
   updateProductStatus,
-  updateProductMetafields
+  updateProductMetafields,
+  getProductWithMetafields
 } from "./products";
+import shopify from "./client";
 import bcrypt from "bcryptjs";
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "@/lib/auth";
@@ -507,6 +509,295 @@ export async function updateCompanionLoginCredentials(
     return { 
       success: false, 
       error: error instanceof Error ? error.message : "更新登录信息失败" 
+    };
+  }
+}
+
+export async function updateCompanionProfile(
+  formData: {
+    first_name: string;
+    last_name: string;
+    user_name: string;
+    major: string;
+    location: string;
+    age: string;
+    description: string;
+    education: string;
+    language: string;
+    blue_card: string;
+    police_check: string;
+    skill: string;
+    certification: string;
+    age_group: string;
+    availability: string;
+  },
+  password: string,
+  images?: File[],
+  imagesToRemove?: number[]
+): Promise<{
+  success: boolean;
+  message?: string;
+  error?: string;
+}> {
+  try {
+    // Get the current session server-side
+    const session = await getServerAuthSession();
+    
+    if (!session?.user) {
+      return { success: false, error: "未授权访问" };
+    }
+
+    const companionId = (session.user as { id?: string })?.id;
+    
+    if (!companionId) {
+      return { success: false, error: "用户ID未找到" };
+    }
+
+    // Get current companion data to verify password
+    const currentProfile = await getProductWithMetafields(companionId);
+    if (!currentProfile.success || !currentProfile.data) {
+      return { success: false, error: "获取当前档案失败" };
+    }
+
+    // Find current password metafield
+    const currentPasswordField = currentProfile.data.metafields?.find(
+      field => field.namespace === "custom" && field.key === "password"
+    );
+
+    if (!currentPasswordField) {
+      return { success: false, error: "未找到当前密码" };
+    }
+
+    // Verify password
+    const passwordMatch = await bcrypt.compare(password, currentPasswordField.value);
+    if (!passwordMatch) {
+      return { success: false, error: "密码不正确" };
+    }
+
+    // Validate required fields
+    if (!formData.first_name || !formData.last_name || !formData.user_name || 
+        !formData.major || !formData.location || !formData.description) {
+      return { success: false, error: "请填写所有必填字段" };
+    }
+
+    // Check if email is changing and if new email already exists
+    const currentEmailField = currentProfile.data.metafields?.find(
+      field => field.namespace === "custom" && field.key === "user_name"
+    );
+    
+    if (currentEmailField && currentEmailField.value !== formData.user_name) {
+      const emailExists = await checkUserNameExists(formData.user_name);
+      if (emailExists) {
+        return { success: false, error: "该邮箱地址已被使用" };
+      }
+    }
+
+    // Process images if provided
+    let processedImages: Array<{
+      attachment: string;
+      filename: string;
+      alt: string;
+      position: number;
+    }> = [];
+
+    if (images && images.length > 0) {
+      try {
+        const imagePromises = images.map(async (image, index) => {
+          if (image.size > 0) {
+            const bytes = await image.arrayBuffer();
+            const base64 = Buffer.from(bytes).toString("base64");
+            return {
+              attachment: base64,
+              filename: image.name || `companion-image-${index + 1}.jpg`,
+              alt: `${formData.first_name} ${formData.last_name} - Image ${index + 1}`,
+              position: index + 1,
+            };
+          }
+          return null;
+        });
+
+        const resolvedImages = await Promise.all(imagePromises);
+        processedImages = resolvedImages.filter(
+          (img) => img !== null
+        ) as typeof processedImages;
+      } catch (imageError) {
+        console.error("Error processing images:", imageError);
+        return { success: false, error: "图片处理失败" };
+      }
+    }
+
+    // Handle image management - both adding new and removing existing
+    let finalImages: Array<{
+      attachment: string;
+      filename: string;
+      alt: string;
+      position: number;
+    }> = [];
+    
+    // If we have new images or images to remove, we need to rebuild the images array
+    if (processedImages.length > 0 || (imagesToRemove && imagesToRemove.length > 0)) {
+      // Get current product images
+      const currentImages = currentProfile.data.images || [];
+      
+      // Filter out images marked for removal and convert existing images to the format needed
+      const existingImages = currentImages
+        .filter((_, index) => !imagesToRemove?.includes(index))
+        .map((image, index) => ({
+          src: image.src,
+          alt: image.alt || `${formData.first_name} ${formData.last_name} - Image ${index + 1}`,
+          position: index + 1,
+        }));
+      
+      // Combine existing images (that weren't removed) with new images
+      finalImages = [
+        ...processedImages,
+        // For existing images, we need to fetch them as base64 to update the product
+        ...await Promise.all(existingImages.map(async (image, index) => {
+          try {
+            // Fetch the image from the URL
+            const response = await fetch(image.src);
+            const arrayBuffer = await response.arrayBuffer();
+            const base64 = Buffer.from(arrayBuffer).toString("base64");
+            
+            return {
+              attachment: base64,
+              filename: `existing-image-${index + 1}.jpg`,
+              alt: image.alt,
+              position: processedImages.length + index + 1,
+            };
+          } catch (error) {
+            console.error(`Error fetching existing image ${image.src}:`, error);
+            // Skip this image if we can't fetch it
+            return null;
+          }
+        }))
+      ].filter(Boolean) as typeof finalImages;
+    }
+
+    // Update product title, body_html, and images
+    const newTitle = `${formData.first_name} ${formData.last_name}`;
+    const updateData: {
+      title: string;
+      body_html: string;
+      images?: Array<{
+        attachment: string;
+        filename: string;
+        alt: string;
+        position: number;
+      }>;
+    } = {
+      title: newTitle,
+      body_html: formData.description,
+    };
+
+    // Add images to update if we have processed images or removals
+    if (finalImages.length > 0 || (imagesToRemove && imagesToRemove.length > 0)) {
+      updateData.images = finalImages;
+    }
+
+    await shopify.product.update(parseInt(companionId), updateData);
+
+    // Prepare metafields for update
+    const metafieldsToUpdate = [
+      {
+        namespace: "custom",
+        key: "first_name",
+        value: formData.first_name,
+        type: "single_line_text_field",
+      },
+      {
+        namespace: "custom",
+        key: "last_name",
+        value: formData.last_name,
+        type: "single_line_text_field",
+      },
+      {
+        namespace: "custom",
+        key: "user_name",
+        value: formData.user_name,
+        type: "single_line_text_field",
+      },
+      {
+        namespace: "custom",
+        key: "major",
+        value: formData.major,
+        type: "single_line_text_field",
+      },
+      {
+        namespace: "custom",
+        key: "location",
+        value: formData.location,
+        type: "single_line_text_field",
+      },
+      {
+        namespace: "custom",
+        key: "age",
+        value: String(parseInt(formData.age) || 0),
+        type: "number_integer",
+      },
+      {
+        namespace: "custom",
+        key: "education",
+        value: formData.education,
+        type: "single_line_text_field",
+      },
+      {
+        namespace: "custom",
+        key: "language",
+        value: JSON.stringify(formData.language.split(",").map(s => s.trim()).filter(Boolean)),
+        type: "list.single_line_text_field",
+      },
+      {
+        namespace: "custom",
+        key: "blue_card",
+        value: formData.blue_card,
+        type: "single_line_text_field",
+      },
+      {
+        namespace: "custom",
+        key: "police_check",
+        value: formData.police_check,
+        type: "single_line_text_field",
+      },
+      {
+        namespace: "custom",
+        key: "skill",
+        value: JSON.stringify(formData.skill.split(",").map(s => s.trim()).filter(Boolean)),
+        type: "list.single_line_text_field",
+      },
+      {
+        namespace: "custom",
+        key: "certification",
+        value: JSON.stringify(formData.certification.split(",").map(s => s.trim()).filter(Boolean)),
+        type: "list.single_line_text_field",
+      },
+      {
+        namespace: "custom",
+        key: "age_group",
+        value: JSON.stringify(formData.age_group.split(",").map(s => s.trim()).filter(Boolean)),
+        type: "list.single_line_text_field",
+      },
+      {
+        namespace: "custom",
+        key: "availability",
+        value: JSON.stringify(formData.availability.split(",").map(s => s.trim()).filter(Boolean)),
+        type: "list.single_line_text_field",
+      },
+    ];
+
+    // Update metafields
+    const result = await updateProductMetafields(parseInt(companionId), metafieldsToUpdate);
+
+    if (!result.success) {
+      return { success: false, error: "更新档案信息失败" };
+    }
+
+    return { success: true, message: "档案信息更新成功" };
+  } catch (error) {
+    console.error("Error updating companion profile:", error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : "更新档案信息失败" 
     };
   }
 }

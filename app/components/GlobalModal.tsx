@@ -2,17 +2,20 @@
 
 import { useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "@/app/store/hooks";
-import { clearSuccess, closeModal } from "@/app/store/modalSlice";
+import { clearSuccess, closeModal, setSuccess } from "@/app/store/modalSlice";
 import LoadingSpinner from "./LoadingSpinner";
 import LoginCredentialsForm from "./LoginCredentialsForm";
+import PasswordConfirmationForm from "./PasswordConfirmationForm";
+import { updateCompanionProfile } from "@/lib/shopify/companion-actions";
+import { getCurrentEditImages, clearCurrentEditImages } from "@/app/companion/dashboard/profile/ProfilePageClient";
 
 export default function GlobalModal() {
   const dispatch = useAppDispatch();
-  const { modalType, modalOpen, isLoading, loadingMessage, isSuccess, successMessage } = useAppSelector((state) => state.modal);
+  const { modalType, modalOpen, modalData, isLoading, loadingMessage, isSuccess, successMessage } = useAppSelector((state) => state.modal);
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     // Close modal if clicking on the backdrop (not the modal content)
-    if (e.target === e.currentTarget && modalType === "login_credentials") {
+    if (e.target === e.currentTarget && (modalType === "login_credentials" || modalType === "password_confirmation")) {
       dispatch(closeModal());
     }
   };
@@ -41,6 +44,72 @@ export default function GlobalModal() {
         onClick={handleBackdropClick}
       >
         <LoginCredentialsForm onClose={() => dispatch(closeModal())} />
+      </div>
+    );
+  }
+
+  if (modalType === "password_confirmation" && modalOpen) {
+    return (
+      <div 
+        className="fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center z-40 p-4"
+        onClick={handleBackdropClick}
+      >
+        <PasswordConfirmationForm 
+          key="password-confirmation-form"
+          onClose={() => dispatch(closeModal())} 
+          onConfirm={async (password) => {
+            const formData = modalData?.formData as {
+              first_name: string;
+              last_name: string;
+              user_name: string;
+              major: string;
+              location: string;
+              age: string;
+              description: string;
+              education: string;
+              language: string;
+              blue_card: string;
+              police_check: string;
+              skill: string;
+              certification: string;
+              age_group: string;
+              availability: string;
+            };
+            const imagesToRemove = modalData?.imagesToRemove as number[] | undefined;
+            
+            if (formData) {
+              // Get current edit images from module-level storage
+              const images = getCurrentEditImages();
+              
+              // Log images for debugging
+              if (images.length > 0) {
+                console.log(`Profile update includes ${images.length} new images`);
+              }
+              if (imagesToRemove && imagesToRemove.length > 0) {
+                console.log(`Profile update will remove ${imagesToRemove.length} existing images at indices:`, imagesToRemove);
+              }
+              
+              const result = await updateCompanionProfile(formData, password, images, imagesToRemove);
+              
+              if (result.success) {
+                // Clear the uploaded images after successful update
+                clearCurrentEditImages();
+                
+                dispatch(setSuccess({ 
+                  success: true, 
+                  message: result.message || "档案更新成功" 
+                }));
+                // Reload page after success modal closes
+                setTimeout(() => {
+                  window.location.reload();
+                }, 2000);
+              } else {
+                // Don't close modal on error, show error in the password form
+                throw new Error(result.error || "更新失败");
+              }
+            }
+          }}
+        />
       </div>
     );
   }

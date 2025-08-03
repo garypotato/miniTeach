@@ -10,7 +10,13 @@ interface MetafieldsDisplayProps {
 }
 
 // Fields to exclude from display for privacy/security reasons
-const EXCLUDED_FIELDS = ['password', 'wechat_id', 'user_name', 'first_name', 'last_name'];
+const EXCLUDED_FIELDS = [
+  "password",
+  "wechat_id",
+  "user_name",
+  "first_name",
+  "last_name",
+];
 
 const FIELD_ORDER = [
   METAFIELD_KEYS.AGE,
@@ -33,14 +39,14 @@ export default function MetafieldsDisplay({
   const getTranslatedLabel = (key: string): string => {
     const labels: Record<string, string> = {
       wechat_id: "微信号",
-      major: "专业/学习领域", 
+      major: "专业/学习领域",
       education: "学历背景",
       language: "语言",
       age: "年龄",
       location: "位置",
       age_group: "擅长年龄段",
       blue_card: "是否持有蓝卡(WWCC)",
-      police_check: "无犯罪记录证明", 
+      police_check: "无犯罪记录证明",
       skill: "技能",
       certification: "证书/毕业证",
       availability: "时间安排",
@@ -49,34 +55,38 @@ export default function MetafieldsDisplay({
   };
 
   // Get all metafield keys and filter out excluded ones
-  const allMetafieldKeys = Object.keys(metafields).filter(key => 
-    !EXCLUDED_FIELDS.includes(key)
+  const allMetafieldKeys = Object.keys(metafields).filter(
+    (key) => !EXCLUDED_FIELDS.includes(key)
   );
 
   // Create display fields with preferred order, then remaining fields
-  const orderedKeys = FIELD_ORDER.filter(key => allMetafieldKeys.includes(key));
+  const orderedKeys = FIELD_ORDER.filter((key) =>
+    allMetafieldKeys.includes(key)
+  );
   const fieldOrderStrings = FIELD_ORDER as string[];
-  const remainingKeys = allMetafieldKeys.filter(key => !fieldOrderStrings.includes(key));
+  const remainingKeys = allMetafieldKeys.filter(
+    (key) => !fieldOrderStrings.includes(key)
+  );
   const allKeys = [...orderedKeys, ...remainingKeys];
 
   const displayFields = allKeys.filter((key) => {
     const value = metafields[key as keyof CompanionMetafields];
-    
+
     // Filter out undefined, null, empty strings
     if (value === undefined || value === null || value === "") {
       return false;
     }
-    
+
     // Filter out empty arrays
     if (Array.isArray(value) && value.length === 0) {
       return false;
     }
-    
+
     // Filter out arrays with only empty strings
-    if (Array.isArray(value) && value.every(item => item === "")) {
+    if (Array.isArray(value) && value.every((item) => item === "")) {
       return false;
     }
-    
+
     return true;
   });
 
@@ -201,7 +211,7 @@ export default function MetafieldsDisplay({
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span>可用性</span>
+              <span>时间安排</span>
             </div>
           </div>
         </div>
