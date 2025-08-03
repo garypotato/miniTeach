@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, KeyboardEvent, ChangeEvent } from "react";
+import React, { useState, KeyboardEvent, ChangeEvent, forwardRef } from "react";
 
 interface TagsInputProps {
   label: string;
@@ -9,16 +9,18 @@ interface TagsInputProps {
   value: string;
   onChange: (name: string, value: string) => void;
   error?: string;
+  required?: boolean;
 }
 
-export default function TagsInput({
+const TagsInput = forwardRef<HTMLDivElement, TagsInputProps>(({
   label,
   name,
   placeholder,
   value,
   onChange,
   error,
-}: TagsInputProps) {
+  required = false,
+}, ref) => {
   const [inputValue, setInputValue] = useState("");
 
   // Convert comma-separated string to array for display
@@ -74,9 +76,10 @@ export default function TagsInput({
   };
 
   return (
-    <div className="space-y-2">
+    <div ref={ref} className="space-y-2">
       <label className="block text-sm font-semibold text-gray-700">
         {label}
+        {required && <span className="text-red-500 ml-1">*</span>}
       </label>
 
       <div className="min-h-[42px] border border-gray-300 rounded-lg p-2 flex flex-wrap gap-2 items-center focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-500">
@@ -118,4 +121,8 @@ export default function TagsInput({
       {error && <p className="text-sm text-red-600">{error}</p>}
     </div>
   );
-}
+});
+
+TagsInput.displayName = 'TagsInput';
+
+export default TagsInput;

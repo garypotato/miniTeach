@@ -60,7 +60,7 @@ export default function FAQSection() {
                 </li>
               </ol>
               <br />
-              <p className="mb-4">平台不抽佣、不参与报价，合作更加灵活透明。</p>
+              <p className="mb-4">平台不参与报价，合作更加灵活透明。</p>
             </div>
           </details>
 

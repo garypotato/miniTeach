@@ -164,7 +164,7 @@ export default async function CompanionProfile() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    认证
+                    证书/毕业证
                   </label>
                   <p className="text-gray-900">
                     {formatArrayField(profile.metafields?.certification)}

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, forwardRef } from "react";
 import Image from "next/image";
 
 interface ImageUploadProps {
@@ -7,11 +7,11 @@ interface ImageUploadProps {
   error?: string;
 }
 
-export default function ImageUpload({
+const ImageUpload = forwardRef<HTMLDivElement, ImageUploadProps>(({
   images,
   onChange,
   error,
-}: ImageUploadProps) {
+}, ref) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
 
@@ -70,7 +70,7 @@ export default function ImageUpload({
   };
 
   return (
-    <div className="space-y-4">
+    <div ref={ref} className="space-y-4">
       <div className="text-sm text-gray-600">{""}</div>
 
       {/* Upload Area */}
@@ -191,4 +191,8 @@ export default function ImageUpload({
       )}
     </div>
   );
-}
+});
+
+ImageUpload.displayName = 'ImageUpload';
+
+export default ImageUpload;

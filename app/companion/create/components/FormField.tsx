@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 
 interface Option {
   value: string;
@@ -19,7 +19,7 @@ interface FormFieldProps {
   disabled?: boolean;
 }
 
-export default function FormField({
+const FormField = forwardRef<HTMLDivElement, FormFieldProps>(({
   label,
   name,
   type,
@@ -31,7 +31,7 @@ export default function FormField({
   rows = 4,
   options = [],
   disabled = false,
-}: FormFieldProps) {
+}, ref) => {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -46,7 +46,7 @@ export default function FormField({
   const disabledClasses = disabled ? "bg-gray-100 cursor-not-allowed opacity-75" : "";
 
   return (
-    <div className="space-y-2">
+    <div ref={ref} className="space-y-2">
       <label htmlFor={name} className="block text-sm font-medium text-gray-700">
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
@@ -115,5 +115,9 @@ export default function FormField({
       )}
     </div>
   );
-}
+});
+
+FormField.displayName = 'FormField';
+
+export default FormField;
 

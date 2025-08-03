@@ -38,6 +38,7 @@ interface ValidationErrors {
 export default function CompanionCreateForm() {
   const router = useRouter();
   const emailCheckTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const fieldRefs = useRef<{ [key: string]: HTMLElement | null }>({});
 
   const [formData, setFormData] = useState<FormData>({
     first_name: "",
@@ -67,10 +68,28 @@ export default function CompanionCreateForm() {
     "idle" | "success" | "error"
   >("idle");
 
+  const scrollToFirstError = (errors: ValidationErrors) => {
+    const firstErrorField = Object.keys(errors)[0];
+    if (firstErrorField && fieldRefs.current[firstErrorField]) {
+      const element = fieldRefs.current[firstErrorField];
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+      // Focus the field if it's an input
+      const input = element.querySelector(
+        "input, textarea, select"
+      ) as HTMLElement;
+      if (input && input.focus) {
+        setTimeout(() => input.focus(), 100);
+      }
+    }
+  };
+
   const validateForm = (): boolean => {
     const newErrors: ValidationErrors = {};
 
-    // Required field validation
+    // All fields are now required
     if (!formData.first_name.trim()) {
       newErrors.first_name = "此栏位为必填";
     }
@@ -101,6 +120,36 @@ export default function CompanionCreateForm() {
     } else if (formData.description.length < 50) {
       newErrors.description = "必须至少50个字符";
     }
+    if (!formData.wechat_id.trim()) {
+      newErrors.wechat_id = "此栏位为必填";
+    }
+    if (!formData.education.trim()) {
+      newErrors.education = "此栏位为必填";
+    }
+    if (!formData.language.trim()) {
+      newErrors.language = "此栏位为必填";
+    }
+    if (!formData.age.trim()) {
+      newErrors.age = "此栏位为必填";
+    }
+    if (!formData.age_group.trim()) {
+      newErrors.age_group = "此栏位为必填";
+    }
+    if (!formData.blue_card.trim()) {
+      newErrors.blue_card = "此栏位为必填";
+    }
+    if (!formData.police_check.trim()) {
+      newErrors.police_check = "此栏位为必填";
+    }
+    if (!formData.skill.trim()) {
+      newErrors.skill = "此栏位为必填";
+    }
+    if (!formData.certification.trim()) {
+      newErrors.certification = "此栏位为必填";
+    }
+    if (!formData.availability.trim()) {
+      newErrors.availability = "此栏位为必填";
+    }
 
     // Image validation
     if (formData.images.length === 0) {
@@ -110,7 +159,13 @@ export default function CompanionCreateForm() {
     }
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+
+    if (Object.keys(newErrors).length > 0) {
+      scrollToFirstError(newErrors);
+      return false;
+    }
+
+    return true;
   };
 
   const checkEmailUniqueness = async (email: string): Promise<boolean> => {
@@ -330,118 +385,301 @@ export default function CompanionCreateForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
-      {/* Required Fields Section */}
+      {/* Single Form Section */}
       <div className="bg-white rounded-xl border border-gray-200 p-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-          <span className="w-8 h-8 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-sm font-bold mr-3">
-            *
-          </span>
-          必填栏位
+        <h2 className="text-2xl font-bold text-gray-900 mb-8 flex items-center">
+          创建陪伴师档案
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormField
-            label="名字"
-            name="first_name"
-            type="text"
-            placeholder="请输入您的名字"
-            value={formData.first_name}
-            onChange={handleInputChange}
-            error={errors.first_name}
-            required
-          />
-
-          <FormField
-            label="姓氏"
-            name="last_name"
-            type="text"
-            placeholder="请输入您的姓氏"
-            value={formData.last_name}
-            onChange={handleInputChange}
-            error={errors.last_name}
-            required
-          />
-
-          <div className="relative">
+        {/* Personal Information */}
+        <div className="mb-10">
+          <h3 className="text-lg font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200">
+            基本信息
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField
-              label="电子邮件地址"
-              name="user_name"
-              type="email"
-              placeholder="请输入您的电子邮件地址"
-              value={formData.user_name}
+              ref={(el) => {
+                fieldRefs.current["first_name"] = el;
+              }}
+              label="名字"
+              name="first_name"
+              type="text"
+              placeholder="请输入您的名字"
+              value={formData.first_name}
               onChange={handleInputChange}
-              error={errors.user_name}
+              error={errors.first_name}
               required
-              disabled={isCheckingEmail}
             />
-            {isCheckingEmail && (
-              <div className="absolute right-3 top-9 flex items-center">
-                <LoadingSpinner className="w-4 h-4 text-blue-600" />
-                <span className="ml-2 text-sm text-gray-500">检查中...</span>
-              </div>
-            )}
+
+            <FormField
+              ref={(el) => {
+                fieldRefs.current["last_name"] = el;
+              }}
+              label="姓氏"
+              name="last_name"
+              type="text"
+              placeholder="请输入您的姓氏"
+              value={formData.last_name}
+              onChange={handleInputChange}
+              error={errors.last_name}
+              required
+            />
+
+            <div className="relative">
+              <FormField
+                ref={(el) => {
+                  fieldRefs.current["user_name"] = el;
+                }}
+                label="电子邮件地址"
+                name="user_name"
+                type="email"
+                placeholder="请输入您的电子邮件地址"
+                value={formData.user_name}
+                onChange={handleInputChange}
+                error={errors.user_name}
+                required
+                disabled={isCheckingEmail}
+              />
+              {isCheckingEmail && (
+                <div className="absolute right-3 top-9 flex items-center">
+                  <LoadingSpinner className="w-4 h-4 text-blue-600" />
+                  <span className="ml-2 text-sm text-gray-500">检查中...</span>
+                </div>
+              )}
+            </div>
+
+            <FormField
+              ref={(el) => {
+                fieldRefs.current["password"] = el;
+              }}
+              label="密码"
+              name="password"
+              type="password"
+              placeholder="创建一个安全的密码"
+              value={formData.password}
+              onChange={handleInputChange}
+              error={errors.password}
+              required
+            />
+
+            <FormField
+              ref={(el) => {
+                fieldRefs.current["age"] = el;
+              }}
+              label="年龄"
+              name="age"
+              type="number"
+              placeholder="您的年龄"
+              value={formData.age}
+              onChange={handleInputChange}
+              error={errors.age}
+              required
+            />
+
+            <FormField
+              ref={(el) => {
+                fieldRefs.current["wechat_id"] = el;
+              }}
+              label="微信号"
+              name="wechat_id"
+              type="text"
+              placeholder="您的微信ID"
+              value={formData.wechat_id}
+              onChange={handleInputChange}
+              error={errors.wechat_id}
+              required
+            />
+
+            <FormField
+              ref={(el) => {
+                fieldRefs.current["location"] = el;
+              }}
+              label="位置"
+              name="location"
+              type="select"
+              placeholder="选择您的城市"
+              value={formData.location}
+              onChange={handleInputChange}
+              error={errors.location}
+              required
+              options={[
+                { value: "", label: "选择您的城市..." },
+                { value: "sydney", label: "Sydney" },
+                { value: "melbourne", label: "Melbourne" },
+                { value: "brisbane", label: "Brisbane" },
+                { value: "goldCoast", label: "Gold Coast" },
+                { value: "adelaide", label: "Adelaide" },
+              ]}
+            />
           </div>
-
-          <FormField
-            label="密碼"
-            name="password"
-            type="password"
-            placeholder="创建一个安全的密码"
-            value={formData.password}
-            onChange={handleInputChange}
-            error={errors.password}
-            required
-          />
-
-          <FormField
-            label="专业/学习领域"
-            name="major"
-            type="text"
-            placeholder="例如：教育、幼儿发展"
-            value={formData.major}
-            onChange={handleInputChange}
-            error={errors.major}
-            required
-          />
-
-          <FormField
-            label="位置"
-            name="location"
-            type="select"
-            placeholder="选择您的城市"
-            value={formData.location}
-            onChange={handleInputChange}
-            error={errors.location}
-            required
-            options={[
-              { value: "", label: "选择您的城市..." },
-              {
-                value: "sydney",
-                label: "Sydney",
-              },
-              {
-                value: "melbourne",
-                label: "Melbourne",
-              },
-              {
-                value: "brisbane",
-                label: "Brisbane",
-              },
-              {
-                value: "goldCoast",
-                label: "Gold Coast",
-              },
-              {
-                value: "adelaide",
-                label: "Adelaide",
-              },
-            ]}
-          />
         </div>
 
-        <div className="mt-6">
+        {/* Education & Experience */}
+        <div className="mb-10">
+          <h3 className="text-lg font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200">
+            教育背景与经验
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField
+              ref={(el) => {
+                fieldRefs.current["major"] = el;
+              }}
+              label="专业/学习领域"
+              name="major"
+              type="text"
+              placeholder="例如：教育、幼儿发展、心理学"
+              value={formData.major}
+              onChange={handleInputChange}
+              error={errors.major}
+              required
+            />
+
+            <TagsInput
+              ref={(el) => {
+                fieldRefs.current["education"] = el;
+              }}
+              label="学历背景"
+              name="education"
+              placeholder="例如：学士学位、硕士学位"
+              value={formData.education}
+              onChange={handleInputChange}
+              error={errors.education}
+              required
+            />
+
+            <TagsInput
+              ref={(el) => {
+                fieldRefs.current["language"] = el;
+              }}
+              label="语言"
+              name="language"
+              placeholder="请输入您会说的语言"
+              value={formData.language}
+              onChange={handleInputChange}
+              error={errors.language}
+              required
+            />
+
+            <TagsInput
+              ref={(el) => {
+                fieldRefs.current["skill"] = el;
+              }}
+              label="技能"
+              name="skill"
+              placeholder="请输入您的专业技能"
+              value={formData.skill}
+              onChange={handleInputChange}
+              error={errors.skill}
+              required
+            />
+
+            <TagsInput
+              ref={(el) => {
+                fieldRefs.current["certification"] = el;
+              }}
+              label="证书/毕业证"
+              name="certification"
+              placeholder="请输入您的相关证书或资格"
+              value={formData.certification}
+              onChange={handleInputChange}
+              error={errors.certification}
+              required
+            />
+          </div>
+        </div>
+
+        {/* Background Checks */}
+        <div className="mb-10">
+          <h3 className="text-lg font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200">
+            背景检查
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField
+              ref={(el) => {
+                fieldRefs.current["blue_card"] = el;
+              }}
+              label="是否持有蓝卡(WWCC)"
+              name="blue_card"
+              type="select"
+              placeholder="您是否持有蓝卡或与儿童工作检查？"
+              value={formData.blue_card}
+              onChange={handleInputChange}
+              error={errors.blue_card}
+              required
+              options={[
+                { value: "", label: "选择..." },
+                { value: "yes", label: "有" },
+                { value: "no", label: "没有" },
+                { value: "pending", label: "申请中" },
+              ]}
+            />
+
+            <FormField
+              ref={(el) => {
+                fieldRefs.current["police_check"] = el;
+              }}
+              label="无犯罪记录证明"
+              name="police_check"
+              type="select"
+              placeholder="您是否有有效的警察许可？"
+              value={formData.police_check}
+              onChange={handleInputChange}
+              error={errors.police_check}
+              required
+              options={[
+                { value: "", label: "选择..." },
+                { value: "yes", label: "有" },
+                { value: "no", label: "没有" },
+                { value: "pending", label: "申请中" },
+              ]}
+            />
+          </div>
+        </div>
+
+        {/* Preferences */}
+        <div className="mb-10">
+          <h3 className="text-lg font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200">
+            工作偏好
+          </h3>
+          <div className="grid grid-cols-1 gap-6">
+            <TagsInput
+              ref={(el) => {
+                fieldRefs.current["age_group"] = el;
+              }}
+              label="擅长年龄段"
+              name="age_group"
+              placeholder="请输入您偏好工作的年龄组"
+              value={formData.age_group}
+              onChange={handleInputChange}
+              error={errors.age_group}
+              required
+            />
+
+            <TagsInput
+              ref={(el) => {
+                fieldRefs.current["availability"] = el;
+              }}
+              label="时间安排"
+              name="availability"
+              placeholder="没特别的时间安排，请写：均可 / 时间灵活"
+              value={formData.availability}
+              onChange={handleInputChange}
+              error={errors.availability}
+              required
+            />
+          </div>
+        </div>
+
+        {/* About Me */}
+        <div className="mb-10">
+          <h3 className="text-lg font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200">
+            关于我
+          </h3>
           <FormField
-            label="關於我"
+            ref={(el) => {
+              fieldRefs.current["description"] = el;
+            }}
+            label="个人介绍"
             name="description"
             type="textarea"
             placeholder="告诉家庭关于您自己、您的经验和儿童照护方法..."
@@ -453,144 +691,21 @@ export default function CompanionCreateForm() {
           />
         </div>
 
-        {/* Image Upload in Required Section */}
-        <div className="mt-8">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <span className="w-6 h-6 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-xs font-bold mr-3">
-              *
-            </span>
+        {/* Profile Photos */}
+        <div className="mb-8">
+          <h3 className="text-lg font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200">
             档案照片
           </h3>
           <p className="text-gray-600 text-sm mb-4">
             请上传至少1张照片，最多5张 (每张图片最大5MB)
           </p>
           <ImageUpload
+            ref={(el) => {
+              fieldRefs.current["images"] = el;
+            }}
             images={formData.images}
             onChange={(images: File[]) => handleInputChange("images", images)}
             error={errors.images}
-          />
-        </div>
-      </div>
-
-      {/* Optional Fields Section */}
-      <div className="bg-white rounded-xl border border-gray-200 p-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">选填栏位</h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormField
-            label="微信号"
-            name="wechat_id"
-            type="text"
-            placeholder="您的微信识别码"
-            value={formData.wechat_id}
-            onChange={handleInputChange}
-          />
-
-          <TagsInput
-            label="教育程度"
-            name="education"
-            placeholder="例如：学士学位、硕士学位"
-            value={formData.education}
-            onChange={handleInputChange}
-          />
-
-          <FormField
-            label="年龄"
-            name="age"
-            type="number"
-            placeholder="您的年龄"
-            value={formData.age}
-            onChange={handleInputChange}
-          />
-
-          <FormField
-            label="藍卡 / WWCC"
-            name="blue_card"
-            type="select"
-            placeholder="您是否持有蓝卡或与儿童工作检查？"
-            value={formData.blue_card}
-            onChange={handleInputChange}
-            options={[
-              { value: "", label: "选择..." },
-              {
-                value: "yes",
-                label: "是",
-              },
-              {
-                value: "no",
-                label: "否",
-              },
-              {
-                value: "pending",
-                label: "申请中",
-              },
-            ]}
-          />
-
-          <FormField
-            label="警察检查"
-            name="police_check"
-            type="select"
-            placeholder="您是否有有效的警察许可？"
-            value={formData.police_check}
-            onChange={handleInputChange}
-            options={[
-              { value: "", label: "选择..." },
-              {
-                value: "yes",
-                label: "是",
-              },
-              {
-                value: "no",
-                label: "否",
-              },
-              {
-                value: "pending",
-                label: "申请中",
-              },
-            ]}
-          />
-        </div>
-
-        <div className="grid grid-cols-1 gap-6 mt-6">
-          <TagsInput
-            label="使用语言"
-            name="language"
-            placeholder="请输入您会说的语言"
-            value={formData.language}
-            onChange={handleInputChange}
-          />
-
-          <TagsInput
-            label="偏好年龄组"
-            name="age_group"
-            placeholder="请输入您偏好工作的年龄组"
-            value={formData.age_group}
-            onChange={handleInputChange}
-          />
-
-          <TagsInput
-            label="技能"
-            name="skill"
-            placeholder="请输入您的技能"
-            value={formData.skill}
-            onChange={handleInputChange}
-          />
-
-          <TagsInput
-            label="认证"
-            name="certification"
-            placeholder="请输入您的认证"
-            value={formData.certification}
-            onChange={handleInputChange}
-          />
-
-          <TagsInput
-            label="可用性"
-            name="availability"
-            placeholder="请输入您的可用时间"
-            value={formData.availability}
-            onChange={handleInputChange}
           />
         </div>
       </div>

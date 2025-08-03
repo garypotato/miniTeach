@@ -91,6 +91,18 @@ export function processMetafields(
           processed.education = value;
         }
         break;
+      case "language":
+        try {
+          if (value.startsWith("[") && value.endsWith("]")) {
+            const parsed = JSON.parse(value);
+            processed.language = Array.isArray(parsed) ? parsed : [value];
+          } else {
+            processed.language = value.split(",").map((s) => s.trim());
+          }
+        } catch {
+          processed.language = [value];
+        }
+        break;
       case "age":
         processed.age = value;
         break;
@@ -102,6 +114,7 @@ export function processMetafields(
       case "blue_card_status":
         processed.blue_card = value;
         break;
+      case "police_check":
       case "australian_police_check":
         processed.police_check = value;
         break;
@@ -133,8 +146,18 @@ export function processMetafields(
           processed.skill = [value];
         }
         break;
+      case "certification":
       case "other_certificates":
-        processed.certification = [value];
+        try {
+          if (value.startsWith("[") && value.endsWith("]")) {
+            const parsed = JSON.parse(value);
+            processed.certification = Array.isArray(parsed) ? parsed : [value];
+          } else {
+            processed.certification = value.split(",").map((s) => s.trim());
+          }
+        } catch {
+          processed.certification = [value];
+        }
         break;
       case "availability":
       case "available_times_to_take_jobs":

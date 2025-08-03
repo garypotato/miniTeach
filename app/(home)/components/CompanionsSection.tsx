@@ -109,56 +109,6 @@ export default function CompanionsSection({
     }
   };
 
-  const resetCompanions = async () => {
-    try {
-      // Fetch all companions again for a completely fresh set
-      const result = await getCompanionsAction();
-
-      if (result.success && result.data) {
-        // Simple shuffle for fresh selection
-        const shuffled = [...result.data];
-
-        for (let i = shuffled.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
-
-        // Show first 8 shuffled companions
-        setCompanions(shuffled.slice(0, 8));
-        setHasMoreAvailable(true);
-      } else {
-        // Fallback to shuffling initial companions
-        const shuffled = [...initialCompanions];
-
-        for (let i = shuffled.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
-
-        setCompanions(shuffled);
-        setHasMoreAvailable(true);
-      }
-    } catch (error) {
-      console.error("Error resetting companions:", error);
-      // Fallback to shuffling initial companions
-      const shuffled = [...initialCompanions];
-
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-      }
-
-      setCompanions(shuffled);
-      setHasMoreAvailable(true);
-    }
-
-    // Scroll to section after reset
-    setTimeout(() => {
-      document
-        .getElementById("companions-section")
-        ?.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
 
   return (
     <section
@@ -363,11 +313,8 @@ export default function CompanionsSection({
 
             {!hasMoreAvailable && companions.length > 8 && (
               <div className="text-center mt-12">
-                <p className="text-gray-600 mb-4">
-                  {`您已查看 ${companions.length} 个陪伴师！`}
-                </p>
-                <button
-                  onClick={resetCompanions}
+                <Link
+                  href="/companions"
                   className="inline-flex items-center border-2 px-8 py-3 rounded-full font-semibold transition-colors hover:bg-blue-50"
                   style={{ borderColor: "#667eea", color: "#667eea" }}
                 >
@@ -385,7 +332,7 @@ export default function CompanionsSection({
                     />
                   </svg>
                   显示不同陪伴师
-                </button>
+                </Link>
               </div>
             )}
           </div>
