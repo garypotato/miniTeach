@@ -201,7 +201,7 @@ export function formatMetafieldValue(key: string, value: unknown): string {
   if (Array.isArray(value)) {
     return value.join(", ");
   }
-  return String(value || "Not specified");
+  return String(value || "未设置");
 }
 
 export function getMetafieldLabel(key: string): string {

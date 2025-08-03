@@ -1,19 +1,18 @@
 "use server";
 
-import { 
-  checkUserNameExists, 
-  createCompanionProduct, 
+import {
+  checkUserNameExists,
+  createCompanionProduct,
   createProductMetafields,
   addProductToCollection,
   updateProductStatus,
   updateProductMetafields,
-  getProductWithMetafields
+  getProductWithMetafields,
 } from "./products";
 import shopify from "./client";
 import bcrypt from "bcryptjs";
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "@/lib/auth";
-
 
 export async function checkEmailAvailability(email: string): Promise<{
   success: boolean;
@@ -34,25 +33,25 @@ export async function checkEmailAvailability(email: string): Promise<{
 
     // Check if user_name (email) already exists using GraphQL
     const exists = await checkUserNameExists(email);
-    
+
     if (exists) {
       return {
         success: true,
         available: false,
-        message: "此電子郵件地址已被使用"
+        message: "此電子郵件地址已被使用",
       };
     }
 
     return {
       success: true,
       available: true,
-      message: "電子郵件地址可用"
+      message: "電子郵件地址可用",
     };
   } catch (error) {
     console.error("Error checking email availability:", error);
-    return { 
-      success: false, 
-      error: "無法驗證電子郵件唯一性，請稍後重試" 
+    return {
+      success: false,
+      error: "無法驗證電子郵件唯一性，請稍後重試",
     };
   }
 }
@@ -101,9 +100,9 @@ export async function createCompanion(formData: FormData): Promise<{
     // Check if user_name (email) already exists
     const exists = await checkUserNameExists(user_name);
     if (exists) {
-      return { 
-        success: false, 
-        error: "此電子郵件地址已被使用，請使用其他電子郵件地址" 
+      return {
+        success: false,
+        error: "此電子郵件地址已被使用，請使用其他電子郵件地址",
       };
     }
 
@@ -143,7 +142,11 @@ export async function createCompanion(formData: FormData): Promise<{
     const images = formData.getAll("images") as File[];
 
     // Validate images are provided
-    if (!images || images.length === 0 || images.every(img => img.size === 0)) {
+    if (
+      !images ||
+      images.length === 0 ||
+      images.every((img) => img.size === 0)
+    ) {
       return { success: false, error: "至少需要上傳1張照片" };
     }
 
@@ -192,14 +195,17 @@ export async function createCompanion(formData: FormData): Promise<{
       title,
       body_html: description,
       vendor: "Mini-Teach",
-      product_type: "Companion", 
+      product_type: "Companion",
       tags: "companion,child-care,education",
       images: processedImages,
     };
 
     const productResult = await createCompanionProduct(companionProductData);
     if (!productResult.success || !productResult.data) {
-      return { success: false, error: productResult.error || "Failed to create product" };
+      return {
+        success: false,
+        error: productResult.error || "Failed to create product",
+      };
     }
 
     const createdProduct = productResult.data;
@@ -387,29 +393,41 @@ export async function createCompanion(formData: FormData): Promise<{
     ];
 
     // Create metafields using server action
-    const metafieldsToCreate = metafieldsData.map(field => ({
+    const metafieldsToCreate = metafieldsData.map((field) => ({
       namespace: field.namespace,
       key: field.key,
       value: String(field.value), // Ensure all values are strings
       type: field.type,
     }));
 
-    const metafieldsResult = await createProductMetafields(createdProduct.id, metafieldsToCreate);
+    const metafieldsResult = await createProductMetafields(
+      createdProduct.id,
+      metafieldsToCreate
+    );
     if (!metafieldsResult.success) {
       console.warn("Failed to create some metafields:", metafieldsResult.error);
     }
 
     // Add product to companion collection using server action
-    const collectionResult = await addProductToCollection(createdProduct.id, 491355177275);
+    const collectionResult = await addProductToCollection(
+      createdProduct.id,
+      491355177275
+    );
     if (!collectionResult.success) {
-      console.warn("Failed to add product to companion collection:", collectionResult.error);
+      console.warn(
+        "Failed to add product to companion collection:",
+        collectionResult.error
+      );
       // Continue even if collection assignment fails
     }
 
     // Update product status to draft for review using server action
     const statusResult = await updateProductStatus(createdProduct.id, "draft");
     if (!statusResult.success) {
-      console.warn("Failed to update product status to draft:", statusResult.error);
+      console.warn(
+        "Failed to update product status to draft:",
+        statusResult.error
+      );
       // Continue even if status update fails
     }
 
@@ -432,11 +450,15 @@ export async function createCompanion(formData: FormData): Promise<{
 
 export async function createCompanionAndRedirect(formData: FormData) {
   const result = await createCompanion(formData);
-  
+
   if (result.success) {
     redirect("/companion/create?success=true");
   } else {
-    redirect(`/companion/create?error=${encodeURIComponent(result.error || "Unknown error")}`);
+    redirect(
+      `/companion/create?error=${encodeURIComponent(
+        result.error || "Unknown error"
+      )}`
+    );
   }
 }
 
@@ -452,13 +474,13 @@ export async function updateCompanionLoginCredentials(
   try {
     // Get the current session server-side
     const session = await getServerAuthSession();
-    
+
     if (!session?.user) {
       return { success: false, error: "未授权访问" };
     }
 
     const companionId = (session.user as { id?: string })?.id;
-    
+
     if (!companionId) {
       return { success: false, error: "用户ID未找到" };
     }
@@ -497,7 +519,10 @@ export async function updateCompanionLoginCredentials(
       },
     ];
 
-    const result = await updateProductMetafields(parseInt(companionId), metafieldsToUpdate);
+    const result = await updateProductMetafields(
+      parseInt(companionId),
+      metafieldsToUpdate
+    );
 
     if (!result.success) {
       return { success: false, error: "更新登录信息失败" };
@@ -506,9 +531,9 @@ export async function updateCompanionLoginCredentials(
     return { success: true, message: "登录信息更新成功" };
   } catch (error) {
     console.error("Error updating login credentials:", error);
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : "更新登录信息失败" 
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "更新登录信息失败",
     };
   }
 }
@@ -542,13 +567,13 @@ export async function updateCompanionProfile(
   try {
     // Get the current session server-side
     const session = await getServerAuthSession();
-    
+
     if (!session?.user) {
       return { success: false, error: "未授权访问" };
     }
 
     const companionId = (session.user as { id?: string })?.id;
-    
+
     if (!companionId) {
       return { success: false, error: "用户ID未找到" };
     }
@@ -561,30 +586,57 @@ export async function updateCompanionProfile(
 
     // Find current password metafield
     const currentPasswordField = currentProfile.data.metafields?.find(
-      field => field.namespace === "custom" && field.key === "password"
+      (field) => field.namespace === "custom" && field.key === "password"
     );
 
     if (!currentPasswordField) {
       return { success: false, error: "未找到当前密码" };
     }
 
-    // Verify password
-    const passwordMatch = await bcrypt.compare(password, currentPasswordField.value);
+    // Verify password - handle both bcrypt hashed and plain text passwords
+    let passwordMatch = false;
+    if (currentPasswordField.value.startsWith("$2")) {
+      // Compare with hashed password
+      passwordMatch = await bcrypt.compare(
+        password,
+        currentPasswordField.value
+      );
+    } else {
+      // Plain text password comparison (for backward compatibility)
+      passwordMatch = password === currentPasswordField.value;
+    }
+
     if (!passwordMatch) {
       return { success: false, error: "密码不正确" };
     }
 
-    // Validate required fields
-    if (!formData.first_name || !formData.last_name || !formData.user_name || 
-        !formData.major || !formData.location || !formData.description) {
-      return { success: false, error: "请填写所有必填字段" };
+    // Handle profiles that may not have all required metafields (legacy profiles)
+    // Use placeholder values for missing required fields
+    if (!formData.first_name) {
+      formData.first_name = "Unknown"; // Placeholder for missing first name
+      console.log("Using placeholder for missing first_name");
+    }
+
+    if (!formData.major) {
+      formData.major = "未设置"; // Placeholder for missing major
+      console.log("Using placeholder for missing major");
+    }
+
+    if (!formData.location) {
+      formData.location = "Sydney"; // Default location
+      console.log("Using default location: Sydney");
+    }
+
+    // Only require fields that should genuinely be required
+    if (!formData.last_name || !formData.user_name || !formData.description) {
+      return { success: false, error: "姓氏、邮箱地址和个人介绍是必填字段" };
     }
 
     // Check if email is changing and if new email already exists
     const currentEmailField = currentProfile.data.metafields?.find(
-      field => field.namespace === "custom" && field.key === "user_name"
+      (field) => field.namespace === "custom" && field.key === "user_name"
     );
-    
+
     if (currentEmailField && currentEmailField.value !== formData.user_name) {
       const emailExists = await checkUserNameExists(formData.user_name);
       if (emailExists) {
@@ -609,7 +661,9 @@ export async function updateCompanionProfile(
             return {
               attachment: base64,
               filename: image.name || `companion-image-${index + 1}.jpg`,
-              alt: `${formData.first_name} ${formData.last_name} - Image ${index + 1}`,
+              alt: `${formData.first_name} ${formData.last_name} - Image ${
+                index + 1
+              }`,
               position: index + 1,
             };
           }
@@ -633,44 +687,54 @@ export async function updateCompanionProfile(
       alt: string;
       position: number;
     }> = [];
-    
+
     // If we have new images or images to remove, we need to rebuild the images array
-    if (processedImages.length > 0 || (imagesToRemove && imagesToRemove.length > 0)) {
+    if (
+      processedImages.length > 0 ||
+      (imagesToRemove && imagesToRemove.length > 0)
+    ) {
       // Get current product images
       const currentImages = currentProfile.data.images || [];
-      
+
       // Filter out images marked for removal and convert existing images to the format needed
       const existingImages = currentImages
         .filter((_, index) => !imagesToRemove?.includes(index))
         .map((image, index) => ({
           src: image.src,
-          alt: image.alt || `${formData.first_name} ${formData.last_name} - Image ${index + 1}`,
+          alt:
+            image.alt ||
+            `${formData.first_name} ${formData.last_name} - Image ${index + 1}`,
           position: index + 1,
         }));
-      
+
       // Combine existing images (that weren't removed) with new images
       finalImages = [
         ...processedImages,
         // For existing images, we need to fetch them as base64 to update the product
-        ...await Promise.all(existingImages.map(async (image, index) => {
-          try {
-            // Fetch the image from the URL
-            const response = await fetch(image.src);
-            const arrayBuffer = await response.arrayBuffer();
-            const base64 = Buffer.from(arrayBuffer).toString("base64");
-            
-            return {
-              attachment: base64,
-              filename: `existing-image-${index + 1}.jpg`,
-              alt: image.alt,
-              position: processedImages.length + index + 1,
-            };
-          } catch (error) {
-            console.error(`Error fetching existing image ${image.src}:`, error);
-            // Skip this image if we can't fetch it
-            return null;
-          }
-        }))
+        ...(await Promise.all(
+          existingImages.map(async (image, index) => {
+            try {
+              // Fetch the image from the URL
+              const response = await fetch(image.src);
+              const arrayBuffer = await response.arrayBuffer();
+              const base64 = Buffer.from(arrayBuffer).toString("base64");
+
+              return {
+                attachment: base64,
+                filename: `existing-image-${index + 1}.jpg`,
+                alt: image.alt,
+                position: processedImages.length + index + 1,
+              };
+            } catch (error) {
+              console.error(
+                `Error fetching existing image ${image.src}:`,
+                error
+              );
+              // Skip this image if we can't fetch it
+              return null;
+            }
+          })
+        )),
       ].filter(Boolean) as typeof finalImages;
     }
 
@@ -691,7 +755,10 @@ export async function updateCompanionProfile(
     };
 
     // Add images to update if we have processed images or removals
-    if (finalImages.length > 0 || (imagesToRemove && imagesToRemove.length > 0)) {
+    if (
+      finalImages.length > 0 ||
+      (imagesToRemove && imagesToRemove.length > 0)
+    ) {
       updateData.images = finalImages;
     }
 
@@ -738,55 +805,102 @@ export async function updateCompanionProfile(
       {
         namespace: "custom",
         key: "education",
-        value: formData.education,
-        type: "single_line_text_field",
+        value: formData.education
+          ? JSON.stringify([formData.education])
+          : JSON.stringify(["未设置"]),
+        type: "list.single_line_text_field",
       },
       {
         namespace: "custom",
         key: "language",
-        value: JSON.stringify(formData.language.split(",").map(s => s.trim()).filter(Boolean)),
+        value: formData.language
+          ? JSON.stringify(
+              formData.language
+                .split(",")
+                .map((s) => s.trim())
+                .filter(Boolean)
+            )
+          : JSON.stringify(["未设置"]),
         type: "list.single_line_text_field",
       },
       {
         namespace: "custom",
         key: "blue_card",
-        value: formData.blue_card,
-        type: "single_line_text_field",
+        value: formData.blue_card
+          ? ["yes", "true", "是"].includes(formData.blue_card.toLowerCase())
+            ? "true"
+            : "false"
+          : "false",
+        type: "boolean",
       },
       {
         namespace: "custom",
         key: "police_check",
-        value: formData.police_check,
-        type: "single_line_text_field",
+        value: formData.police_check
+          ? ["yes", "true", "是"].includes(formData.police_check.toLowerCase())
+            ? "true"
+            : "false"
+          : "false",
+        type: "boolean",
       },
       {
         namespace: "custom",
         key: "skill",
-        value: JSON.stringify(formData.skill.split(",").map(s => s.trim()).filter(Boolean)),
+        value: formData.skill
+          ? JSON.stringify(
+              formData.skill
+                .split(",")
+                .map((s) => s.trim())
+                .filter(Boolean)
+            )
+          : JSON.stringify(["未设置"]),
         type: "list.single_line_text_field",
       },
       {
         namespace: "custom",
         key: "certification",
-        value: JSON.stringify(formData.certification.split(",").map(s => s.trim()).filter(Boolean)),
+        value: formData.certification
+          ? JSON.stringify(
+              formData.certification
+                .split(",")
+                .map((s) => s.trim())
+                .filter(Boolean)
+            )
+          : JSON.stringify(["未设置"]),
         type: "list.single_line_text_field",
       },
       {
         namespace: "custom",
         key: "age_group",
-        value: JSON.stringify(formData.age_group.split(",").map(s => s.trim()).filter(Boolean)),
-        type: "list.single_line_text_field",
+        value: formData.age_group
+          ? formData.age_group
+              .split(",")
+              .map((s) => s.trim())
+              .filter(Boolean)
+              .join(" ")
+          : "未设置",
+        type: "single_line_text_field",
       },
       {
         namespace: "custom",
         key: "availability",
-        value: JSON.stringify(formData.availability.split(",").map(s => s.trim()).filter(Boolean)),
-        type: "list.single_line_text_field",
+        value: formData.availability
+          ? formData.availability
+              .split(",")
+              .map((s) => s.trim())
+              .filter(Boolean)
+              .join(" ")
+          : "未设置",
+        type: "single_line_text_field",
       },
     ];
 
+
     // Update metafields
-    const result = await updateProductMetafields(parseInt(companionId), metafieldsToUpdate);
+    const result = await updateProductMetafields(
+      parseInt(companionId),
+      metafieldsToUpdate
+    );
 
     if (!result.success) {
       return { success: false, error: "更新档案信息失败" };
@@ -795,9 +909,9 @@ export async function updateCompanionProfile(
     return { success: true, message: "档案信息更新成功" };
   } catch (error) {
     console.error("Error updating companion profile:", error);
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : "更新档案信息失败" 
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "更新档案信息失败",
     };
   }
 }
