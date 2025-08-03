@@ -87,7 +87,6 @@ export default function CompanionsPagination({
   companions,
   currentPage,
   totalPages,
-  totalCompanions,
   searchQuery = "",
 }: CompanionsPaginationProps) {
   const router = useRouter();
@@ -414,13 +413,6 @@ export default function CompanionsPagination({
                 </svg>
               </span>
             )}
-          </div>
-
-          {/* Page Info */}
-          <div className="text-sm text-gray-600 text-center">
-            显示 {(currentPage - 1) * 8 + 1} 到{" "}
-            {Math.min(currentPage * 8, totalCompanions)} 共 {totalCompanions}{" "}
-            个结果
           </div>
 
           {/* Quick Jump */}

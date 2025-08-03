@@ -489,7 +489,7 @@ export default function HowItWorksSection() {
               />
             </svg>
             <span className="text-blue-800 font-medium">
-              本平台不收取任何服务费用。
+              平台不介入费用安排，细节由双方自行协商
             </span>
           </div>
         </div>

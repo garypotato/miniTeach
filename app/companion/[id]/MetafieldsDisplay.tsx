@@ -32,16 +32,16 @@ export default function MetafieldsDisplay({
     const labels: Record<string, string> = {
       wechat_id: "微信号",
       major: "专业/学习领域",
-      education: "教育水平",
+      education: "学历背景",
       language: "语言",
       age: "年龄",
       location: "位置",
-      age_group: "适合年龄组",
-      blue_card: "蓝卡 / WWCC",
+      age_group: "擅长年龄段",
+      blue_card: "是否持有蓝卡(WWCC)",
       police_check: "无犯罪记录证明",
       skill: "技能",
       certification: "认证",
-      availability: "可用性",
+      availability: "时间安排",
     };
     return labels[key] || key;
   };

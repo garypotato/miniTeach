@@ -358,9 +358,6 @@ export default function CompanionsSection({
                     </>
                   )}
                 </button>
-                <p className="text-gray-500 text-sm mt-3">
-                  显示 {companions.length} 个陪伴师
-                </p>
               </div>
             )}
 

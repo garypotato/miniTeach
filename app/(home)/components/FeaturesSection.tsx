@@ -16,7 +16,7 @@ export default function FeaturesSection() {
           />
         </svg>
       ),
-      title: "专业教育学生 – 技能娴熟且充满热情",
+      title: "专业教育系学生 – 技能娴熟且充满热情",
       description:
         "我们专门招募教育、幼儿教育或语言相关专业的学生。他们拥有教学知识，真正理解儿童需求——真正的教育工作者。",
       color: "from-blue-500 to-purple-600",
@@ -39,7 +39,7 @@ export default function FeaturesSection() {
       ),
       title: "高质量、高性价比 – 但常被忽视",
       description:
-        "教育学生拥有技能和潜力，但由于签证或时间安排限制，往往缺乏机会。我们的平台以公平的价格将家庭与可靠的高质量陪伴师联系起来。",
+        "教育系学生拥有技能和潜力，但由于签证或时间安排限制，往往缺乏机会。我们的平台以公平的价格将家庭与可靠的高质量陪伴师联系起来。",
       color: "from-green-500 to-teal-600",
     },
     {
@@ -60,7 +60,7 @@ export default function FeaturesSection() {
       ),
       title: "合法签证和安全背景",
       description:
-        "每位陪伴师都持有有效的澳大利亚学生签证，并已完成WWCC、Blue Card或警察检查——让您更加安心。",
+        "每位陪伴师都持有有效的澳大利亚签证，并已完成WWCC、Blue Card或警察检查——让您更加安心。",
       color: "from-purple-500 to-pink-600",
     },
     {
@@ -81,7 +81,7 @@ export default function FeaturesSection() {
       ),
       title: "灵活且无承诺",
       description:
-        "我们不收取佣金或要求您签订合同。费率和工作方式由您和陪伴师商定——灵活、透明、无压力。",
+        "我们不介入家长与陪伴师之间的费用安排，也不要求签订平台合约 。合作方式由双方自行协商 ——— 灵活、透明、无压力。",
       color: "from-orange-500 to-red-600",
     },
     {
@@ -151,12 +151,17 @@ export default function FeaturesSection() {
                 {/* Badge style header */}
                 <div className="inline-flex items-center justify-center mb-8">
                   <div className="flex items-center bg-gradient-to-r from-gray-100 to-gray-50 rounded-full px-6 py-3 border border-gray-200 shadow-sm">
-                    <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-600 rounded-xl flex items-center justify-center mr-3 shadow-md">
-                      <div className="text-white text-sm font-bold">MT</div>
+                    <div
+                      className="w-20 h-10 rounded-xl flex items-center justify-center mr-3 shadow-md"
+                      style={{ backgroundColor: "var(--primary-blue)" }}
+                    >
+                      <div className="text-white text-xs font-extrabold">
+                        MiniTeach
+                      </div>
                     </div>
                     <div className="text-left">
                       <div className="text-sm font-semibold text-gray-700">
-                        迷你教学平台
+                        学霸带娃
                       </div>
                       <div className="text-xs text-gray-500">功能与优势</div>
                     </div>
@@ -175,7 +180,7 @@ export default function FeaturesSection() {
                   <div className="flex items-center bg-purple-50 rounded-full px-4 py-2 border border-purple-100">
                     <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
                     <span className="text-sm font-medium text-purple-700">
-                      真人验证
+                      人手审核
                     </span>
                   </div>
                   <div className="flex items-center bg-blue-50 rounded-full px-4 py-2 border border-blue-100">
@@ -187,7 +192,7 @@ export default function FeaturesSection() {
                   <div className="flex items-center bg-teal-50 rounded-full px-4 py-2 border border-teal-100">
                     <div className="w-2 h-2 bg-teal-500 rounded-full mr-2"></div>
                     <span className="text-sm font-medium text-teal-700">
-                      24/7支持
+                      专人协助
                     </span>
                   </div>
                 </div>

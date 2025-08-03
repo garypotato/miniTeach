@@ -73,12 +73,6 @@ export default function AuthButton({
           </div>
           {session.user?.name}
         </Link>
-        <button
-          onClick={handleSignOut}
-          className="text-gray-500 hover:text-gray-700 text-sm font-medium"
-        >
-          退出
-        </button>
       </div>
     );
   }

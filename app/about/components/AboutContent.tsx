@@ -34,17 +34,15 @@ export default function AboutContent() {
           <div className="bg-white rounded-xl p-8 shadow-lg border border-gray-100">
             <div className="mb-8">
               <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                这个计划由一位在澳洲就读 Early Childhood Education 的学生 Nana
-                发起，来自她亲身经历的困难：
+                这个计划由一位在澳洲就读 Early Childhood Education
+                的学生发起，灵感来自她的亲身经历
+                在求学期间，她发现很难找到一个既能发挥专业背景，又灵活、可积累经验的教育类兼职。
+                与此同时，许多家庭也面临类似难题——想找一位有素养、有爱心、真正懂孩子的陪伴者，却不知道该去哪儿找。
               </p>
               <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                在学期间找不到既能发挥专业经验，又有弹性又合法的教育相关兼职。
-              </p>
-              <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                而很多家庭，也找不到具备教育、有素养、又有爱心的陪伴师。
-              </p>
-              <p className="text-lg text-gray-700 leading-relaxed">
-                所以我们建立了 Mini-Teach，连接双方的需要，创造「双赢」：
+                于是我们创立了
+                Mini-Teach，一个连接教育背景学生与家庭需求的平台，目标是创造一个真正「双赢」的生态
+                我们希望这不仅是一个找人的平台，更是一个支持成长、交流经验、共同进步的社区
               </p>
             </div>
           </div>
@@ -123,7 +121,7 @@ export default function AboutContent() {
             </div>
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 text-center">
               <div className="text-3xl mb-4">🇦🇺</div>
-              <h3 className="font-semibold text-gray-800">合法澳洲学生签证</h3>
+              <h3 className="font-semibold text-gray-800">合法澳洲签证</h3>
             </div>
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 text-center">
               <div className="text-3xl mb-4">🛡️</div>
