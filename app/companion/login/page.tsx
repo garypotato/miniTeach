@@ -27,7 +27,7 @@ export default function CompanionLogin() {
       });
 
       if (result?.error) {
-        setError("用户名或密码错误");
+        setError("用户名或密码错误，或者你的账户未被审核通过");
       } else {
         router.push("/companion/dashboard");
       }
@@ -41,7 +41,7 @@ export default function CompanionLogin() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
     if (error) setError(""); // Clear error when user types
   };
 
@@ -53,13 +53,13 @@ export default function CompanionLogin() {
           <div className="flex items-center justify-center mb-6">
             <div className="text-4xl mr-3">🎓👶</div>
             <div className="flex flex-col">
-              <span 
+              <span
                 className="text-2xl font-bold leading-tight"
                 style={{ color: "#47709B" }}
               >
                 学霸带娃
               </span>
-              <span 
+              <span
                 className="text-sm font-medium leading-tight opacity-70"
                 style={{ color: "#47709B" }}
               >
@@ -67,19 +67,18 @@ export default function CompanionLogin() {
               </span>
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900">
-            陪伴师登录
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            登录您的陪伴师账户
-          </p>
+          <h2 className="text-3xl font-bold text-gray-900">陪伴师登录</h2>
+          <p className="mt-2 text-sm text-gray-600">登录您的陪伴师账户</p>
         </div>
 
         {/* Login Form */}
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
-              <label htmlFor="user_name" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="user_name"
+                className="block text-sm font-medium text-gray-700"
+              >
                 用户名 / 邮箱
               </label>
               <input
@@ -96,7 +95,10 @@ export default function CompanionLogin() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
                 密码
               </label>
               <input
@@ -117,8 +119,18 @@ export default function CompanionLogin() {
           {error && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-3">
               <div className="flex">
-                <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  className="w-5 h-5 text-red-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
                 <p className="ml-2 text-sm text-red-700">{error}</p>
               </div>
@@ -143,11 +155,17 @@ export default function CompanionLogin() {
           <div className="text-center space-y-2">
             <p className="text-sm text-gray-600">
               还没有账户？{" "}
-              <Link href="/companion/create" className="font-medium text-blue-600 hover:text-blue-500">
+              <Link
+                href="/companion/create"
+                className="font-medium text-blue-600 hover:text-blue-500"
+              >
                 注册成为陪伴师
               </Link>
             </p>
-            <Link href="/" className="block text-sm text-gray-500 hover:text-gray-700">
+            <Link
+              href="/"
+              className="block text-sm text-gray-500 hover:text-gray-700"
+            >
               返回首页
             </Link>
           </div>

@@ -120,10 +120,10 @@ export default function HowItWorksSection() {
                     </span>
                   </div>
                   <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                    浏览探索
+                    家长查看与筛选
                   </h4>
                   <p className="text-sm text-gray-600 flex-1">
-                    家长浏览详细的陪伴师档案，为孩子的需求找到完美匹配。
+                    家长可以根据地区、语言、擅长年龄段等条件，自由浏览陪伴师资料，挑选合适人选并提交联系申请。
                   </p>
                 </div>
               </div>
@@ -143,10 +143,10 @@ export default function HowItWorksSection() {
                     </span>
                   </div>
                   <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                    申请联系
+                    平台协助联系与确认
                   </h4>
                   <p className="text-sm text-gray-600 flex-1">
-                    感兴趣的家长联系我们的支持团队，团队会验证身份并确保符合可靠性标准�?
+                    平台会先核实家长身份及基本需求，再协助安排陪伴师进行初步沟通，确保匹配合适。
                   </p>
                 </div>
               </div>
@@ -166,10 +166,10 @@ export default function HowItWorksSection() {
                     </span>
                   </div>
                   <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                    私密介绍
+                    双方直接对接
                   </h4>
                   <p className="text-sm text-gray-600 flex-1">
-                    一旦获得批准，陪伴师的联系信息将私下分享，以便直接沟通�?
+                    配对确认后，家长可直接联系陪伴师，自行商讨合作时间与费用安排。
                   </p>
                 </div>
               </div>
@@ -239,10 +239,10 @@ export default function HowItWorksSection() {
                     </span>
                   </div>
                   <h4 className="text-base font-semibold text-gray-900 mb-2">
-                    家长浏览
+                    家长查看与筛选
                   </h4>
                   <p className="text-sm text-gray-600 flex-1 leading-relaxed">
-                    家长可以浏览平台，探索可用的陪伴师。每个档案都包含详细信息，帮助家长找到合适的陪伴师。
+                    家长可以根据地区、语言、擅长年龄段等条件，自由浏览陪伴师资料，挑选合适人选并提交联系申请。
                   </p>
                 </div>
               </div>
@@ -261,10 +261,10 @@ export default function HowItWorksSection() {
                     </span>
                   </div>
                   <h4 className="text-base font-semibold text-gray-900 mb-2">
-                    申请联系信息
+                    平台协助联系与确认
                   </h4>
                   <p className="text-sm text-gray-600 flex-1 leading-relaxed">
-                    当家长对特定陪伴师感兴趣时，必须联系我们的支持团队。团队会验证家长身份并确保符合可靠性标准。
+                    平台会先核实家长身份及基本需求，再协助安排陪伴师进行初步沟通，确保匹配合适。
                   </p>
                 </div>
               </div>
@@ -285,10 +285,10 @@ export default function HowItWorksSection() {
                       </span>
                     </div>
                     <h4 className="text-base font-semibold text-gray-900 mb-2">
-                      私人介绍
+                      双方直接对接
                     </h4>
                     <p className="text-sm text-gray-600 flex-1 leading-relaxed">
-                      如果家长被认为值得信赖，陪伴师的联系信息将私下分享。之后双方可直接沟通，无需通过平台。
+                      配对确认后，家长可直接联系陪伴师，自行商讨合作时间与费用安排。
                     </p>
                   </div>
                 </div>
@@ -323,7 +323,7 @@ export default function HowItWorksSection() {
                       陪伴师注册
                     </h4>
                     <p className="text-gray-600">
-                      潜在陪伴师在平台上注册，完成详细的入职问卷，包含教育背景、技能和认证信息。
+                      潜在陪伴师在平台上注册，完成详细的入职问卷，包含教育背景、技能和认证信息
                     </p>
                   </div>
                 </div>
@@ -390,7 +390,7 @@ export default function HowItWorksSection() {
                   </div>
                   <div className="ml-6">
                     <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                      家长浏览
+                      家长查看与筛选
                     </h4>
                     <p className="text-gray-600">
                       家长可以浏览平台，探索可用的陪伴师。每个档案都包含详细信息，帮助家长找到合适的陪伴师。

@@ -12,58 +12,6 @@ export default function FAQSection() {
         </div>
 
         <div className="space-y-4">
-          {/* Q1: How does the platform work? */}
-          <details className="group border border-gray-200 rounded-lg">
-            <summary className="flex justify-between items-center cursor-pointer p-6 font-medium text-gray-900 hover:bg-gray-50">
-              <span>平台如何运作？</span>
-              <svg
-                className="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </summary>
-            <div className="px-6 pb-6 text-gray-600 leading-relaxed">
-              <p className="mb-4">
-                我们的平台遵循全面的5步流程来确保质量和安全：
-              </p>
-              <ol className="list-decimal list-inside space-y-2 ml-4">
-                <li>
-                  <strong>陪伴师注册：</strong>{" "}
-                  所有希望加入的平台陪伴师，需填写完整登记表，内容包括：就读院校与专业、年级、技能特长、证书信息（如
-                  WWCC／Police
-                  Check）、可配合的时间段和个人简介等，帮助我们初步了解背景。
-                </li>
-                <li>
-                  <strong>身份验证与资料审核：</strong>{" "}
-                  平台会对每位陪伴师进行资料审核，包括学生证核对、签证确认、背景证明（如蓝卡、Police
-                  Check）等，必要时我们也会主动联系核实，确保资料真实可信，才能在平台展示。
-                </li>
-                <li>
-                  <strong>家长浏览与筛选：</strong>{" "}
-                  家长可以在平台自由浏览陪伴师简介，按地区、语言、擅长年龄段等条件筛选，挑选合适人选并提交联系申请。
-                </li>
-                <li>
-                  <strong>平台协助配对与沟通：</strong>{" "}
-                  平台将先审核家长身份，在确认需求后协助安排与陪伴师沟通。我们也会预先了解双方基本情况，确保初步匹配的合适性。
-                </li>
-                <li>
-                  <strong>双方直接联系：</strong>{" "}
-                  配对成功后，家长即可与陪伴师直接沟通合作方式、时间和费用安排。
-                </li>
-              </ol>
-              <br />
-              <p className="mb-4">平台不参与报价，合作更加灵活透明。</p>
-            </div>
-          </details>
-
           {/* Q2: Is there a fee for using the platform? */}
           <details className="group border border-gray-200 rounded-lg">
             <summary className="flex justify-between items-center cursor-pointer p-6 font-medium text-gray-900 hover:bg-gray-50">

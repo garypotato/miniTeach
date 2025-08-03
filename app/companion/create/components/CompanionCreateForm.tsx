@@ -682,7 +682,7 @@ export default function CompanionCreateForm() {
             label="个人介绍"
             name="description"
             type="textarea"
-            placeholder="告诉家庭关于您自己、您的经验和儿童照护方法..."
+            placeholder="告诉家长们关于您自己、您的经验和儿童照护方法..."
             value={formData.description}
             onChange={handleInputChange}
             error={errors.description}
