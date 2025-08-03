@@ -54,6 +54,82 @@ export default function MetafieldsDisplay({
     return labels[key] || key;
   };
 
+  // Fields that should be displayed as bullet points (list fields from specs.md)
+  const LIST_FIELDS = ["education", "language", "age_group", "skill", "certification", "availability"];
+
+  // Function to render metafield value with proper formatting
+  const renderMetafieldValue = (key: string, value: string | string[] | number | boolean | undefined) => {
+    if (!value) return "";
+
+    // For boolean/status fields (blue_card, police_check), convert to Chinese text
+    if (key === "blue_card" || key === "police_check") {
+      const stringValue = String(value).toLowerCase();
+      let displayText = "";
+      
+      switch (stringValue) {
+        case "true":
+        case "yes":
+        case "是":
+        case "有":
+          displayText = "是";
+          break;
+        case "false":
+        case "no":
+        case "否":
+        case "没有":
+          displayText = "否";
+          break;
+        case "pending":
+        case "申请中":
+          displayText = "申请中";
+          break;
+        default:
+          displayText = String(value);
+      }
+      
+      return <span className="text-gray-700 leading-relaxed">{displayText}</span>;
+    }
+
+    // For list fields, display as bullet points if it's an array or comma-separated string
+    if (LIST_FIELDS.includes(key)) {
+      let items: string[] = [];
+      
+      if (Array.isArray(value)) {
+        items = value.filter(item => item && item.trim());
+      } else if (typeof value === "string") {
+        // Handle both JSON arrays and comma-separated strings
+        try {
+          const parsed = JSON.parse(value);
+          if (Array.isArray(parsed)) {
+            items = parsed.filter(item => item && item.trim());
+          } else {
+            items = value.split(",").map(item => item.trim()).filter(Boolean);
+          }
+        } catch {
+          items = value.split(",").map(item => item.trim()).filter(Boolean);
+        }
+      }
+
+      if (items.length > 1) {
+        return (
+          <ul className="list-disc list-inside space-y-1">
+            {items.map((item, index) => (
+              <li key={index} className="text-gray-700 leading-relaxed">
+                {item}
+              </li>
+            ))}
+          </ul>
+        );
+      } else if (items.length === 1) {
+        return <span className="text-gray-700 leading-relaxed">{items[0]}</span>;
+      }
+    }
+
+    // For non-list fields, use the original formatting
+    const stringValue = Array.isArray(value) ? value : String(value);
+    return <span className="text-gray-700 leading-relaxed">{formatMetafieldValue(key, stringValue)}</span>;
+  };
+
   // Get all metafield keys and filter out excluded ones
   const allMetafieldKeys = Object.keys(metafields).filter(
     (key) => !EXCLUDED_FIELDS.includes(key)
@@ -223,16 +299,15 @@ export default function MetafieldsDisplay({
     <div className="space-y-4">
       {displayFields.map((key) => {
         const value = metafields[key as keyof CompanionMetafields];
-        const displayValue = formatMetafieldValue(key, value);
 
         return (
           <div
             key={key}
             className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 hover:bg-gray-50 transition-colors"
           >
-            <div className="flex items-center space-x-4">
+            <div className="flex items-start space-x-4">
               <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-1"
                 style={{ backgroundColor: "#f0f7ff" }}
               >
                 <svg
@@ -251,16 +326,14 @@ export default function MetafieldsDisplay({
                 </svg>
               </div>
               <div className="flex-1 min-w-0">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div className="sm:col-span-1">
                     <h4 className="text-base font-semibold text-gray-900">
                       {getTranslatedLabel(key)}
                     </h4>
                   </div>
                   <div className="sm:col-span-2">
-                    <p className="text-gray-700 leading-relaxed">
-                      {displayValue}
-                    </p>
+                    {renderMetafieldValue(key, value)}
                   </div>
                 </div>
               </div>

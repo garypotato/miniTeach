@@ -381,40 +381,43 @@ export default function CompanionCreateForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
-      {/* Single Form Section */}
-      <div className="bg-white rounded-xl border border-gray-200 p-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-8 flex items-center">
-          创建陪伴师档案
-        </h2>
+    <div className="p-8">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">创建陪伴师档案</h1>
+        <p className="mt-2 text-gray-600">
+          填写您的基本信息以创建陪伴师档案
+        </p>
+      </div>
 
-        {/* General Error Display */}
-        {errors.general && (
-          <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
-            <div className="flex">
-              <svg
-                className="w-5 h-5 text-red-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <p className="ml-2 text-sm text-red-700">{errors.general}</p>
-            </div>
+      {/* General Error Display */}
+      {errors.general && (
+        <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="flex">
+            <svg
+              className="w-5 h-5 text-red-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <p className="ml-2 text-sm text-red-700">{errors.general}</p>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Personal Information */}
-        <div className="mb-10">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200">
+      <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Basic Information */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">
             基本信息
-          </h3>
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField
               ref={(el) => {
@@ -533,17 +536,36 @@ export default function CompanionCreateForm() {
           </div>
         </div>
 
-        {/* Education & Experience */}
-        <div className="mb-10">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200">
-            教育背景与经验
-          </h3>
+        {/* About Me */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">关于我</h2>
+          <FormField
+            ref={(el) => {
+              fieldRefs.current["description"] = el;
+            }}
+            label="个人介绍"
+            name="description"
+            type="textarea"
+            placeholder="告诉家长们关于您自己、您的经验和儿童照护方法..."
+            value={formData.description}
+            onChange={handleInputChange}
+            error={errors.description}
+            required
+            rows={6}
+          />
+        </div>
+
+        {/* Skills & Qualifications */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            技能与资质
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField
               ref={(el) => {
                 fieldRefs.current["major"] = el;
               }}
-              label="专业/学习领域"
+              label="专业"
               name="major"
               type="text"
               placeholder="例如：教育、幼儿发展、心理学"
@@ -557,7 +579,7 @@ export default function CompanionCreateForm() {
               ref={(el) => {
                 fieldRefs.current["education"] = el;
               }}
-              label="学历背景"
+              label="教育背景"
               name="education"
               placeholder="例如：学士学位、硕士学位"
               value={formData.education}
@@ -570,13 +592,53 @@ export default function CompanionCreateForm() {
               ref={(el) => {
                 fieldRefs.current["language"] = el;
               }}
-              label="语言"
+              label="语言能力"
               name="language"
               placeholder="请输入您会说的语言"
               value={formData.language}
               onChange={handleInputChange}
               error={errors.language}
               required
+            />
+
+            <FormField
+              ref={(el) => {
+                fieldRefs.current["blue_card"] = el;
+              }}
+              label="蓝卡/WWCC"
+              name="blue_card"
+              type="select"
+              placeholder="您是否持有蓝卡或与儿童工作检查？"
+              value={formData.blue_card}
+              onChange={handleInputChange}
+              error={errors.blue_card}
+              required
+              options={[
+                { value: "", label: "请选择" },
+                { value: "是", label: "是" },
+                { value: "否", label: "否" },
+                { value: "申请中", label: "申请中" },
+              ]}
+            />
+
+            <FormField
+              ref={(el) => {
+                fieldRefs.current["police_check"] = el;
+              }}
+              label="警察检查"
+              name="police_check"
+              type="select"
+              placeholder="您是否有有效的警察许可？"
+              value={formData.police_check}
+              onChange={handleInputChange}
+              error={errors.police_check}
+              required
+              options={[
+                { value: "", label: "请选择" },
+                { value: "是", label: "是" },
+                { value: "否", label: "否" },
+                { value: "申请中", label: "申请中" },
+              ]}
             />
 
             <TagsInput
@@ -607,65 +669,17 @@ export default function CompanionCreateForm() {
           </div>
         </div>
 
-        {/* Background Checks */}
-        <div className="mb-10">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200">
-            背景检查
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormField
-              ref={(el) => {
-                fieldRefs.current["blue_card"] = el;
-              }}
-              label="是否持有蓝卡(WWCC)"
-              name="blue_card"
-              type="select"
-              placeholder="您是否持有蓝卡或与儿童工作检查？"
-              value={formData.blue_card}
-              onChange={handleInputChange}
-              error={errors.blue_card}
-              required
-              options={[
-                { value: "", label: "选择..." },
-                { value: "yes", label: "有" },
-                { value: "no", label: "没有" },
-                { value: "pending", label: "申请中" },
-              ]}
-            />
-
-            <FormField
-              ref={(el) => {
-                fieldRefs.current["police_check"] = el;
-              }}
-              label="无犯罪记录证明"
-              name="police_check"
-              type="select"
-              placeholder="您是否有有效的警察许可？"
-              value={formData.police_check}
-              onChange={handleInputChange}
-              error={errors.police_check}
-              required
-              options={[
-                { value: "", label: "选择..." },
-                { value: "yes", label: "有" },
-                { value: "no", label: "没有" },
-                { value: "pending", label: "申请中" },
-              ]}
-            />
-          </div>
-        </div>
-
         {/* Preferences */}
-        <div className="mb-10">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200">
-            工作偏好
-          </h3>
-          <div className="grid grid-cols-1 gap-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            偏好设置
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <TagsInput
               ref={(el) => {
                 fieldRefs.current["age_group"] = el;
               }}
-              label="擅长年龄段"
+              label="偏好年龄组"
               name="age_group"
               placeholder="请输入您偏好工作的年龄组"
               value={formData.age_group}
@@ -689,32 +703,11 @@ export default function CompanionCreateForm() {
           </div>
         </div>
 
-        {/* About Me */}
-        <div className="mb-10">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200">
-            关于我
-          </h3>
-          <FormField
-            ref={(el) => {
-              fieldRefs.current["description"] = el;
-            }}
-            label="个人介绍"
-            name="description"
-            type="textarea"
-            placeholder="告诉家长们关于您自己、您的经验和儿童照护方法..."
-            value={formData.description}
-            onChange={handleInputChange}
-            error={errors.description}
-            required
-            rows={5}
-          />
-        </div>
-
-        {/* Profile Photos */}
-        <div className="mb-8">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200">
+        {/* Profile Images */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">
             档案照片
-          </h3>
+          </h2>
           <p className="text-gray-600 text-sm mb-4">
             请上传至少1张照片，最多5张 (每张图片最大5MB)
           </p>
@@ -727,28 +720,28 @@ export default function CompanionCreateForm() {
             error={errors.images}
           />
         </div>
-      </div>
 
-      {/* Submit Section */}
-      <div className="bg-white rounded-xl border border-gray-200 p-8">
-        <div className="flex flex-col sm:flex-row gap-4 justify-end">
-          <button
-            type="button"
-            onClick={() => router.back()}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
-          >
-            取消
-          </button>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
-          >
-            {isSubmitting && <LoadingSpinner className="w-4 h-4 mr-2" />}
-            {isSubmitting ? "正在创建档案..." : "创建档案"}
-          </button>
+        {/* Submit Section */}
+        <div className="bg-white rounded-xl border border-gray-200 p-8">
+          <div className="flex flex-col sm:flex-row gap-4 justify-end">
+            <button
+              type="button"
+              onClick={() => router.back()}
+              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+            >
+              取消
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
+            >
+              {isSubmitting && <LoadingSpinner className="w-4 h-4 mr-2" />}
+              {isSubmitting ? "正在创建档案..." : "创建档案"}
+            </button>
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 }
