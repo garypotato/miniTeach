@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 interface LoadingSpinnerProps {
   message?: string;
   backdrop?: "light" | "dark";
@@ -17,31 +19,32 @@ export default function LoadingSpinner({
       className={`fixed inset-0 ${backdropClass} flex items-center justify-center z-50 p-4`}
     >
       <div className="bg-white rounded-2xl shadow-2xl p-8 flex flex-col items-center space-y-6 min-w-[320px] border border-gray-100">
-        {/* Logo with animation */}
-        <div className="flex items-center space-x-3 mb-2">
-          <div className="text-4xl animate-bounce">🎓👶</div>
-          <div className="flex flex-col">
-            <span
-              className="text-xl font-bold leading-tight"
-              style={{ color: "#47709B" }}
-            >
-              学霸带娃
-            </span>
-            <span
-              className="text-sm font-medium leading-tight opacity-70"
-              style={{ color: "#47709B" }}
-            >
-              MiniTeach
-            </span>
+        {/* Logo with subtle animation */}
+        <div className="flex items-center justify-center mb-4">
+          <div className="relative">
+            <Image
+              src="/miniTech.png"
+              alt="MiniTeach Logo"
+              width={150}
+              height={75}
+              className="h-16 w-auto animate-pulse"
+              priority
+            />
+            {/* Subtle glow effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-400/10 to-purple-400/10 rounded-lg blur-md animate-pulse"></div>
           </div>
         </div>
 
-        {/* Loading spinner */}
-        <div className="relative">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-100 border-t-blue-500"></div>
-          <div
-            className="absolute inset-0 rounded-full border-4 border-transparent border-t-purple-300 animate-spin"
-            style={{ animationDirection: "reverse", animationDuration: "1.5s" }}
+        {/* Clean loading dots */}
+        <div className="flex items-center justify-center space-x-2 mb-2">
+          <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce"></div>
+          <div 
+            className="w-3 h-3 bg-blue-500 rounded-full animate-bounce" 
+            style={{ animationDelay: "0.1s" }}
+          ></div>
+          <div 
+            className="w-3 h-3 bg-blue-500 rounded-full animate-bounce" 
+            style={{ animationDelay: "0.2s" }}
           ></div>
         </div>
 

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function CompanionLogin() {
   const router = useRouter();
@@ -51,21 +52,14 @@ export default function CompanionLogin() {
         {/* Header */}
         <div className="text-center">
           <div className="flex items-center justify-center mb-6">
-            <div className="text-4xl mr-3">🎓👶</div>
-            <div className="flex flex-col">
-              <span
-                className="text-2xl font-bold leading-tight"
-                style={{ color: "#47709B" }}
-              >
-                学霸带娃
-              </span>
-              <span
-                className="text-sm font-medium leading-tight opacity-70"
-                style={{ color: "#47709B" }}
-              >
-                MiniTeach
-              </span>
-            </div>
+            <Image
+              src="/miniTech.png"
+              alt="MiniTeach Logo"
+              width={120}
+              height={60}
+              className="h-15 w-auto"
+              priority
+            />
           </div>
           <h2 className="text-3xl font-bold text-gray-900">陪伴师登录</h2>
           <p className="mt-2 text-sm text-gray-600">登录您的陪伴师账户</p>

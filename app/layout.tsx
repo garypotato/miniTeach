@@ -22,6 +22,11 @@ export const metadata: Metadata = {
   title: "MiniTeach - Find Your Perfect Child Companion",
   description:
     "Connect with qualified child companions and educators for your family",
+  icons: {
+    icon: "/miniTech.png",
+    shortcut: "/miniTech.png",
+    apple: "/miniTech.png",
+  },
 };
 
 export default function RootLayout({

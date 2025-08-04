@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import MobileMenu from "./MobileMenu";
 import NavigationButtons from "./NavigationButtons";
 
@@ -11,21 +12,14 @@ export default function GlobalHeader() {
           {/* Logo - Server Rendered */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center hover:opacity-80">
-              <div className="mr-3 text-3xl">🎓👶</div>
-              <div className="flex flex-col">
-                <span
-                  className="text-lg font-bold leading-tight"
-                  style={{ color: "#47709B" }}
-                >
-                  学霸带娃
-                </span>
-                <span
-                  className="text-sm font-medium leading-tight opacity-80"
-                  style={{ color: "#47709B" }}
-                >
-                  MiniTeach
-                </span>
-              </div>
+              <Image
+                src="/miniTech.png"
+                alt="MiniTeach Logo"
+                width={480}
+                height={80}
+                className="h-10 w-auto"
+                priority
+              />
             </Link>
           </div>
 
@@ -50,7 +44,7 @@ export default function GlobalHeader() {
             >
               关于我们
             </Link>
-            
+
             {/* Dynamic Buttons - Client Component */}
             <NavigationButtons />
           </nav>
