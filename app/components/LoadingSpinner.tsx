@@ -23,7 +23,7 @@ export default function LoadingSpinner({
         <div className="flex items-center justify-center mb-4">
           <div className="relative">
             <Image
-              src="/miniTech.png"
+              src="/miniTeach.png"
               alt="MiniTeach Logo"
               width={150}
               height={75}

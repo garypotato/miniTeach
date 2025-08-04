@@ -23,9 +23,20 @@ export const metadata: Metadata = {
   description:
     "Connect with qualified child companions and educators for your family",
   icons: {
-    icon: "/miniTech.png",
-    shortcut: "/miniTech.png",
-    apple: "/miniTech.png",
+    icon: [
+      { url: "/miniTeach.png", sizes: "32x32", type: "image/png" },
+      { url: "/miniTeach.png", sizes: "16x16", type: "image/png" },
+    ],
+    shortcut: "/miniTeach.png",
+    apple: [
+      { url: "/miniTeach.png", sizes: "180x180", type: "image/png" },
+    ],
+    other: [
+      {
+        rel: "icon",
+        url: "/miniTeach.png",
+      },
+    ],
   },
 };
 

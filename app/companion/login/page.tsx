@@ -53,7 +53,7 @@ export default function CompanionLogin() {
         <div className="text-center">
           <div className="flex items-center justify-center mb-6">
             <Image
-              src="/miniTech.png"
+              src="/miniTeach.png"
               alt="MiniTeach Logo"
               width={120}
               height={60}

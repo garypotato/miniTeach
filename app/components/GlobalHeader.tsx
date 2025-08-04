@@ -13,7 +13,7 @@ export default function GlobalHeader() {
           <div className="flex items-center">
             <Link href="/" className="flex items-center hover:opacity-80">
               <Image
-                src="/miniTech.png"
+                src="/miniTeach.png"
                 alt="MiniTeach Logo"
                 width={480}
                 height={80}
