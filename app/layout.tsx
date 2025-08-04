@@ -24,17 +24,16 @@ export const metadata: Metadata = {
     "Connect with qualified child companions and educators for your family",
   icons: {
     icon: [
-      { url: "/miniTeach.png", sizes: "32x32", type: "image/png" },
-      { url: "/miniTeach.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon.ico", sizes: "any" },
     ],
-    shortcut: "/miniTeach.png",
-    apple: [
-      { url: "/miniTeach.png", sizes: "180x180", type: "image/png" },
-    ],
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
     other: [
       {
-        rel: "icon",
-        url: "/miniTeach.png",
+        rel: "manifest",
+        url: "/site.webmanifest",
       },
     ],
   },
