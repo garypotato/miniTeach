@@ -7,7 +7,6 @@ export function transformProductToCompanion(
   return {
     id: product.id,
     title: product.title,
-    body_html: product.body_html,
     handle: product.handle,
     image:
       product.images && product.images.length > 0

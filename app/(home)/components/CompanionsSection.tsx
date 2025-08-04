@@ -3,38 +3,13 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Companion } from "@/lib/shopify/types";
 // Client component - use fetch API for data
-
-interface Companion {
-  id: number;
-  title: string;
-  body_html: string;
-  handle: string;
-  image?: {
-    src: string;
-    alt: string | null;
-  };
-}
 
 interface CompanionsSectionProps {
   initialCompanions: Companion[];
 }
 
-const extractTextFromHtml = (html: string) => {
-  if (!html) return "";
-
-  // Use consistent server/client approach
-  return html
-    .replace(/<[^>]*>/g, "") // Remove HTML tags
-    .replace(/&amp;/g, "&") // Decode HTML entities
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&nbsp;/g, " ")
-    .replace(/[\u0000-\u001F\u007F-\u009F]/g, "") // Remove control characters
-    .trim();
-};
 
 async function fetchMoreCompanions(excludeIds: number[]): Promise<Companion[]> {
   try {
@@ -158,9 +133,7 @@ export default function CompanionsSection({
                 const finalHeight = imageHeight + totalContentHeight;
 
                 // Get description text
-                const descriptionText = extractTextFromHtml(
-                  companion.body_html
-                );
+                const descriptionText = companion.metafields?.description || "";
 
                 return (
                   <div

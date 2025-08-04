@@ -12,10 +12,11 @@ interface MetafieldsDisplayProps {
 // Fields to exclude from display for privacy/security reasons
 const EXCLUDED_FIELDS = [
   "password",
-  "wechat_id",
+  "wechat_id", 
   "user_name",
   "first_name",
   "last_name",
+  "description", // Displayed separately in "关于我" section
 ];
 
 const FIELD_ORDER = [

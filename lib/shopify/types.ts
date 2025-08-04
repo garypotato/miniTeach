@@ -1,7 +1,6 @@
 export interface ShopifyProduct {
   id: number;
   title: string;
-  body_html: string;
   handle: string;
   vendor?: string;
   product_type?: string;
@@ -26,7 +25,6 @@ export interface ShopifyProduct {
 export interface Companion {
   id: number;
   title: string;
-  body_html: string;
   handle: string;
   vendor?: string;
   product_type?: string;
@@ -58,6 +56,7 @@ export interface CompanionMetafields {
   skill?: string[];
   certification?: string[];
   availability?: string[];
+  description?: string;
   user_name?: string; // Email - required for creation but optional for display
   first_name?: string; // Required for creation but optional for display
   last_name?: string; // Required for creation but optional for display

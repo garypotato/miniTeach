@@ -5,17 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/app/store/hooks";
 import { setLoading } from "@/app/store/modalSlice";
-
-interface Companion {
-  id: number;
-  title: string;
-  body_html: string;
-  handle: string;
-  image?: {
-    src: string;
-    alt: string | null;
-  };
-}
+import { Companion } from "@/lib/shopify/types";
 
 interface CompanionsPaginationProps {
   companions: Companion[];
@@ -25,18 +15,6 @@ interface CompanionsPaginationProps {
   searchQuery?: string;
 }
 
-const extractTextFromHtml = (html: string) => {
-  // Use consistent server/client approach
-  return html
-    .replace(/<[^>]*>/g, "") // Remove HTML tags
-    .replace(/&amp;/g, "&") // Decode HTML entities
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&nbsp;/g, " ")
-    .trim();
-};
 
 const truncateText = (text: string, maxLength: number) => {
   if (text.length <= maxLength) return text;
@@ -168,19 +146,19 @@ export default function CompanionsPagination({
                         <p className="text-gray-600 leading-relaxed">
                           <span className="hidden md:inline">
                             {truncateText(
-                              extractTextFromHtml(companion.body_html),
+                              companion.metafields?.description || "",
                               280
                             )}
                           </span>
                           <span className="hidden sm:inline md:hidden">
                             {truncateText(
-                              extractTextFromHtml(companion.body_html),
+                              companion.metafields?.description || "",
                               180
                             )}
                           </span>
                           <span className="sm:hidden">
                             {truncateText(
-                              extractTextFromHtml(companion.body_html),
+                              companion.metafields?.description || "",
                               120
                             )}
                           </span>

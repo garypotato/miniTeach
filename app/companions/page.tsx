@@ -23,7 +23,7 @@ async function getAllCompanions(): Promise<Companion[]> {
       status: "active",
       published_status: "published",
       limit: 250,
-      fields: "id,title,body_html,handle,images,vendor,product_type,tags",
+      fields: "id,title,handle,images,vendor,product_type,tags",
     });
 
     if (result.success && result.data) {
@@ -37,13 +37,6 @@ async function getAllCompanions(): Promise<Companion[]> {
   }
 }
 
-// Helper function to extract text from HTML
-function stripHtml(html: string): string {
-  return html
-    .replace(/<[^>]*>/g, "")
-    .replace(/&[^;]+;/g, " ")
-    .trim();
-}
 
 export default async function CompanionsPage({
   searchParams,
@@ -82,13 +75,13 @@ export default async function CompanionsPage({
       !searchQuery.trim() ||
       (() => {
         const query = searchQuery.toLowerCase().trim();
-        const cleanBodyText = stripHtml(companion.body_html).toLowerCase();
+        const description = companion.metafields?.description?.toLowerCase() || "";
         return (
           companion.title.toLowerCase().includes(query) ||
           companion.vendor?.toLowerCase().includes(query) ||
           companion.product_type?.toLowerCase().includes(query) ||
           companion.tags?.toLowerCase().includes(query) ||
-          cleanBodyText.includes(query)
+          description.includes(query)
         );
       })();
 

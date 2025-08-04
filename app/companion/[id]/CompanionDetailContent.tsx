@@ -41,10 +41,9 @@ export default function CompanionDetailContent({
 
           <div className="prose prose-lg max-w-none">
             <h3 className="text-xl font-semibold text-gray-900 mb-4">关于我</h3>
-            <div
-              className="text-gray-700 leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: companion.body_html }}
-            />
+            <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+              {companion.metafields?.description || "暂无描述"}
+            </div>
           </div>
 
           {/* Companion Details with Metafields */}

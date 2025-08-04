@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
-import { getProducts, transformProductToCompanion } from "@/lib/shopify";
+import { getProductsWithMetafields, transformProductToCompanion } from "@/lib/shopify";
 
 const COMPANION_COLLECTION_ID = "491355177275";
 
 export async function GET() {
   try {
-    const result = await getProducts({
+    const result = await getProductsWithMetafields({
       status: "active",
       published_status: "published",
-      fields: "id,title,body_html,handle,images",
+      fields: "id,title,handle,images",
       collection_id: COMPANION_COLLECTION_ID,
     });
 

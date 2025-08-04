@@ -1,6 +1,6 @@
 import HomePage from "./(home)/components/HomePage";
 import {
-  getProducts,
+  getProductsWithMetafields,
   transformProductToCompanion,
   Companion,
 } from "../lib/shopify";
@@ -19,11 +19,11 @@ function shuffleArray<T>(array: T[]): T[] {
 
 async function getInitialCompanions(): Promise<Companion[]> {
   try {
-    const result = await getProducts({
+    const result = await getProductsWithMetafields({
       collection_id: "491355177275", // Companion collection ID
       status: "active",
       published_status: "published",
-      fields: "id,title,body_html,handle,images",
+      fields: "id,title,handle,images",
       limit: 50, // Get more companions to have better randomization
     });
 

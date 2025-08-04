@@ -3,17 +3,7 @@ import HeroSection from "./HeroSection";
 import FeaturesSection from "./FeaturesSection";
 import HowItWorksSection from "./HowItWorksSection";
 import FAQSection from "./FAQSection";
-
-interface Companion {
-  id: number;
-  title: string;
-  body_html: string;
-  handle: string;
-  image?: {
-    src: string;
-    alt: string | null;
-  };
-}
+import { Companion } from "@/lib/shopify/types";
 
 interface HomePageProps {
   initialCompanions: Companion[];

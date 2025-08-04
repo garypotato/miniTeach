@@ -17,7 +17,7 @@ export async function getProducts(
       limit: 250,
       status: "active",
       published_status: "published",
-      fields: "id,title,body_html,handle,images,vendor,product_type,tags",
+      fields: "id,title,handle,images,vendor,product_type,tags",
       ...options,
     };
 
@@ -174,7 +174,7 @@ export async function getProductWithMetafields(
 ): Promise<ShopifyResponse<ShopifyProduct>> {
   try {
     const product = await shopify.product.get(parseInt(productId, 10), {
-      fields: "id,title,body_html,handle,images,vendor,product_type,tags",
+      fields: "id,title,handle,images,vendor,product_type,tags",
     });
 
     let metafields: Array<{
@@ -263,7 +263,7 @@ export async function getProductWithMetafields(
 
 export async function createCompanionProduct(productData: {
   title: string;
-  body_html: string;
+  body_html?: string;
   vendor?: string;
   product_type?: string;
   tags?: string;
@@ -277,7 +277,7 @@ export async function createCompanionProduct(productData: {
   try {
     const productCreateData = {
       title: productData.title,
-      body_html: productData.body_html,
+      body_html: productData.body_html || "",
       vendor: productData.vendor || "MiniTeach",
       product_type: productData.product_type || "Companion",
       tags: productData.tags || "companion,childcare,education",

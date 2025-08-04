@@ -36,12 +36,12 @@ interface ProfileMetafields {
   skill?: string[];
   certification?: string[];
   availability?: string[];
+  description?: string;
 }
 
 interface ProfileData {
   id: number;
   title: string;
-  body_html: string;
   images?: Array<{
     src: string;
     alt: string | null;
@@ -89,7 +89,7 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
     major: profile.metafields?.major || "",
     location: profile.metafields?.location || "",
     age: profile.metafields?.age || "",
-    description: profile.body_html || "",
+    description: profile.metafields?.description || "",
     education: profile.metafields?.education || "",
     language: Array.isArray(profile.metafields?.language)
       ? profile.metafields.language.join(", ")
@@ -430,10 +430,9 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
                 rows={6}
               />
             ) : (
-              <div
-                className="prose max-w-none text-gray-700"
-                dangerouslySetInnerHTML={{ __html: profile.body_html }}
-              />
+              <div className="prose max-w-none text-gray-700 whitespace-pre-wrap">
+                {profile.metafields?.description || "未设置"}
+              </div>
             )}
           </div>
 

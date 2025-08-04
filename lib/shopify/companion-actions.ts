@@ -193,7 +193,6 @@ export async function createCompanion(formData: FormData): Promise<{
     // Create companion product using server action
     const companionProductData = {
       title,
-      body_html: description,
       vendor: "Mini-Teach",
       product_type: "Companion",
       tags: "companion,child-care,education",
@@ -390,6 +389,14 @@ export async function createCompanion(formData: FormData): Promise<{
             },
           ]
         : []),
+      {
+        owner_resource: "product",
+        owner_id: createdProduct.id,
+        namespace: "custom",
+        key: "description",
+        value: description,
+        type: "multi_line_text_field",
+      },
     ];
 
     // Create metafields using server action
@@ -738,11 +745,10 @@ export async function updateCompanionProfile(
       ].filter(Boolean) as typeof finalImages;
     }
 
-    // Update product title, body_html, and images
+    // Update product title and images (description is now a metafield)
     const newTitle = `${formData.first_name} ${formData.last_name}`;
     const updateData: {
       title: string;
-      body_html: string;
       images?: Array<{
         attachment: string;
         filename: string;
@@ -751,7 +757,6 @@ export async function updateCompanionProfile(
       }>;
     } = {
       title: newTitle,
-      body_html: formData.description,
     };
 
     // Add images to update if we have processed images or removals
@@ -892,6 +897,12 @@ export async function updateCompanionProfile(
               .join(" ")
           : "未设置",
         type: "single_line_text_field",
+      },
+      {
+        namespace: "custom",
+        key: "description",
+        value: formData.description,
+        type: "multi_line_text_field",
       },
     ];
 

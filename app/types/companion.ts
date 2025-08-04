@@ -14,12 +14,12 @@ export interface CompanionMetafields {
   skill?: string[];
   certification?: string[];
   availability?: string[];
+  description?: string;
 }
 
 export interface Companion {
   id: number;
   title: string;
-  body_html: string;
   handle: string;
   vendor?: string;
   product_type?: string;

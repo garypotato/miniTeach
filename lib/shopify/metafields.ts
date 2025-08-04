@@ -17,6 +17,7 @@ export const METAFIELD_KEYS = {
   FIRST_NAME: "first_name",
   LAST_NAME: "last_name",
   PASSWORD: "password",
+  DESCRIPTION: "description",
 } as const;
 
 export const METAFIELD_LABELS = {
@@ -35,6 +36,7 @@ export const METAFIELD_LABELS = {
   [METAFIELD_KEYS.USER_NAME]: "User Name (Email)",
   [METAFIELD_KEYS.FIRST_NAME]: "First Name",
   [METAFIELD_KEYS.LAST_NAME]: "Last Name",
+  [METAFIELD_KEYS.DESCRIPTION]: "Description",
 } as const;
 
 export const METAFIELD_ICONS = {
@@ -61,6 +63,7 @@ export const METAFIELD_ICONS = {
   [METAFIELD_KEYS.CERTIFICATION]:
     "M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z",
   [METAFIELD_KEYS.AVAILABILITY]: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
+  [METAFIELD_KEYS.DESCRIPTION]: "M4 6h16M4 12h16M4 18h7",
 } as const;
 
 export function processMetafields(
@@ -190,6 +193,9 @@ export function processMetafields(
         break;
       case "last_name":
         processed.last_name = value;
+        break;
+      case "description":
+        processed.description = value;
         break;
     }
   });
