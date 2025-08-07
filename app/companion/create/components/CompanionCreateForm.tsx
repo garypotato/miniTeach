@@ -382,6 +382,29 @@ export default function CompanionCreateForm() {
           <p className="text-red-700 mb-6">
             我们在创建您的档案时遇到错误。请重试。
           </p>
+          
+          {/* Display error details visually for mobile debugging */}
+          {errors.general && (
+            <div className="bg-white border border-red-300 rounded-lg p-4 mb-6 text-left">
+              <h3 className="font-semibold text-red-800 mb-2">错误详情：</h3>
+              <p className="text-sm text-red-700 break-words">{errors.general}</p>
+            </div>
+          )}
+
+          {/* Device info for debugging */}
+          <div className="bg-gray-100 border border-gray-300 rounded-lg p-4 mb-6 text-left">
+            <h3 className="font-semibold text-gray-800 mb-2">调试信息：</h3>
+            <div className="text-xs text-gray-600 space-y-1">
+              <p><strong>设备:</strong> {/iPad|iPhone|iPod/.test(navigator.userAgent) ? 'iOS' : '其他设备'}</p>
+              <p><strong>浏览器:</strong> {navigator.userAgent.includes('Safari') ? 'Safari' : '其他浏览器'}</p>
+              <p><strong>时间:</strong> {new Date().toLocaleString()}</p>
+              <p><strong>已选择图片数:</strong> {formData.images.length}</p>
+              {formData.images.map((img, i) => (
+                <p key={i}><strong>图片 {i+1}:</strong> {img.name} ({(img.size/1024/1024).toFixed(2)}MB)</p>
+              ))}
+            </div>
+          </div>
+
           <div className="space-x-4">
             <button
               onClick={() => setSubmitStatus("idle")}
