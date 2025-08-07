@@ -168,17 +168,26 @@ export async function createCompanion(formData: FormData): Promise<{
     }> = [];
 
     try {
+      console.log(`[DEBUG] Processing ${images.length} images for companion creation`);
       const imagePromises = images.map(async (image, index) => {
         if (image.size > 0) {
-          const bytes = await image.arrayBuffer();
-          const base64 = Buffer.from(bytes).toString("base64");
-          return {
-            attachment: base64,
-            filename: image.name || `companion-image-${index + 1}.jpg`,
-            alt: `${title} - Image ${index + 1}`,
-            position: index + 1,
-          };
+          console.log(`[DEBUG] Processing image ${index + 1}: ${image.name}, size: ${image.size} bytes`);
+          try {
+            const bytes = await image.arrayBuffer();
+            const base64 = Buffer.from(bytes).toString("base64");
+            console.log(`[DEBUG] Successfully converted image ${index + 1} to base64, length: ${base64.length} chars`);
+            return {
+              attachment: base64,
+              filename: image.name || `companion-image-${index + 1}.jpg`,
+              alt: `${title} - Image ${index + 1}`,
+              position: index + 1,
+            };
+          } catch (imageError) {
+            console.error(`[DEBUG] Error processing individual image ${index + 1}:`, imageError);
+            throw imageError;
+          }
         }
+        console.log(`[DEBUG] Skipping empty image ${index + 1}`);
         return null;
       });
 
@@ -186,9 +195,17 @@ export async function createCompanion(formData: FormData): Promise<{
       processedImages = resolvedImages.filter(
         (img) => img !== null
       ) as typeof processedImages;
+      console.log(`[DEBUG] Successfully processed ${processedImages.length} images`);
     } catch (imageError) {
+      console.error("[DEBUG] Error processing images:", imageError);
       console.error("Error processing images:", imageError);
-      return { success: false, error: "圖片處理失敗" };
+      
+      // Enhanced error details for iOS debugging
+      if (imageError instanceof Error) {
+        console.error(`[DEBUG] Image processing error details - Name: ${imageError.name}, Message: ${imageError.message}`);
+      }
+      
+      return { success: false, error: "圖片處理失敗 - 可能是文件格式或大小问题" };
     }
 
     // Create companion product using server action

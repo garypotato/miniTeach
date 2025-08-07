@@ -20,15 +20,36 @@ const ImageUpload = forwardRef<HTMLDivElement, ImageUploadProps>(({
 
     const validFiles: File[] = [];
     const maxSize = 5 * 1024 * 1024; // 5MB
-    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/jpg"];
 
-    Array.from(files).forEach((file) => {
-      if (!allowedTypes.includes(file.type)) {
+    // Log device info for iOS debugging
+    const userAgent = navigator.userAgent;
+    const isIOS = /iPad|iPhone|iPod/.test(userAgent);
+    console.log(`[DEBUG] Image selection on ${isIOS ? 'iOS' : 'other device'}, ${files.length} files selected`);
+
+    Array.from(files).forEach((file, index) => {
+      console.log(`[DEBUG] File ${index + 1}: ${file.name}, size: ${file.size} bytes, type: ${file.type}`);
+      
+      // iOS Safari may not set file.type properly, so also check extension
+      const fileExtension = file.name.split('.').pop()?.toLowerCase();
+      const validExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+      
+      const isValidType = allowedTypes.includes(file.type) || 
+                         (fileExtension && validExtensions.includes(fileExtension));
+      
+      if (!isValidType) {
+        console.error(`[DEBUG] Invalid file type: ${file.type} for file: ${file.name}`);
         alert("只允许JPG、PNG和GIF文件");
         return;
       }
       if (file.size > maxSize) {
+        console.error(`[DEBUG] File too large: ${file.size} bytes for file: ${file.name}`);
         alert("每张图片必须小于5MB");
+        return;
+      }
+      if (file.size === 0) {
+        console.error(`[DEBUG] Empty file detected: ${file.name}`);
+        alert("文件为空，请选择有效的图片文件");
         return;
       }
       validFiles.push(file);
@@ -66,7 +87,15 @@ const ImageUpload = forwardRef<HTMLDivElement, ImageUploadProps>(({
   };
 
   const getImagePreview = (file: File): string => {
-    return URL.createObjectURL(file);
+    try {
+      const url = URL.createObjectURL(file);
+      console.log(`[DEBUG] Created preview URL for ${file.name}`);
+      return url;
+    } catch (error) {
+      console.error(`[DEBUG] Error creating preview URL for ${file.name}:`, error);
+      // Return a placeholder or handle the error gracefully
+      return '';
+    }
   };
 
   return (
@@ -91,7 +120,8 @@ const ImageUpload = forwardRef<HTMLDivElement, ImageUploadProps>(({
           ref={fileInputRef}
           type="file"
           multiple
-          accept="image/jpeg,image/png,image/gif"
+          accept="image/*"
+          capture="environment"
           onChange={(e) => handleFileSelect(e.target.files)}
           className="hidden"
         />

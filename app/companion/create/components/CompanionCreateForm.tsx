@@ -234,6 +234,12 @@ export default function CompanionCreateForm() {
     setErrors({}); // Clear any previous errors
 
     try {
+      // Log device info for debugging
+      const userAgent = navigator.userAgent;
+      const isIOS = /iPad|iPhone|iPod/.test(userAgent);
+      console.log(`[DEBUG] Device: ${isIOS ? 'iOS' : 'Other'}, User Agent: ${userAgent}`);
+      console.log(`[DEBUG] Form submission started with ${formData.images.length} images`);
+      
       const submitData = new FormData();
 
       // Add required fields
@@ -263,29 +269,44 @@ export default function CompanionCreateForm() {
       submitData.append("certification", formData.certification);
       submitData.append("availability", formData.availability);
 
-      // Add images
-      formData.images.forEach((image) => {
+      // Add images with iOS-specific logging
+      formData.images.forEach((image, index) => {
+        console.log(`[DEBUG] Adding image ${index + 1}: ${image.name}, size: ${image.size} bytes, type: ${image.type}`);
         submitData.append("images", image);
       });
 
       // Use server action for form submission
+      console.log(`[DEBUG] Calling createCompanion with FormData`);
       const result = await createCompanion(submitData);
+      console.log(`[DEBUG] Server response:`, result);
 
       if (result.success) {
+        console.log(`[DEBUG] Success! Companion created successfully`);
         setSubmitStatus("success");
         // Optional: redirect after showing success
         setTimeout(() => {
           router.push("/companions");
         }, 2000);
       } else {
+        console.error(`[DEBUG] Server error:`, result.error);
         setSubmitStatus("error");
         console.error("Form submission error:", result.error);
         // Show error message to user
         setErrors({ general: result.error || "创建档案失败，请重试" });
       }
     } catch (error) {
+      console.error(`[DEBUG] Client-side error during submission:`, error);
       console.error("Form submission error:", error);
+      
+      // Enhanced error logging for iOS debugging
+      if (error instanceof Error) {
+        console.error(`[DEBUG] Error name: ${error.name}`);
+        console.error(`[DEBUG] Error message: ${error.message}`);
+        console.error(`[DEBUG] Error stack:`, error.stack);
+      }
+      
       setSubmitStatus("error");
+      setErrors({ general: "网络错误或其他问题，请检查网络连接并重试" });
     } finally {
       setIsSubmitting(false);
     }
