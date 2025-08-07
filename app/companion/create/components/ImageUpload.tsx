@@ -15,20 +15,61 @@ const ImageUpload = forwardRef<HTMLDivElement, ImageUploadProps>(({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
 
-  const handleFileSelect = (files: FileList | null) => {
+  // Helper function to compress image
+  const compressImage = (file: File, maxWidth: number = 2048, maxHeight: number = 2048, quality: number = 0.8): Promise<File> => {
+    return new Promise((resolve) => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      img.onload = () => {
+        // Calculate new dimensions
+        let { width, height } = img;
+        
+        if (width > height) {
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width = (width * maxHeight) / height;
+            height = maxHeight;
+          }
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        // Draw and compress
+        ctx?.drawImage(img, 0, 0, width, height);
+        
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const compressedFile = new File([blob], file.name, {
+              type: file.type,
+              lastModified: Date.now(),
+            });
+            resolve(compressedFile);
+          } else {
+            resolve(file); // Fallback to original file
+          }
+        }, file.type, quality);
+      };
+      
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
+  const handleFileSelect = async (files: FileList | null) => {
     if (!files) return;
 
     const validFiles: File[] = [];
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    const maxSize = 3 * 1024 * 1024; // Reduced to 3MB to account for base64 expansion
     const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/jpg"];
 
-    // Log device info for iOS debugging
-    const userAgent = navigator.userAgent;
-    const isIOS = /iPad|iPhone|iPod/.test(userAgent);
-    console.log(`[DEBUG] Image selection on ${isIOS ? 'iOS' : 'other device'}, ${files.length} files selected`);
-
-    Array.from(files).forEach((file, index) => {
-      console.log(`[DEBUG] File ${index + 1}: ${file.name}, size: ${file.size} bytes, type: ${file.type}`);
+    for (let index = 0; index < files.length; index++) {
+      const file = files[index];
       
       // iOS Safari may not set file.type properly, so also check extension
       const fileExtension = file.name.split('.').pop()?.toLowerCase();
@@ -38,22 +79,35 @@ const ImageUpload = forwardRef<HTMLDivElement, ImageUploadProps>(({
                          (fileExtension && validExtensions.includes(fileExtension));
       
       if (!isValidType) {
-        console.error(`[DEBUG] Invalid file type: ${file.type} for file: ${file.name}`);
         alert("只允许JPG、PNG和GIF文件");
-        return;
+        continue;
       }
-      if (file.size > maxSize) {
-        console.error(`[DEBUG] File too large: ${file.size} bytes for file: ${file.name}`);
-        alert("每张图片必须小于5MB");
-        return;
-      }
+      
       if (file.size === 0) {
-        console.error(`[DEBUG] Empty file detected: ${file.name}`);
         alert("文件为空，请选择有效的图片文件");
-        return;
+        continue;
       }
-      validFiles.push(file);
-    });
+
+      let processedFile = file;
+      
+      // Compress image if it's too large
+      if (file.size > maxSize) {
+        try {
+          processedFile = await compressImage(file);
+        } catch (error) {
+          alert(`压缩图片失败: ${file.name}`);
+          continue;
+        }
+      }
+
+      // Final size check after compression
+      if (processedFile.size > maxSize) {
+        alert(`图片太大，即使压缩后仍超过3MB: ${file.name}`);
+        continue;
+      }
+
+      validFiles.push(processedFile);
+    }
 
     const totalFiles = [...images, ...validFiles];
     if (totalFiles.length > 5) {
@@ -88,11 +142,8 @@ const ImageUpload = forwardRef<HTMLDivElement, ImageUploadProps>(({
 
   const getImagePreview = (file: File): string => {
     try {
-      const url = URL.createObjectURL(file);
-      console.log(`[DEBUG] Created preview URL for ${file.name}`);
-      return url;
+      return URL.createObjectURL(file);
     } catch (error) {
-      console.error(`[DEBUG] Error creating preview URL for ${file.name}:`, error);
       // Return a placeholder or handle the error gracefully
       return '';
     }
@@ -154,8 +205,9 @@ const ImageUpload = forwardRef<HTMLDivElement, ImageUploadProps>(({
           </div>
 
           <div className="text-sm text-gray-500 space-y-1">
-            <p>{""}</p>
-            <p>{""}</p>
+            <p>支持 JPG、PNG、GIF 格式</p>
+            <p>图片将自动压缩以确保上传成功</p>
+            <p>建议每张图片不超过 3MB</p>
           </div>
         </div>
       </div>
@@ -176,7 +228,7 @@ const ImageUpload = forwardRef<HTMLDivElement, ImageUploadProps>(({
               <button
                 type="button"
                 onClick={() => removeImage(index)}
-                className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                className="absolute -top-2 -right-2 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-red-600 shadow-lg z-10"
               >
                 <svg
                   className="w-4 h-4"

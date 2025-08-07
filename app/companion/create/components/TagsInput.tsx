@@ -114,7 +114,7 @@ const TagsInput = forwardRef<HTMLDivElement, TagsInputProps>(({
 
       {/* Helper text */}
       <p className="text-xs text-gray-500">
-        输入文字后加逗号自动创建标签，或按 Enter 键添加。点击 × 移除标签。
+        输入文字后加英文逗号(,)自动创建标签，或按 Enter 键添加。点击 × 移除标签。
       </p>
 
       {/* Error message */}

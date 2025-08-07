@@ -49,7 +49,6 @@ export async function checkEmailAvailability(email: string): Promise<{
       message: "電子郵件地址可用",
     };
   } catch (error) {
-    console.error("Error checking email availability:", error);
     return {
       success: false,
       error: "無法驗證電子郵件唯一性，請稍後重試",
@@ -168,14 +167,24 @@ export async function createCompanion(formData: FormData): Promise<{
     }> = [];
 
     try {
-      console.log(`[DEBUG] Processing ${images.length} images for companion creation`);
       const imagePromises = images.map(async (image, index) => {
         if (image.size > 0) {
-          console.log(`[DEBUG] Processing image ${index + 1}: ${image.name}, size: ${image.size} bytes`);
+          // Shopify limits: 20MB file size, but base64 encoding increases size by ~33%
+          const shopifyMaxSize = 15 * 1024 * 1024; // 15MB to account for base64 expansion
+          if (image.size > shopifyMaxSize) {
+            throw new Error(`Image ${image.name} is too large (${(image.size/1024/1024).toFixed(1)}MB). Maximum allowed is 15MB.`);
+          }
+          
           try {
             const bytes = await image.arrayBuffer();
             const base64 = Buffer.from(bytes).toString("base64");
-            console.log(`[DEBUG] Successfully converted image ${index + 1} to base64, length: ${base64.length} chars`);
+            const base64SizeMB = (base64.length * 0.75) / (1024 * 1024); // Estimate actual size
+            
+            // Final check on base64 size
+            if (base64SizeMB > 20) {
+              throw new Error(`Image ${image.name} is too large after processing (${base64SizeMB.toFixed(1)}MB). Please use a smaller image.`);
+            }
+            
             return {
               attachment: base64,
               filename: image.name || `companion-image-${index + 1}.jpg`,
@@ -183,11 +192,9 @@ export async function createCompanion(formData: FormData): Promise<{
               position: index + 1,
             };
           } catch (imageError) {
-            console.error(`[DEBUG] Error processing individual image ${index + 1}:`, imageError);
             throw imageError;
           }
         }
-        console.log(`[DEBUG] Skipping empty image ${index + 1}`);
         return null;
       });
 
@@ -195,16 +202,7 @@ export async function createCompanion(formData: FormData): Promise<{
       processedImages = resolvedImages.filter(
         (img) => img !== null
       ) as typeof processedImages;
-      console.log(`[DEBUG] Successfully processed ${processedImages.length} images`);
     } catch (imageError) {
-      console.error("[DEBUG] Error processing images:", imageError);
-      console.error("Error processing images:", imageError);
-      
-      // Enhanced error details for iOS debugging
-      if (imageError instanceof Error) {
-        console.error(`[DEBUG] Image processing error details - Name: ${imageError.name}, Message: ${imageError.message}`);
-      }
-      
       return { success: false, error: "圖片處理失敗 - 可能是文件格式或大小问题" };
     }
 
@@ -437,32 +435,11 @@ export async function createCompanion(formData: FormData): Promise<{
       createdProduct.id,
       metafieldsToCreate
     );
-    if (!metafieldsResult.success) {
-      console.warn("Failed to create some metafields:", metafieldsResult.error);
-    }
-
     // Add product to companion collection using server action
-    const collectionResult = await addProductToCollection(
-      createdProduct.id,
-      491355177275
-    );
-    if (!collectionResult.success) {
-      console.warn(
-        "Failed to add product to companion collection:",
-        collectionResult.error
-      );
-      // Continue even if collection assignment fails
-    }
+    await addProductToCollection(createdProduct.id, 491355177275);
 
     // Update product status to draft for review using server action
-    const statusResult = await updateProductStatus(createdProduct.id, "draft");
-    if (!statusResult.success) {
-      console.warn(
-        "Failed to update product status to draft:",
-        statusResult.error
-      );
-      // Continue even if status update fails
-    }
+    await updateProductStatus(createdProduct.id, "draft");
 
     return {
       success: true,
@@ -476,7 +453,6 @@ export async function createCompanion(formData: FormData): Promise<{
       message: "Companion profile created successfully and is pending review",
     };
   } catch (error) {
-    console.error("Error creating companion:", error);
     return { success: false, error: "Failed to create companion profile" };
   }
 }
@@ -563,7 +539,6 @@ export async function updateCompanionLoginCredentials(
 
     return { success: true, message: "登录信息更新成功" };
   } catch (error) {
-    console.error("Error updating login credentials:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "更新登录信息失败",
@@ -647,17 +622,14 @@ export async function updateCompanionProfile(
     // Use placeholder values for missing required fields
     if (!formData.first_name) {
       formData.first_name = "Unknown"; // Placeholder for missing first name
-      console.log("Using placeholder for missing first_name");
     }
 
     if (!formData.major) {
       formData.major = "未设置"; // Placeholder for missing major
-      console.log("Using placeholder for missing major");
     }
 
     if (!formData.location) {
       formData.location = "Sydney"; // Default location
-      console.log("Using default location: Sydney");
     }
 
     // Only require fields that should genuinely be required
@@ -708,7 +680,6 @@ export async function updateCompanionProfile(
           (img) => img !== null
         ) as typeof processedImages;
       } catch (imageError) {
-        console.error("Error processing images:", imageError);
         return { success: false, error: "图片处理失败" };
       }
     }
@@ -759,10 +730,6 @@ export async function updateCompanionProfile(
                 position: processedImages.length + index + 1,
               };
             } catch (error) {
-              console.error(
-                `Error fetching existing image ${image.src}:`,
-                error
-              );
               // Skip this image if we can't fetch it
               return null;
             }
@@ -951,7 +918,6 @@ export async function updateCompanionProfile(
 
     return { success: true, message: "档案信息更新成功" };
   } catch (error) {
-    console.error("Error updating companion profile:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "更新档案信息失败",

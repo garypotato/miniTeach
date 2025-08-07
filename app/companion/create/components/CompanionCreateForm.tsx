@@ -69,7 +69,6 @@ export default function CompanionCreateForm() {
   const [submitStatus, setSubmitStatus] = useState<
     "idle" | "success" | "error"
   >("idle");
-  const [debugInfo, setDebugInfo] = useState<string>("");
 
   const scrollToFirstError = (errors: ValidationErrors) => {
     const firstErrorField = Object.keys(errors)[0];
@@ -190,7 +189,6 @@ export default function CompanionCreateForm() {
       setErrors((prev) => ({ ...prev, user_name: "" }));
       return true;
     } catch (error) {
-      console.error("Error checking email uniqueness:", error);
       return true; // Allow submission on check failure
     } finally {
       setIsCheckingEmail(false);
@@ -233,15 +231,6 @@ export default function CompanionCreateForm() {
     setErrors({}); // Clear any previous errors
 
     try {
-      // Log device info for debugging
-      const userAgent = navigator.userAgent;
-      const isIOS = /iPad|iPhone|iPod/.test(userAgent);
-      const debugMessage = `设备: ${isIOS ? 'iOS' : '其他'}, 图片: ${formData.images.length}张`;
-      setDebugInfo(debugMessage);
-      
-      console.log(`[DEBUG] Device: ${isIOS ? 'iOS' : 'Other'}, User Agent: ${userAgent}`);
-      console.log(`[DEBUG] Form submission started with ${formData.images.length} images`);
-      
       const submitData = new FormData();
 
       // Add required fields
@@ -271,53 +260,28 @@ export default function CompanionCreateForm() {
       submitData.append("certification", formData.certification);
       submitData.append("availability", formData.availability);
 
-      // Add images with iOS-specific logging
-      formData.images.forEach((image, index) => {
-        console.log(`[DEBUG] Adding image ${index + 1}: ${image.name}, size: ${image.size} bytes, type: ${image.type}`);
+      // Add images
+      formData.images.forEach((image) => {
         submitData.append("images", image);
       });
 
       // Use server action for form submission
-      console.log(`[DEBUG] Calling createCompanion with FormData`);
-      
-      let result;
-      try {
-        result = await createCompanion(submitData);
-        console.log(`[DEBUG] Server response:`, result);
-      } catch (serverError) {
-        console.error(`[DEBUG] Server action failed:`, serverError);
-        throw new Error(`Server action failed: ${serverError instanceof Error ? serverError.message : 'Unknown server error'}`);
-      }
+      const result = await createCompanion(submitData);
 
       if (result.success) {
-        console.log(`[DEBUG] Success! Companion created successfully`);
         setSubmitStatus("success");
         // Optional: redirect after showing success
         setTimeout(() => {
           router.push("/companions");
         }, 2000);
       } else {
-        console.error(`[DEBUG] Server error:`, result.error);
         setSubmitStatus("error");
-        console.error("Form submission error:", result.error);
-        // Show error message to user
         setErrors({ general: result.error || "创建档案失败，请重试" });
       }
     } catch (error) {
-      console.error(`[DEBUG] Client-side error during submission:`, error);
-      console.error("Form submission error:", error);
-      
-      // Enhanced error logging for iOS debugging
-      if (error instanceof Error) {
-        console.error(`[DEBUG] Error name: ${error.name}`);
-        console.error(`[DEBUG] Error message: ${error.message}`);
-        console.error(`[DEBUG] Error stack:`, error.stack);
-      }
-      
       setSubmitStatus("error");
       const errorMessage = error instanceof Error ? error.message : "网络错误或其他问题，请检查网络连接并重试";
       setErrors({ general: errorMessage });
-      setDebugInfo(`错误: ${errorMessage}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -393,41 +357,48 @@ export default function CompanionCreateForm() {
           <p className="text-red-700 mb-6">
             我们在创建您的档案时遇到错误。请重试。
           </p>
-          
-          {/* Display error details visually for mobile debugging */}
+
+          {/* Display specific error message */}
           {errors.general && (
             <div className="bg-white border border-red-300 rounded-lg p-4 mb-6 text-left">
               <h3 className="font-semibold text-red-800 mb-2">错误详情：</h3>
-              <p className="text-sm text-red-700 break-words">{errors.general}</p>
+              <p className="text-sm text-red-700">{errors.general}</p>
+              
+              {/* Helpful suggestions based on error type */}
+              <div className="mt-3 text-xs text-gray-600">
+                <p><strong>可能的解决方案：</strong></p>
+                <ul className="list-disc list-inside space-y-1 mt-2">
+                  {errors.general.includes('图片') || errors.general.includes('Image') ? (
+                    <>
+                      <li>确保图片格式为 JPG、PNG 或 GIF</li>
+                      <li>检查图片大小是否过大（建议小于3MB）</li>
+                      <li>尝试重新选择图片</li>
+                    </>
+                  ) : errors.general.includes('邮件') || errors.general.includes('email') || errors.general.includes('電子郵件') ? (
+                    <>
+                      <li>检查邮箱地址格式是否正确</li>
+                      <li>尝试使用其他邮箱地址</li>
+                      <li>确保邮箱地址未被其他用户使用</li>
+                    </>
+                  ) : errors.general.includes('网络') || errors.general.includes('Network') ? (
+                    <>
+                      <li>检查网络连接</li>
+                      <li>稍后重试</li>
+                      <li>尝试刷新页面</li>
+                    </>
+                  ) : (
+                    <>
+                      <li>检查所有必填字段是否已填写</li>
+                      <li>确保个人介绍不为空</li>
+                      <li>尝试重新提交表单</li>
+                    </>
+                  )}
+                </ul>
+              </div>
             </div>
           )}
 
-          {/* Device info for debugging */}
-          <div className="bg-gray-100 border border-gray-300 rounded-lg p-4 mb-6 text-left">
-            <h3 className="font-semibold text-gray-800 mb-2">调试信息：</h3>
-            <div className="text-xs text-gray-600 space-y-1">
-              <p><strong>设备:</strong> {/iPad|iPhone|iPod/.test(navigator.userAgent) ? 'iOS' : '其他设备'}</p>
-              <p><strong>浏览器:</strong> {navigator.userAgent.includes('Safari') ? 'Safari' : '其他浏览器'}</p>
-              <p><strong>User Agent:</strong> {navigator.userAgent}</p>
-              <p><strong>时间:</strong> {new Date().toLocaleString()}</p>
-              <p><strong>已选择图片数:</strong> {formData.images.length}</p>
-              {formData.images.map((img, i) => (
-                <p key={i}><strong>图片 {i+1}:</strong> {img.name} ({(img.size/1024/1024).toFixed(2)}MB) - Type: {img.type}</p>
-              ))}
-              <p><strong>表单数据:</strong></p>
-              <div className="ml-4 space-y-1">
-                <p>• 姓名: {formData.first_name} {formData.last_name}</p>
-                <p>• 邮箱: {formData.user_name}</p>
-                <p>• 专业: {formData.major}</p>
-                <p>• 位置: {formData.location}</p>
-                <p>• 年龄: {formData.age}</p>
-                <p>• 微信: {formData.wechat_id}</p>
-                <p>• 描述长度: {formData.description.length}字符</p>
-              </div>
-              <p><strong>网络状态:</strong> {navigator.onLine ? '在线' : '离线'}</p>
-              <p><strong>内存使用:</strong> {(performance as unknown as {memory?: {usedJSHeapSize: number}}).memory ? `${Math.round((performance as unknown as {memory: {usedJSHeapSize: number}}).memory.usedJSHeapSize / 1024 / 1024)}MB` : '未知'}</p>
-            </div>
-          </div>
+          
 
           <div className="space-x-4">
             <button
@@ -456,15 +427,6 @@ export default function CompanionCreateForm() {
         <p className="mt-2 text-gray-600">
           填写您的基本信息以创建陪伴师档案
         </p>
-        
-        {/* Debug info display for mobile */}
-        {debugInfo && (
-          <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-3">
-            <p className="text-sm text-blue-800">
-              <strong>调试信息:</strong> {debugInfo}
-            </p>
-          </div>
-        )}
       </div>
 
       {/* General Error Display */}
