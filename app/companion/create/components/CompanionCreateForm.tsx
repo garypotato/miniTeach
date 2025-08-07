@@ -425,7 +425,7 @@ export default function CompanionCreateForm() {
                 <p>• 描述长度: {formData.description.length}字符</p>
               </div>
               <p><strong>网络状态:</strong> {navigator.onLine ? '在线' : '离线'}</p>
-              <p><strong>内存使用:</strong> {(performance as any).memory ? `${Math.round((performance as any).memory.usedJSHeapSize / 1024 / 1024)}MB` : '未知'}</p>
+              <p><strong>内存使用:</strong> {(performance as unknown as {memory?: {usedJSHeapSize: number}}).memory ? `${Math.round((performance as unknown as {memory: {usedJSHeapSize: number}}).memory.usedJSHeapSize / 1024 / 1024)}MB` : '未知'}</p>
             </div>
           </div>
 
