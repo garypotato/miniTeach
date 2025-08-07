@@ -188,7 +188,7 @@ export default function CompanionCreateForm() {
       // Clear email error if available
       setErrors((prev) => ({ ...prev, user_name: "" }));
       return true;
-    } catch (error) {
+    } catch {
       return true; // Allow submission on check failure
     } finally {
       setIsCheckingEmail(false);

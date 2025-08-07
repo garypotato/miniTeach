@@ -20,7 +20,7 @@ const ImageUpload = forwardRef<HTMLDivElement, ImageUploadProps>(({
     return new Promise((resolve) => {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
-      const img = new Image();
+      const img = document.createElement('img');
       
       img.onload = () => {
         // Calculate new dimensions
@@ -94,7 +94,7 @@ const ImageUpload = forwardRef<HTMLDivElement, ImageUploadProps>(({
       if (file.size > maxSize) {
         try {
           processedFile = await compressImage(file);
-        } catch (error) {
+        } catch {
           alert(`压缩图片失败: ${file.name}`);
           continue;
         }
@@ -143,7 +143,7 @@ const ImageUpload = forwardRef<HTMLDivElement, ImageUploadProps>(({
   const getImagePreview = (file: File): string => {
     try {
       return URL.createObjectURL(file);
-    } catch (error) {
+    } catch {
       // Return a placeholder or handle the error gracefully
       return '';
     }

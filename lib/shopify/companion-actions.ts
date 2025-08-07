@@ -48,7 +48,7 @@ export async function checkEmailAvailability(email: string): Promise<{
       available: true,
       message: "電子郵件地址可用",
     };
-  } catch (error) {
+  } catch {
     return {
       success: false,
       error: "無法驗證電子郵件唯一性，請稍後重試",
@@ -202,7 +202,7 @@ export async function createCompanion(formData: FormData): Promise<{
       processedImages = resolvedImages.filter(
         (img) => img !== null
       ) as typeof processedImages;
-    } catch (imageError) {
+    } catch {
       return { success: false, error: "圖片處理失敗 - 可能是文件格式或大小问题" };
     }
 
@@ -431,7 +431,7 @@ export async function createCompanion(formData: FormData): Promise<{
       type: field.type,
     }));
 
-    const metafieldsResult = await createProductMetafields(
+    await createProductMetafields(
       createdProduct.id,
       metafieldsToCreate
     );
@@ -452,7 +452,7 @@ export async function createCompanion(formData: FormData): Promise<{
       },
       message: "Companion profile created successfully and is pending review",
     };
-  } catch (error) {
+  } catch {
     return { success: false, error: "Failed to create companion profile" };
   }
 }
@@ -679,7 +679,7 @@ export async function updateCompanionProfile(
         processedImages = resolvedImages.filter(
           (img) => img !== null
         ) as typeof processedImages;
-      } catch (imageError) {
+      } catch {
         return { success: false, error: "图片处理失败" };
       }
     }
@@ -729,7 +729,7 @@ export async function updateCompanionProfile(
                 alt: image.alt,
                 position: processedImages.length + index + 1,
               };
-            } catch (error) {
+            } catch {
               // Skip this image if we can't fetch it
               return null;
             }
