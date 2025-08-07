@@ -39,6 +39,7 @@ export default function SearchFilter({
   const [tempSearchInput, setTempSearchInput] = useState(initialSearch);
   const [tempSelectedCities, setTempSelectedCities] =
     useState<string[]>(initialCities);
+  const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
     setSearchInput(initialSearch);
@@ -80,7 +81,7 @@ export default function SearchFilter({
     setSearchInput(tempSearchInput);
     setSelectedCities(tempSelectedCities);
     handleSearch(tempSearchInput, tempSelectedCities);
-    dispatch(closeModal());
+    handleCloseModal();
   };
 
   const handleCityToggle = (city: string) => {
@@ -116,13 +117,76 @@ export default function SearchFilter({
   const openFilterModal = () => {
     setTempSearchInput(searchInput);
     setTempSelectedCities(selectedCities);
+    setIsClosing(false);
     dispatch(openModal({ type: "filter" }));
+  };
+
+  const handleCloseModal = () => {
+    setIsClosing(true);
+    
+    // Check if mobile (animations enabled) or desktop (no animations)
+    const isMobile = window.innerWidth < 640;
+    
+    if (isMobile) {
+      // Mobile: Delay close to allow slide-out animation
+      setTimeout(() => {
+        dispatch(closeModal());
+        setIsClosing(false);
+      }, 300); // Match animation duration
+    } else {
+      // Desktop: Close immediately without animation delay
+      dispatch(closeModal());
+      setIsClosing(false);
+    }
   };
 
   const hasActiveFilters = searchInput || selectedCities.length > 0;
 
   return (
-    <div className="mb-12">
+    <>
+      <style jsx>{`
+        @keyframes slideUpMobile {
+          from {
+            transform: translateY(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateY(0%);
+            opacity: 1;
+          }
+        }
+        
+        @keyframes slideDownMobile {
+          from {
+            transform: translateY(0%);
+            opacity: 1;
+          }
+          to {
+            transform: translateY(100%);
+            opacity: 0;
+          }
+        }
+        
+        /* Mobile animations only */
+        @media (max-width: 639px) {
+          .modal-opening {
+            animation: slideUpMobile 0.3s ease-out forwards;
+          }
+          .modal-closing {
+            animation: slideDownMobile 0.3s ease-out forwards;
+          }
+        }
+
+        /* Desktop - no animations, just instant display */
+        @media (min-width: 640px) {
+          .modal-opening, .modal-closing {
+            animation: none;
+            opacity: 1;
+            transform: none;
+          }
+        }
+      `}</style>
+      <div className="mb-12">
       <div className="max-w-6xl mx-auto">
         {/* Hero Search Section */}
         <div className="text-center mb-8">
@@ -416,37 +480,39 @@ export default function SearchFilter({
         {/* Filter Modal */}
         {modalOpen && modalType === "filter" && (
           <div
-            className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-black/80 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4"
             onMouseDown={(e) => {
               // Only close if clicking the backdrop itself
               if (e.target === e.currentTarget) {
-                dispatch(closeModal());
+                handleCloseModal();
               }
             }}
           >
             <div
-              className={`bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden transform transition-all duration-300 ${
-                isLoading ? "pointer-events-none opacity-75" : "scale-100"
+              className={`${isClosing ? 'modal-closing' : 'modal-opening'} bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden transform ${
+                isLoading 
+                  ? "pointer-events-none opacity-75" 
+                  : ""
               }`}
               onClick={(e) => e.stopPropagation()}
               onMouseDown={(e) => e.stopPropagation()}
             >
               {/* Modal Header */}
               <div
-                className="relative text-white p-8"
+                className="relative text-white p-6 sm:p-8"
                 style={{ backgroundColor: "var(--primary-blue)" }}
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-2xl font-bold mb-2">搜索陪伴师</h2>
-                    <p className="text-blue-100 text-sm">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1 pr-4">
+                    <h2 className="text-xl sm:text-2xl font-bold mb-2 leading-tight">搜索陪伴师</h2>
+                    <p className="text-blue-100 text-sm leading-relaxed">
                       找到您的完美AI陪伴师，按地点筛选
                     </p>
                   </div>
                   <button
-                    onClick={() => dispatch(closeModal())}
+                    onClick={handleCloseModal}
                     disabled={isLoading}
-                    className="p-2 text-white hover:scale-150 hover:bg-opacity-10 rounded-full transition-all duration-200 disabled:opacity-50"
+                    className="flex-shrink-0 p-3 text-white hover:bg-white/20 rounded-full transition-all duration-200 disabled:opacity-50 touch-manipulation"
                   >
                     <svg
                       className="w-6 h-6"
@@ -467,7 +533,7 @@ export default function SearchFilter({
 
               {/* Modal Content */}
               <div
-                className="p-8 space-y-8 max-h-[50vh] overflow-y-auto"
+                className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 max-h-[55vh] sm:max-h-[50vh] overflow-y-auto"
                 onClick={(e) => e.stopPropagation()}
                 onMouseDown={(e) => e.stopPropagation()}
               >
@@ -502,11 +568,11 @@ export default function SearchFilter({
                       onFocus={(e) => e.stopPropagation()}
                       onClick={(e) => e.stopPropagation()}
                       placeholder="输入陪伴师名称..."
-                      className="block w-full px-5 py-4 text-lg border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500 focus:ring-opacity-20 focus:border-blue-500 focus:outline-none transition-all placeholder-gray-400"
+                      className="block w-full px-4 sm:px-5 py-4 sm:py-4 text-base sm:text-lg border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500 focus:ring-opacity-20 focus:border-blue-500 focus:outline-none transition-all placeholder-gray-400 touch-manipulation"
                     />
-                    <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                    <div className="absolute inset-y-0 right-0 pr-3 sm:pr-4 flex items-center pointer-events-none">
                       <svg
-                        className="h-6 w-6 text-gray-400"
+                        className="h-5 w-5 sm:h-6 sm:w-6 text-gray-400"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -551,11 +617,11 @@ export default function SearchFilter({
                     </h3>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     {AUSTRALIAN_CITIES.map((city) => (
                       <label
                         key={city}
-                        className={`relative flex items-center space-x-3 p-4 rounded-xl cursor-pointer transition-all hover:shadow-md border-2 ${
+                        className={`relative flex items-center space-x-3 p-4 sm:p-4 rounded-xl cursor-pointer transition-all hover:shadow-md border-2 min-h-[60px] touch-manipulation ${
                           tempSelectedCities.includes(city)
                             ? "bg-blue-50 border-blue-200 shadow-sm"
                             : "bg-gray-50 border-gray-200 hover:bg-gray-100"
@@ -571,7 +637,7 @@ export default function SearchFilter({
                             className="sr-only"
                           />
                           <div
-                            className={`w-5 h-5 rounded border-2 transition-all ${
+                            className={`w-6 h-6 sm:w-5 sm:h-5 rounded border-2 transition-all ${
                               tempSelectedCities.includes(city)
                                 ? "bg-blue-500 border-blue-500"
                                 : "border-gray-300"
@@ -579,7 +645,7 @@ export default function SearchFilter({
                           >
                             {tempSelectedCities.includes(city) && (
                               <svg
-                                className="w-3 h-3 text-white absolute top-0.5 left-0.5"
+                                className="w-4 h-4 sm:w-3 sm:h-3 text-white absolute top-0.5 left-0.5"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -595,7 +661,7 @@ export default function SearchFilter({
                           </div>
                         </div>
                         <span
-                          className={`text-sm font-medium transition-colors ${
+                          className={`text-base sm:text-sm font-medium transition-colors ${
                             tempSelectedCities.includes(city)
                               ? "text-blue-700"
                               : "text-gray-700"
@@ -649,17 +715,17 @@ export default function SearchFilter({
 
               {/* Modal Footer */}
               <div
-                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 sm:p-8 border-t border-gray-200 bg-gray-50"
+                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 p-4 sm:p-6 lg:p-8 border-t border-gray-200 bg-gray-50"
                 onClick={(e) => e.stopPropagation()}
                 onMouseDown={(e) => e.stopPropagation()}
               >
                 <button
                   onClick={handleClearFilters}
                   disabled={isLoading}
-                  className="flex items-center justify-center space-x-2 px-6 py-3 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+                  className="flex items-center justify-center space-x-2 px-6 py-4 sm:py-3 text-base sm:text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto touch-manipulation"
                 >
                   <svg
-                    className="w-4 h-4"
+                    className="w-5 h-5 sm:w-4 sm:h-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -674,25 +740,25 @@ export default function SearchFilter({
                   <span>清除全部</span>
                 </button>
 
-                <div className="flex flex-col sm:flex-row gap-3 sm:space-x-3 w-full sm:w-auto">
+                <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                   <button
-                    onClick={() => dispatch(closeModal())}
+                    onClick={handleCloseModal}
                     disabled={isLoading}
-                    className="w-full sm:w-auto px-6 py-3 text-sm font-medium text-gray-700 bg-white border-2 border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full sm:w-auto px-6 py-4 sm:py-3 text-base sm:text-sm font-medium text-gray-700 bg-white border-2 border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation"
                   >
                     取消
                   </button>
                   <button
                     onClick={handleApplyFilters}
                     disabled={isLoading}
-                    className="flex items-center justify-center space-x-2 w-full sm:w-auto px-8 py-3 text-sm font-medium text-white rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 transition-all hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    className="flex items-center justify-center space-x-2 w-full sm:w-auto px-8 py-4 sm:py-3 text-base sm:text-sm font-medium text-white rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 transition-all hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none touch-manipulation"
                     style={{ backgroundColor: "#47709B" }}
                   >
                     {isLoading && (
                       <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
                     )}
                     <svg
-                      className="w-4 h-4"
+                      className="w-5 h-5 sm:w-4 sm:h-4"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -712,6 +778,7 @@ export default function SearchFilter({
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </>
   );
 }

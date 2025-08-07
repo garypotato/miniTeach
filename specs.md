@@ -51,7 +51,8 @@ All companion-specific data is stored in product metafields under the `custom` n
 - `major`: single line text - companion's study major
 - `education`: single line text (list) - education background
 - `language`: single line text (list) - languages the companion can speak
-- `age`: integer - companion's age
+- `age`: integer number - companion's age
+- `age_range`: sinle line text - companion's age range
 - `location`: single line text - current location (limited to: Sydney, Melbourne, Brisbane, Gold Coast, Adelaide)
 - `age_group`: single line text (list) - children age groups the companion can handle
 - `blue_card`: boolean - Blue Card/WWCC status

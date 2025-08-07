@@ -12,15 +12,16 @@ interface MetafieldsDisplayProps {
 // Fields to exclude from display for privacy/security reasons
 const EXCLUDED_FIELDS = [
   "password",
-  "wechat_id", 
+  "wechat_id",
   "user_name",
   "first_name",
   "last_name",
+  "age", // Don't display raw age, use age_range instead
   "description", // Displayed separately in "关于我" section
 ];
 
 const FIELD_ORDER = [
-  METAFIELD_KEYS.AGE,
+  METAFIELD_KEYS.AGE_RANGE,
   METAFIELD_KEYS.LOCATION,
   METAFIELD_KEYS.EDUCATION,
   METAFIELD_KEYS.MAJOR,
@@ -43,7 +44,7 @@ export default function MetafieldsDisplay({
       major: "专业/学习领域",
       education: "学历背景",
       language: "语言",
-      age: "年龄",
+      age_range: "年龄段",
       location: "位置",
       age_group: "擅长年龄段",
       blue_card: "是否持有蓝卡(WWCC)",
@@ -56,17 +57,27 @@ export default function MetafieldsDisplay({
   };
 
   // Fields that should be displayed as bullet points (list fields from specs.md)
-  const LIST_FIELDS = ["education", "language", "age_group", "skill", "certification", "availability"];
+  const LIST_FIELDS = [
+    "education",
+    "language",
+    "age_group",
+    "skill",
+    "certification",
+    "availability",
+  ];
 
   // Function to render metafield value with proper formatting
-  const renderMetafieldValue = (key: string, value: string | string[] | number | boolean | undefined) => {
+  const renderMetafieldValue = (
+    key: string,
+    value: string | string[] | number | boolean | undefined
+  ) => {
     if (!value) return "";
 
     // For boolean/status fields (blue_card, police_check), convert to Chinese text
     if (key === "blue_card" || key === "police_check") {
       const stringValue = String(value).toLowerCase();
       let displayText = "";
-      
+
       switch (stringValue) {
         case "true":
         case "yes":
@@ -87,27 +98,35 @@ export default function MetafieldsDisplay({
         default:
           displayText = String(value);
       }
-      
-      return <span className="text-gray-700 leading-relaxed">{displayText}</span>;
+
+      return (
+        <span className="text-gray-700 leading-relaxed">{displayText}</span>
+      );
     }
 
     // For list fields, display as bullet points if it's an array or comma-separated string
     if (LIST_FIELDS.includes(key)) {
       let items: string[] = [];
-      
+
       if (Array.isArray(value)) {
-        items = value.filter(item => item && item.trim());
+        items = value.filter((item) => item && item.trim());
       } else if (typeof value === "string") {
         // Handle both JSON arrays and comma-separated strings
         try {
           const parsed = JSON.parse(value);
           if (Array.isArray(parsed)) {
-            items = parsed.filter(item => item && item.trim());
+            items = parsed.filter((item) => item && item.trim());
           } else {
-            items = value.split(",").map(item => item.trim()).filter(Boolean);
+            items = value
+              .split(",")
+              .map((item) => item.trim())
+              .filter(Boolean);
           }
         } catch {
-          items = value.split(",").map(item => item.trim()).filter(Boolean);
+          items = value
+            .split(",")
+            .map((item) => item.trim())
+            .filter(Boolean);
         }
       }
 
@@ -122,13 +141,19 @@ export default function MetafieldsDisplay({
           </ul>
         );
       } else if (items.length === 1) {
-        return <span className="text-gray-700 leading-relaxed">{items[0]}</span>;
+        return (
+          <span className="text-gray-700 leading-relaxed">{items[0]}</span>
+        );
       }
     }
 
     // For non-list fields, use the original formatting
     const stringValue = Array.isArray(value) ? value : String(value);
-    return <span className="text-gray-700 leading-relaxed">{formatMetafieldValue(key, stringValue)}</span>;
+    return (
+      <span className="text-gray-700 leading-relaxed">
+        {formatMetafieldValue(key, stringValue)}
+      </span>
+    );
   };
 
   // Get all metafield keys and filter out excluded ones
@@ -306,9 +331,9 @@ export default function MetafieldsDisplay({
             key={key}
             className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 hover:bg-gray-50 transition-colors"
           >
-            <div className="flex items-start space-x-4">
+            <div className="flex items-center space-x-4">
               <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-1"
+                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
                 style={{ backgroundColor: "#f0f7ff" }}
               >
                 <svg
@@ -328,8 +353,8 @@ export default function MetafieldsDisplay({
               </div>
               <div className="flex-1 min-w-0">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="sm:col-span-1">
-                    <h4 className="text-base font-semibold text-gray-900">
+                  <div className="sm:col-span-1 flex items-center">
+                    <h4 className="text-base font-semibold text-gray-900 leading-tight">
                       {getTranslatedLabel(key)}
                     </h4>
                   </div>

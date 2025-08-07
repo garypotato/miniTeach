@@ -29,6 +29,7 @@ interface ProfileMetafields {
   education?: string;
   language?: string[];
   age?: string;
+  age_range?: string;
   location?: string;
   age_group?: string[];
   blue_card?: string;
@@ -408,6 +409,14 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
                       <p className="text-gray-900">
                         {profile.metafields.wechat_id}
                       </p>
+                    </div>
+                  )}
+                  {profile.metafields?.age_range && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        年龄段
+                      </label>
+                      <p className="text-gray-900">{profile.metafields.age_range}</p>
                     </div>
                   )}
                 </>

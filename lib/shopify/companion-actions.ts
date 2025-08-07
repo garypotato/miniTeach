@@ -13,6 +13,7 @@ import shopify from "./client";
 import bcrypt from "bcryptjs";
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "@/lib/auth";
+import { generateAgeRange } from "./utils";
 
 export async function checkEmailAvailability(email: string): Promise<{
   success: boolean;
@@ -306,6 +307,14 @@ export async function createCompanion(formData: FormData): Promise<{
               key: "age",
               value: Number(metafields.age) || 0,
               type: "number_integer",
+            },
+            {
+              owner_resource: "product",
+              owner_id: createdProduct.id,
+              namespace: "custom",
+              key: "age_range",
+              value: generateAgeRange(metafields.age),
+              type: "single_line_text_field",
             },
           ]
         : []),
@@ -806,6 +815,12 @@ export async function updateCompanionProfile(
         key: "age",
         value: String(parseInt(formData.age) || 0),
         type: "number_integer",
+      },
+      {
+        namespace: "custom",
+        key: "age_range",
+        value: generateAgeRange(formData.age),
+        type: "single_line_text_field",
       },
       {
         namespace: "custom",

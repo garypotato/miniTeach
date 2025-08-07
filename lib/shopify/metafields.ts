@@ -6,6 +6,7 @@ export const METAFIELD_KEYS = {
   EDUCATION: "education",
   LANGUAGE: "language",
   AGE: "age",
+  AGE_RANGE: "age_range",
   LOCATION: "location",
   AGE_GROUP: "age_group",
   BLUE_CARD: "blue_card",
@@ -115,6 +116,9 @@ export function processMetafields(
         break;
       case "age":
         processed.age = value;
+        break;
+      case "age_range":
+        processed.age_range = value;
         break;
       case "location":
       case "current_location_in_australia":

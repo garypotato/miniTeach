@@ -49,6 +49,7 @@ export interface CompanionMetafields {
   education?: string;
   language?: string[];
   age?: string;
+  age_range?: string;
   location?: string;
   age_group?: string[];
   blue_card?: string;
