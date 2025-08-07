@@ -120,8 +120,7 @@ const ImageUpload = forwardRef<HTMLDivElement, ImageUploadProps>(({
           ref={fileInputRef}
           type="file"
           multiple
-          accept="image/*"
-          capture="environment"
+          accept="image/jpeg,image/png,image/gif,image/jpg"
           onChange={(e) => handleFileSelect(e.target.files)}
           className="hidden"
         />

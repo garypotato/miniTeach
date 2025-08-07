@@ -41,7 +41,7 @@ const FormField = forwardRef<HTMLDivElement, FormFieldProps>(({
   };
 
   const baseClasses =
-    "w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors";
+    "w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900";
   const errorClasses = error ? "border-red-300 bg-red-50" : "border-gray-300";
   const disabledClasses = disabled ? "bg-gray-100 cursor-not-allowed opacity-75" : "";
 

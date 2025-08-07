@@ -69,6 +69,7 @@ export default function CompanionCreateForm() {
   const [submitStatus, setSubmitStatus] = useState<
     "idle" | "success" | "error"
   >("idle");
+  const [debugInfo, setDebugInfo] = useState<string>("");
 
   const scrollToFirstError = (errors: ValidationErrors) => {
     const firstErrorField = Object.keys(errors)[0];
@@ -119,8 +120,6 @@ export default function CompanionCreateForm() {
     }
     if (!formData.description.trim()) {
       newErrors.description = "此栏位为必填";
-    } else if (formData.description.length < 50) {
-      newErrors.description = "必须至少50个字符";
     }
     if (!formData.wechat_id.trim()) {
       newErrors.wechat_id = "此栏位为必填";
@@ -237,6 +236,9 @@ export default function CompanionCreateForm() {
       // Log device info for debugging
       const userAgent = navigator.userAgent;
       const isIOS = /iPad|iPhone|iPod/.test(userAgent);
+      const debugMessage = `设备: ${isIOS ? 'iOS' : '其他'}, 图片: ${formData.images.length}张`;
+      setDebugInfo(debugMessage);
+      
       console.log(`[DEBUG] Device: ${isIOS ? 'iOS' : 'Other'}, User Agent: ${userAgent}`);
       console.log(`[DEBUG] Form submission started with ${formData.images.length} images`);
       
@@ -277,8 +279,15 @@ export default function CompanionCreateForm() {
 
       // Use server action for form submission
       console.log(`[DEBUG] Calling createCompanion with FormData`);
-      const result = await createCompanion(submitData);
-      console.log(`[DEBUG] Server response:`, result);
+      
+      let result;
+      try {
+        result = await createCompanion(submitData);
+        console.log(`[DEBUG] Server response:`, result);
+      } catch (serverError) {
+        console.error(`[DEBUG] Server action failed:`, serverError);
+        throw new Error(`Server action failed: ${serverError instanceof Error ? serverError.message : 'Unknown server error'}`);
+      }
 
       if (result.success) {
         console.log(`[DEBUG] Success! Companion created successfully`);
@@ -306,7 +315,9 @@ export default function CompanionCreateForm() {
       }
       
       setSubmitStatus("error");
-      setErrors({ general: "网络错误或其他问题，请检查网络连接并重试" });
+      const errorMessage = error instanceof Error ? error.message : "网络错误或其他问题，请检查网络连接并重试";
+      setErrors({ general: errorMessage });
+      setDebugInfo(`错误: ${errorMessage}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -397,11 +408,24 @@ export default function CompanionCreateForm() {
             <div className="text-xs text-gray-600 space-y-1">
               <p><strong>设备:</strong> {/iPad|iPhone|iPod/.test(navigator.userAgent) ? 'iOS' : '其他设备'}</p>
               <p><strong>浏览器:</strong> {navigator.userAgent.includes('Safari') ? 'Safari' : '其他浏览器'}</p>
+              <p><strong>User Agent:</strong> {navigator.userAgent}</p>
               <p><strong>时间:</strong> {new Date().toLocaleString()}</p>
               <p><strong>已选择图片数:</strong> {formData.images.length}</p>
               {formData.images.map((img, i) => (
-                <p key={i}><strong>图片 {i+1}:</strong> {img.name} ({(img.size/1024/1024).toFixed(2)}MB)</p>
+                <p key={i}><strong>图片 {i+1}:</strong> {img.name} ({(img.size/1024/1024).toFixed(2)}MB) - Type: {img.type}</p>
               ))}
+              <p><strong>表单数据:</strong></p>
+              <div className="ml-4 space-y-1">
+                <p>• 姓名: {formData.first_name} {formData.last_name}</p>
+                <p>• 邮箱: {formData.user_name}</p>
+                <p>• 专业: {formData.major}</p>
+                <p>• 位置: {formData.location}</p>
+                <p>• 年龄: {formData.age}</p>
+                <p>• 微信: {formData.wechat_id}</p>
+                <p>• 描述长度: {formData.description.length}字符</p>
+              </div>
+              <p><strong>网络状态:</strong> {navigator.onLine ? '在线' : '离线'}</p>
+              <p><strong>内存使用:</strong> {(performance as any).memory ? `${Math.round((performance as any).memory.usedJSHeapSize / 1024 / 1024)}MB` : '未知'}</p>
             </div>
           </div>
 
@@ -432,6 +456,15 @@ export default function CompanionCreateForm() {
         <p className="mt-2 text-gray-600">
           填写您的基本信息以创建陪伴师档案
         </p>
+        
+        {/* Debug info display for mobile */}
+        {debugInfo && (
+          <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-3">
+            <p className="text-sm text-blue-800">
+              <strong>调试信息:</strong> {debugInfo}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* General Error Display */}
