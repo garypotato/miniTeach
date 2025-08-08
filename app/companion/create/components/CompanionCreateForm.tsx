@@ -271,6 +271,10 @@ export default function CompanionCreateForm() {
 
       if (result.success) {
         setSubmitStatus("success");
+        // Scroll to top to show success message with a small delay
+        setTimeout(() => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 100);
         // Optional: redirect after showing success
         setTimeout(() => {
           router.push("/companions");
@@ -278,6 +282,10 @@ export default function CompanionCreateForm() {
       } else {
         setSubmitStatus("error");
         setErrors({ general: result.error || "创建档案失败，请重试" });
+        // Scroll to top to show error message with a small delay
+        setTimeout(() => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 100);
       }
     } catch (error) {
       setSubmitStatus("error");
@@ -314,6 +322,11 @@ export default function CompanionCreateForm() {
         general: errorMessage,
         originalErrorDetails: JSON.stringify(enhancedError, null, 2)
       });
+      
+      // Scroll to top to show error message with a small delay
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 100);
     } finally {
       setIsSubmitting(false);
     }
