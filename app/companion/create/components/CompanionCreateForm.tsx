@@ -284,7 +284,7 @@ export default function CompanionCreateForm() {
       
       // Preserve original error for debugging
       let errorMessage = "网络错误或其他问题，请检查网络连接并重试";
-      let originalError = error;
+      const originalError = error;
       
       if (error instanceof Error) {
         errorMessage = error.message;
@@ -294,10 +294,10 @@ export default function CompanionCreateForm() {
       const enhancedError = {
         message: errorMessage,
         originalError: {
-          name: error instanceof Error ? error.name : 'Unknown',
-          message: error instanceof Error ? error.message : String(error),
-          stack: error instanceof Error ? error.stack : undefined,
-          toString: String(error)
+          name: originalError instanceof Error ? originalError.name : 'Unknown',
+          message: originalError instanceof Error ? originalError.message : String(originalError),
+          stack: originalError instanceof Error ? originalError.stack : undefined,
+          toString: String(originalError)
         },
         context: {
           timestamp: new Date().toISOString(),

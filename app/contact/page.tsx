@@ -178,7 +178,7 @@ export default function ContactPage() {
                 如何成为陪伴师？
               </h3>
               <p className="text-gray-600 text-sm">
-                点击"成为陪伴师"按钮填写申请表，我们的团队会审核您的资质并在48小时内给予回复。
+                点击`成为陪伴师`按钮填写申请表，我们的团队会审核您的资质并在48小时内给予回复。
               </p>
             </div>
             
