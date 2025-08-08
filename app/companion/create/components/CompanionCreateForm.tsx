@@ -35,6 +35,7 @@ interface FormData {
 interface ValidationErrors {
   [key: string]: string | undefined;
   general?: string;
+  originalErrorDetails?: string;
 }
 
 export default function CompanionCreateForm() {
@@ -280,8 +281,39 @@ export default function CompanionCreateForm() {
       }
     } catch (error) {
       setSubmitStatus("error");
-      const errorMessage = error instanceof Error ? error.message : "网络错误或其他问题，请检查网络连接并重试";
-      setErrors({ general: errorMessage });
+      
+      // Preserve original error for debugging
+      let errorMessage = "网络错误或其他问题，请检查网络连接并重试";
+      let originalError = error;
+      
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
+      // Enhanced error object with original error details
+      const enhancedError = {
+        message: errorMessage,
+        originalError: {
+          name: error instanceof Error ? error.name : 'Unknown',
+          message: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack : undefined,
+          toString: String(error)
+        },
+        context: {
+          timestamp: new Date().toISOString(),
+          formSubmission: true,
+          imageCount: formData.images.length,
+          userAgent: navigator.userAgent
+        }
+      };
+      
+      console.error('Form submission failed:', enhancedError);
+      
+      // Store enhanced error info for display
+      setErrors({ 
+        general: errorMessage,
+        originalErrorDetails: JSON.stringify(enhancedError, null, 2)
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -358,39 +390,124 @@ export default function CompanionCreateForm() {
             我们在创建您的档案时遇到错误。请重试。
           </p>
 
-          {/* Display specific error message */}
+          {/* Enhanced error display with detailed debugging information */}
           {errors.general && (
             <div className="bg-white border border-red-300 rounded-lg p-4 mb-6 text-left">
               <h3 className="font-semibold text-red-800 mb-2">错误详情：</h3>
-              <p className="text-sm text-red-700">{errors.general}</p>
+              <p className="text-sm text-red-700 mb-3">{errors.general}</p>
               
-              {/* Helpful suggestions based on error type */}
-              <div className="mt-3 text-xs text-gray-600">
-                <p><strong>可能的解决方案：</strong></p>
-                <ul className="list-disc list-inside space-y-1 mt-2">
-                  {errors.general.includes('图片') || errors.general.includes('Image') ? (
+              {/* Device and browser information for debugging */}
+              <div className="bg-gray-50 border rounded p-3 mb-3 text-xs">
+                <h4 className="font-semibold text-gray-700 mb-1">调试信息 (请截图给开发团队)：</h4>
+                <div className="space-y-1 text-gray-600">
+                  <p>• 设备: {navigator.userAgent.includes('iPhone') ? 'iPhone' : navigator.userAgent.includes('iPad') ? 'iPad' : navigator.userAgent.includes('Android') ? 'Android' : 'Desktop'}</p>
+                  <p>• 浏览器: {navigator.userAgent.includes('Safari') && !navigator.userAgent.includes('Chrome') ? 'Safari' : navigator.userAgent.includes('Chrome') ? 'Chrome' : navigator.userAgent.includes('Firefox') ? 'Firefox' : 'Other'}</p>
+                  <p>• 时间: {new Date().toLocaleString('zh-CN')}</p>
+                  <p>• 错误消息: {errors.general}</p>
+                  {formData.images.length > 0 && (
                     <>
-                      <li>确保图片格式为 JPG、PNG 或 GIF</li>
-                      <li>检查图片大小是否过大（建议小于3MB）</li>
-                      <li>尝试重新选择图片</li>
+                      <p>• 图片数量: {formData.images.length}</p>
+                      <p>• 图片详情:</p>
+                      {formData.images.map((img, index) => (
+                        <p key={index} className="ml-4">
+                          - {img.name || `Image ${index + 1}`}: {(img.size / 1024 / 1024).toFixed(2)}MB ({img.type || '未知格式'})
+                        </p>
+                      ))}
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Original raw error details for developer debugging */}
+              <div className="bg-red-50 border border-red-200 rounded p-3 mb-3 text-xs">
+                <h4 className="font-semibold text-red-800 mb-1">原始错误详情 (开发者调试用)：</h4>
+                <div className="space-y-1 text-red-700">
+                  <p><strong>错误类型:</strong> {typeof errors.general}</p>
+                  <p><strong>错误内容:</strong> {errors.general}</p>
+                  <p><strong>错误长度:</strong> {errors.general?.length || 0} 字符</p>
+                  <div className="bg-white border rounded p-2 mt-2 font-mono text-xs overflow-auto max-h-32">
+                    <strong>原始错误 (Raw Error):</strong><br/>
+                    {errors.originalErrorDetails || JSON.stringify({
+                      error: errors.general,
+                      timestamp: new Date().toISOString(),
+                      userAgent: navigator.userAgent,
+                      url: window.location.href,
+                      formDataState: {
+                        imageCount: formData.images.length,
+                        images: formData.images.map(img => ({
+                          name: img.name,
+                          size: img.size,
+                          type: img.type,
+                          lastModified: img.lastModified
+                        })),
+                        hasRequiredFields: !!(formData.first_name && formData.last_name && formData.user_name)
+                      }
+                    }, null, 2)}
+                  </div>
+                </div>
+              </div>
+              
+              {/* Enhanced helpful suggestions based on error type */}
+              <div className="text-xs text-gray-600">
+                <p><strong>解决方案：</strong></p>
+                <ul className="list-disc list-inside space-y-1 mt-2">
+                  {errors.general.includes('HEIC') || errors.general.includes('heic') ? (
+                    <>
+                      <li><strong>iOS HEIC 格式问题:</strong> 请到 设置 → 相机 → 格式，选择「最兼容」</li>
+                      <li>或将 HEIC 照片转换为 JPG 格式（可在照片 App 中分享时选择）</li>
+                      <li>重新拍摄照片或选择其他 JPG/PNG 照片</li>
+                    </>
+                  ) : errors.general.includes('格式不支持') || errors.general.includes('format') ? (
+                    <>
+                      <li>仅支持 JPG、PNG、GIF、WebP 格式</li>
+                      <li>如果是 iOS，请检查相机设置是否为「最兼容」模式</li>
+                      <li>尝试用其他 App 转换图片格式</li>
+                    </>
+                  ) : errors.general.includes('太大') || errors.general.includes('large') || errors.general.includes('size') ? (
+                    <>
+                      <li><strong>图片太大:</strong> JPG/WebP: 15MB以下，PNG: 12MB以下，GIF: 10MB以下</li>
+                      <li>使用手机内置的图片编辑功能压缩图片</li>
+                      <li>重新拍摄时选择较低分辨率</li>
+                      <li>尝试在线图片压缩工具</li>
+                    </>
+                  ) : errors.general.includes('内存不足') || errors.general.includes('memory') || errors.general.includes('Memory') ? (
+                    <>
+                      <li><strong>内存不足:</strong> 重新启动浏览器或 App</li>
+                      <li>关闭其他 App 或浏览器标签页</li>
+                      <li>使用较小的图片（建议 5MB 以下）</li>
+                      <li>一次只上传 1-2 张图片，分批处理</li>
+                    </>
+                  ) : errors.general.includes('网络') || errors.general.includes('Network') || errors.general.includes('network') ? (
+                    <>
+                      <li>检查网络连接稳定性</li>
+                      <li>尝试切换 WiFi 和移动网络</li>
+                      <li>稍后重试或重新刷新页面</li>
+                    </>
+                  ) : errors.general.includes('读取失败') || errors.general.includes('损坏') ? (
+                    <>
+                      <li>图片文件可能已损坏，请重新选择</li>
+                      <li>尝试将图片保存到相册后再选择</li>
+                      <li>重新拍摄照片</li>
                     </>
                   ) : errors.general.includes('邮件') || errors.general.includes('email') || errors.general.includes('電子郵件') ? (
                     <>
-                      <li>检查邮箱地址格式是否正确</li>
-                      <li>尝试使用其他邮箱地址</li>
-                      <li>确保邮箱地址未被其他用户使用</li>
+                      <li>检查电子邮件格式是否正确</li>
+                      <li>尝试使用其他电子邮件地址</li>
+                      <li>确保电子邮件地址未被其他用户使用</li>
                     </>
-                  ) : errors.general.includes('网络') || errors.general.includes('Network') ? (
+                  ) : errors.general.includes('Shopify') || errors.general.includes('API') ? (
                     <>
+                      <li>服务器暂时无法处理请求，请稍后重试</li>
                       <li>检查网络连接</li>
-                      <li>稍后重试</li>
-                      <li>尝试刷新页面</li>
+                      <li>如果持续失败，请联系技术支持</li>
                     </>
                   ) : (
                     <>
                       <li>检查所有必填字段是否已填写</li>
                       <li>确保个人介绍不为空</li>
+                      <li>检查图片格式和大小</li>
                       <li>尝试重新提交表单</li>
+                      <li>如果问题持续，请联系技术支持并提供上述调试信息</li>
                     </>
                   )}
                 </ul>

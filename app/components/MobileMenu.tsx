@@ -77,6 +77,13 @@ export default function MobileMenu() {
           >
             关于我们
           </Link>
+          <Link
+            href="/contact"
+            className="block px-3 py-2 text-gray-700 hover:bg-gray-50 font-medium rounded-md transition-colors duration-200"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            联系我们
+          </Link>
           {/* Only show "成为陪伴师" button when not logged in */}
           {!session && (
             isOnCreatePage ? (

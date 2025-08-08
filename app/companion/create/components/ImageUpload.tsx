@@ -65,56 +65,100 @@ const ImageUpload = forwardRef<HTMLDivElement, ImageUploadProps>(({
     if (!files) return;
 
     const validFiles: File[] = [];
-    const maxSize = 3 * 1024 * 1024; // Reduced to 3MB to account for base64 expansion
-    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/jpg"];
+    const errors: string[] = [];
+    
+    // Enhanced size limits based on format for better iOS compatibility
+    const formatLimits = {
+      'image/jpeg': 10 * 1024 * 1024, // 10MB for JPEG
+      'image/jpg': 10 * 1024 * 1024,  // 10MB for JPG
+      'image/png': 8 * 1024 * 1024,   // 8MB for PNG (larger after compression)
+      'image/gif': 5 * 1024 * 1024,   // 5MB for GIF
+      'image/webp': 8 * 1024 * 1024   // 8MB for WebP
+    };
+    
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/jpg", "image/webp"];
 
     for (let index = 0; index < files.length; index++) {
       const file = files[index];
       
+      console.log(`Processing file: ${file.name}, size: ${file.size}, type: ${file.type}`);
+      
+      // Enhanced iOS HEIC detection
+      const fileName = file.name.toLowerCase();
+      if (fileName.endsWith('.heic') || fileName.endsWith('.heif')) {
+        errors.push(`"${file.name}" 是 HEIC 格式。iOS 用户请到 设置 → 相机 → 格式 选择「最兼容」`);
+        continue;
+      }
+      
       // iOS Safari may not set file.type properly, so also check extension
       const fileExtension = file.name.split('.').pop()?.toLowerCase();
-      const validExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+      const validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
       
       const isValidType = allowedTypes.includes(file.type) || 
                          (fileExtension && validExtensions.includes(fileExtension));
       
       if (!isValidType) {
-        alert("只允许JPG、PNG和GIF文件");
+        errors.push(`"${file.name}" 格式不支持。仅支持 JPG、PNG、GIF、WebP 格式`);
         continue;
       }
       
       if (file.size === 0) {
-        alert("文件为空，请选择有效的图片文件");
+        errors.push(`"${file.name}" 文件为空或损坏，请重新选择`);
         continue;
       }
 
+      // Check size limit based on file type
+      const detectedType = file.type || `image/${fileExtension}`;
+      const maxSize = formatLimits[detectedType as keyof typeof formatLimits] || 8 * 1024 * 1024;
+      
       let processedFile = file;
       
-      // Compress image if it's too large
-      if (file.size > maxSize) {
+      // Always try to compress large images for better compatibility
+      if (file.size > 2 * 1024 * 1024) { // Compress anything over 2MB
         try {
-          processedFile = await compressImage(file);
-        } catch {
-          alert(`压缩图片失败: ${file.name}`);
+          console.log(`Compressing ${file.name} (${(file.size/1024/1024).toFixed(2)}MB)`);
+          
+          // Use more aggressive compression for very large files
+          const quality = file.size > 5 * 1024 * 1024 ? 0.6 : 0.8;
+          const maxDimension = file.size > 10 * 1024 * 1024 ? 1440 : 2048;
+          
+          processedFile = await compressImage(file, maxDimension, maxDimension, quality);
+          console.log(`Compressed to ${(processedFile.size/1024/1024).toFixed(2)}MB`);
+        } catch (compressionError) {
+          console.error(`Compression failed for ${file.name}:`, compressionError);
+          errors.push(`压缩 "${file.name}" 失败。请尝试使用较小的图片`);
           continue;
         }
       }
 
       // Final size check after compression
       if (processedFile.size > maxSize) {
-        alert(`图片太大，即使压缩后仍超过3MB: ${file.name}`);
+        const maxSizeMB = (maxSize / 1024 / 1024).toFixed(0);
+        const actualSizeMB = (processedFile.size / 1024 / 1024).toFixed(1);
+        errors.push(`"${file.name}" 太大 (${actualSizeMB}MB)。${detectedType.split('/')[1].toUpperCase()} 格式限制 ${maxSizeMB}MB`);
         continue;
       }
 
       validFiles.push(processedFile);
     }
 
+    // Show detailed errors if any
+    if (errors.length > 0) {
+      const errorMessage = errors.join('\n');
+      alert(`图片处理问题：\n\n${errorMessage}\n\n建议：\n• iOS 用户检查相机设置\n• 使用图片压缩 App\n• 选择较小的图片`);
+    }
+
     const totalFiles = [...images, ...validFiles];
     if (totalFiles.length > 5) {
-      alert("最多允许5张图片");
-      onChange([...images, ...validFiles.slice(0, 5 - images.length)]);
+      const allowedCount = 5 - images.length;
+      alert(`最多允许5张图片。已添加前 ${allowedCount} 张有效图片。`);
+      onChange([...images, ...validFiles.slice(0, allowedCount)]);
     } else {
       onChange([...images, ...validFiles]);
+    }
+    
+    if (validFiles.length > 0) {
+      console.log(`Successfully processed ${validFiles.length} images`);
     }
   };
 
@@ -205,9 +249,10 @@ const ImageUpload = forwardRef<HTMLDivElement, ImageUploadProps>(({
           </div>
 
           <div className="text-sm text-gray-500 space-y-1">
-            <p>支持 JPG、PNG、GIF 格式</p>
-            <p>图片将自动压缩以确保上传成功</p>
-            <p>建议每张图片不超过 3MB</p>
+            <p>支持 JPG、PNG、GIF、WebP 格式</p>
+            <p>图片将自动压缩优化以确保上传成功</p>
+            <p>建议：JPG/WebP ≤ 10MB，PNG ≤ 8MB，GIF ≤ 5MB</p>
+            <p className="text-orange-600">iOS 用户：如遇格式问题请在设置中选择「最兼容」相机格式</p>
           </div>
         </div>
       </div>

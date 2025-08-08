@@ -169,20 +169,58 @@ export async function createCompanion(formData: FormData): Promise<{
     try {
       const imagePromises = images.map(async (image, index) => {
         if (image.size > 0) {
-          // Shopify limits: 20MB file size, but base64 encoding increases size by ~33%
-          const shopifyMaxSize = 15 * 1024 * 1024; // 15MB to account for base64 expansion
-          if (image.size > shopifyMaxSize) {
-            throw new Error(`Image ${image.name} is too large (${(image.size/1024/1024).toFixed(1)}MB). Maximum allowed is 15MB.`);
+          // Enhanced validation with detailed error messages
+          const fileInfo = {
+            name: image.name || `image-${index + 1}`,
+            size: image.size,
+            type: image.type,
+            sizeMB: (image.size / 1024 / 1024).toFixed(2)
+          };
+
+          // Check file format first
+          const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+          if (!allowedTypes.includes(image.type)) {
+            throw new Error(`圖片 "${fileInfo.name}" 格式不支持 (${image.type || '未知格式'})。請使用 JPG、PNG、GIF 或 WebP 格式。`);
+          }
+
+          // iOS HEIC format detection (fallback check)
+          if (image.name && (image.name.toLowerCase().endsWith('.heic') || image.name.toLowerCase().endsWith('.heif'))) {
+            throw new Error(`圖片 "${fileInfo.name}" 是 HEIC 格式，iOS 設備請在設置中將相機格式改為「最相容」或轉換為 JPG 格式後再上傳。`);
+          }
+
+          // Dynamic size limits based on file type and estimated processing overhead
+          const baseLimit = 15 * 1024 * 1024; // 15MB base limit
+          let effectiveLimit = baseLimit;
+          
+          // Adjust limits for different formats (some compress better)
+          if (image.type === 'image/png') {
+            effectiveLimit = 12 * 1024 * 1024; // PNG files are typically larger after base64
+          } else if (image.type === 'image/gif') {
+            effectiveLimit = 10 * 1024 * 1024; // GIF can be large
+          }
+
+          if (image.size > effectiveLimit) {
+            throw new Error(`圖片 "${fileInfo.name}" 太大 (${fileInfo.sizeMB}MB)。請壓縮圖片或選擇較小的圖片。建議大小: ${image.type === 'image/png' ? '12MB' : image.type === 'image/gif' ? '10MB' : '15MB'} 以下。`);
           }
           
           try {
-            const bytes = await image.arrayBuffer();
-            const base64 = Buffer.from(bytes).toString("base64");
-            const base64SizeMB = (base64.length * 0.75) / (1024 * 1024); // Estimate actual size
+            console.log(`Processing image: ${fileInfo.name} (${fileInfo.sizeMB}MB, ${fileInfo.type})`);
             
-            // Final check on base64 size
+            const bytes = await image.arrayBuffer();
+            
+            // Check if arrayBuffer was successful
+            if (!bytes || bytes.byteLength === 0) {
+              throw new Error(`圖片 "${fileInfo.name}" 讀取失敗，可能文件已損壞。請重新選擇圖片。`);
+            }
+
+            const base64 = Buffer.from(bytes).toString("base64");
+            const base64SizeMB = (base64.length * 3 / 4) / (1024 * 1024); // More accurate base64 size calculation
+            
+            console.log(`Image ${fileInfo.name}: Original ${fileInfo.sizeMB}MB -> Base64 ${base64SizeMB.toFixed(2)}MB`);
+            
+            // Shopify API has a 20MB limit per image
             if (base64SizeMB > 20) {
-              throw new Error(`Image ${image.name} is too large after processing (${base64SizeMB.toFixed(1)}MB). Please use a smaller image.`);
+              throw new Error(`圖片 "${fileInfo.name}" 處理後太大 (${base64SizeMB.toFixed(1)}MB)。Shopify 限制單張圖片最大 20MB。請使用更小的圖片或進一步壓縮。`);
             }
             
             return {
@@ -191,8 +229,21 @@ export async function createCompanion(formData: FormData): Promise<{
               alt: `${title} - Image ${index + 1}`,
               position: index + 1,
             };
-          } catch (imageError) {
-            throw imageError;
+          } catch (processingError) {
+            // Enhanced error handling with specific error types
+            if (processingError instanceof Error) {
+              if (processingError.message.includes('NetworkError') || processingError.message.includes('Failed to fetch')) {
+                throw new Error(`圖片 "${fileInfo.name}" 網絡讀取錯誤。請檢查網絡連接或重新選擇圖片。`);
+              } else if (processingError.message.includes('out of memory') || processingError.message.includes('Memory')) {
+                throw new Error(`圖片 "${fileInfo.name}" 太大導致內存不足。請使用較小的圖片或重新啟動瀏覽器。`);
+              } else if (processingError.message.includes('處理後太大') || processingError.message.includes('讀取失敗') || processingError.message.includes('限制')) {
+                throw processingError; // Re-throw our custom errors
+              } else {
+                throw new Error(`圖片 "${fileInfo.name}" 處理失敗: ${processingError.message}`);
+              }
+            } else {
+              throw new Error(`圖片 "${fileInfo.name}" 處理時發生未知錯誤。請重新選擇圖片或嘗試其他圖片。`);
+            }
           }
         }
         return null;
@@ -202,8 +253,22 @@ export async function createCompanion(formData: FormData): Promise<{
       processedImages = resolvedImages.filter(
         (img) => img !== null
       ) as typeof processedImages;
-    } catch {
-      return { success: false, error: "圖片處理失敗 - 可能是文件格式或大小问题" };
+      
+      console.log(`Successfully processed ${processedImages.length} images`);
+      
+    } catch (error) {
+      // Enhanced error logging for debugging
+      console.error('Image processing failed:', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        imageCount: images.length,
+        imageSizes: images.map(img => ({ name: img.name, size: img.size, type: img.type }))
+      });
+      
+      if (error instanceof Error) {
+        return { success: false, error: error.message };
+      } else {
+        return { success: false, error: "圖片處理失敗，請檢查圖片格式和大小，或嘗試重新選擇圖片。" };
+      }
     }
 
     // Create companion product using server action

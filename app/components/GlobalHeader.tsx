@@ -44,6 +44,12 @@ export default function GlobalHeader() {
             >
               关于我们
             </Link>
+            <Link
+              href="/contact"
+              className="text-gray-700 hover:opacity-80 font-medium"
+            >
+              联系我们
+            </Link>
 
             {/* Dynamic Buttons - Client Component */}
             <NavigationButtons />

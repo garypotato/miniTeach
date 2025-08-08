@@ -64,12 +64,13 @@ export default function CompanionDetailContent({
               为保护我们陪伴师的隐私，联系信息是私下提供的。请与我们联系以请求联系详情。
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <button
-                className="flex-1 text-white px-6 py-3 rounded-full font-semibold transition-colors hover:opacity-90"
+              <Link
+                href="/contact"
+                className="flex-1 text-white px-6 py-3 rounded-full font-semibold transition-colors hover:opacity-90 text-center"
                 style={{ backgroundColor: "#47709B" }}
               >
                 获取联系信息
-              </button>
+              </Link>
               <Link
                 href="/companions"
                 className="flex-1 border-2 px-6 py-3 rounded-full font-semibold transition-colors hover:bg-gray-50 text-center"
