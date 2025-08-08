@@ -8,6 +8,7 @@ import {
   updateProductStatus,
   updateProductMetafields,
   getProductWithMetafields,
+  addImagesToProduct,
 } from "./products";
 import shopify from "./client";
 import bcrypt from "bcryptjs";
@@ -159,7 +160,7 @@ export async function createCompanion(formData: FormData): Promise<{
     const title = `${first_name} ${last_name}`;
 
     // Process images
-    let processedImages: Array<{
+    const processedImages: Array<{
       attachment: string;
       filename: string;
       alt: string;
@@ -167,7 +168,8 @@ export async function createCompanion(formData: FormData): Promise<{
     }> = [];
 
     try {
-      const imagePromises = images.map(async (image, index) => {
+      // Process images sequentially to reduce memory pressure on mobile devices
+      const processImage = async (image: File, index: number) => {
         if (image.size > 0) {
           // Enhanced validation with detailed error messages
           const fileInfo = {
@@ -189,18 +191,18 @@ export async function createCompanion(formData: FormData): Promise<{
           }
 
           // Dynamic size limits based on file type and estimated processing overhead
-          const baseLimit = 15 * 1024 * 1024; // 15MB base limit
+          const baseLimit = 10 * 1024 * 1024; // 10MB base limit
           let effectiveLimit = baseLimit;
           
-          // Adjust limits for different formats (some compress better)
+          // Adjust limits for different formats
           if (image.type === 'image/png') {
-            effectiveLimit = 12 * 1024 * 1024; // PNG files are typically larger after base64
+            effectiveLimit = 8 * 1024 * 1024; // PNG files are typically larger after base64
           } else if (image.type === 'image/gif') {
-            effectiveLimit = 10 * 1024 * 1024; // GIF can be large
+            effectiveLimit = 6 * 1024 * 1024; // GIF can be large
           }
 
           if (image.size > effectiveLimit) {
-            throw new Error(`圖片 "${fileInfo.name}" 太大 (${fileInfo.sizeMB}MB)。請壓縮圖片或選擇較小的圖片。建議大小: ${image.type === 'image/png' ? '12MB' : image.type === 'image/gif' ? '10MB' : '15MB'} 以下。`);
+            throw new Error(`圖片 "${fileInfo.name}" 太大 (${fileInfo.sizeMB}MB)。請壓縮圖片或選擇較小的圖片。建議大小: ${image.type === 'image/png' ? '8MB' : image.type === 'image/gif' ? '6MB' : '10MB'} 以下。`);
           }
           
           try {
@@ -247,12 +249,15 @@ export async function createCompanion(formData: FormData): Promise<{
           }
         }
         return null;
-      });
+      };
 
-      const resolvedImages = await Promise.all(imagePromises);
-      processedImages = resolvedImages.filter(
-        (img) => img !== null
-      ) as typeof processedImages;
+      // Process images sequentially instead of in parallel to reduce memory pressure
+      for (let i = 0; i < images.length; i++) {
+        const result = await processImage(images[i], i);
+        if (result) {
+          processedImages.push(result);
+        }
+      }
       
       console.log(`Successfully processed ${processedImages.length} images`);
       
@@ -271,17 +276,23 @@ export async function createCompanion(formData: FormData): Promise<{
       }
     }
 
-    // Create companion product using server action
+    // Create companion product first without images to avoid payload size issues
     const companionProductData = {
       title,
       vendor: "Mini-Teach",
-      product_type: "Companion",
+      product_type: "Companion", 
       tags: "companion,child-care,education",
-      images: processedImages,
+      body_html: description, // Add description to product body
     };
 
+    console.log('Attempting to create companion product without images first...');
     const productResult = await createCompanionProduct(companionProductData);
     if (!productResult.success || !productResult.data) {
+      console.error('Product creation failed:', {
+        error: productResult.error,
+        imageCount: processedImages.length,
+        totalSize: processedImages.reduce((sum, img) => sum + (img.attachment.length * 3 / 4), 0) / (1024 * 1024)
+      });
       return {
         success: false,
         error: productResult.error || "Failed to create product",
@@ -289,6 +300,15 @@ export async function createCompanion(formData: FormData): Promise<{
     }
 
     const createdProduct = productResult.data;
+
+    // Add images to the product separately to avoid large payload issues
+    if (processedImages.length > 0) {
+      console.log('Adding images to created product...');
+      const imageResult = await addImagesToProduct(createdProduct.id, processedImages);
+      if (!imageResult.success) {
+        console.warn('Some images failed to upload, but continuing with product creation');
+      }
+    }
 
     // Prepare metafields data
     const metafieldsData = [

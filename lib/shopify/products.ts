@@ -275,6 +275,13 @@ export async function createCompanionProduct(productData: {
   }>;
 }): Promise<ShopifyResponse<ShopifyProduct>> {
   try {
+    // Verify Shopify configuration
+    if (!process.env.SHOP_NAME || !process.env.API_ACCESS_TOKEN) {
+      throw new Error('Shopify API configuration is missing. Please contact support.');
+    }
+
+    console.log(`Creating companion product: ${productData.title} with ${productData.images?.length || 0} images`);
+    
     const productCreateData = {
       title: productData.title,
       body_html: productData.body_html || "",
@@ -287,7 +294,17 @@ export async function createCompanionProduct(productData: {
       ...(productData.images && { images: productData.images }),
     };
 
+    // Log image data for debugging (without full base64)
+    if (productData.images) {
+      console.log('Image summary:', productData.images.map(img => ({
+        filename: img.filename,
+        size: `${(img.attachment.length * 3 / 4 / 1024 / 1024).toFixed(2)}MB`,
+        position: img.position
+      })));
+    }
+
     const product = await shopify.product.create(productCreateData);
+    console.log(`Successfully created product: ${product.id} - ${product.title}`);
 
     return {
       success: true,
@@ -295,12 +312,81 @@ export async function createCompanionProduct(productData: {
       error: null,
     };
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error";
+    console.error('Shopify product creation error:', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      name: error instanceof Error ? error.name : 'Unknown',
+      // Log Shopify-specific error details if available
+      shopifyError: error && typeof error === 'object' ? {
+        statusCode: (error as unknown as { statusCode?: number }).statusCode,
+        statusMessage: (error as unknown as { statusMessage?: string }).statusMessage,
+        body: (error as unknown as { body?: unknown }).body,
+        headers: (error as unknown as { headers?: unknown }).headers
+      } : undefined
+    });
+
+    // Enhanced error message based on error type
+    let errorMessage = "Unknown error occurred";
+    
+    if (error instanceof Error) {
+      if (error.message.includes('timeout') || error.message.includes('TIMEOUT')) {
+        errorMessage = "請求超時，圖片可能太大。請嘗試壓縮圖片後重新提交。";
+      } else if (error.message.includes('413') || error.message.includes('Request Entity Too Large')) {
+        errorMessage = "上傳的文件太大。請減小圖片大小後重試。";
+      } else if (error.message.includes('401') || error.message.includes('Unauthorized')) {
+        errorMessage = "API授權失敗，請聯系管理員。";
+      } else if (error.message.includes('422') || error.message.includes('Unprocessable Entity')) {
+        errorMessage = "數據格式錯誤，請檢查填寫的信息。";
+      } else if (error.message.includes('500') || error.message.includes('Internal Server Error')) {
+        errorMessage = "服務器內部錯誤，請稍後重試。";
+      } else {
+        errorMessage = error.message;
+      }
+    }
+
     return {
       success: false,
       data: null,
       error: errorMessage,
+    };
+  }
+}
+
+export async function addImagesToProduct(
+  productId: number,
+  images: Array<{
+    attachment: string;
+    filename: string;
+    alt: string;
+    position: number;
+  }>
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    console.log(`Adding ${images.length} images to product ${productId}`);
+    
+    // Add images one by one to avoid payload size issues
+    for (const image of images) {
+      try {
+        console.log(`Adding image: ${image.filename} (position ${image.position})`);
+        await shopify.productImage.create(productId, {
+          attachment: image.attachment,
+          filename: image.filename,
+          alt: image.alt,
+          position: image.position,
+        });
+        console.log(`Successfully added image: ${image.filename}`);
+      } catch (imageError) {
+        console.error(`Failed to add image ${image.filename}:`, imageError);
+        // Continue with other images even if one fails
+      }
+    }
+    
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to add images to product:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to add images'
     };
   }
 }
