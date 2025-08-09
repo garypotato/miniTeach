@@ -4,6 +4,7 @@ import { getChapter } from "../../../../lib/shopify";
 import { getServerAuthSession } from "../../../../lib/auth";
 import ChapterImageGallery from "./ChapterImageGallery";
 import UnauthenticatedPreview from "./UnauthenticatedPreview";
+import DownloadButton from "./DownloadButton";
 
 interface ChapterPageProps {
   params: Promise<{
@@ -89,6 +90,36 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
           <p className="text-lg text-gray-600">来自《{bookName}》</p>
         </div>
 
+        {/* Action Buttons */}
+        <div className="mb-8 flex flex-col sm:flex-row justify-center items-center gap-4">
+          <Link
+            href={`/resource/${encodeURIComponent(bookName)}`}
+            className="inline-flex items-center px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+          >
+            <svg
+              className="mr-2 h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+                transform="rotate(180)"
+              />
+            </svg>
+            返回章节列表
+          </Link>
+          
+          <DownloadButton
+            images={images}
+            chapterTitle={chapter.title}
+            isAuthenticated={isAuthenticated}
+          />
+        </div>
+
         {/* Image Gallery */}
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           {images.length === 0 ? (
@@ -127,30 +158,6 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
               redirectUrl={`/resource/${encodeURIComponent(bookName)}/${chapterId}`}
             />
           )}
-        </div>
-
-        {/* Action Buttons */}
-        <div className="mt-8 flex justify-center space-x-4">
-          <Link
-            href={`/resource/${encodeURIComponent(bookName)}`}
-            className="inline-flex items-center px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
-          >
-            <svg
-              className="mr-2 h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-                transform="rotate(180)"
-              />
-            </svg>
-            返回章节列表
-          </Link>
         </div>
       </div>
     </div>
