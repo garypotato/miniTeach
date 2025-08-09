@@ -96,3 +96,34 @@ export interface ShopifyResponse<T> {
   data: T | null;
   error: string | null;
 }
+
+// Resource-related types
+export interface Resource {
+  id: number;
+  title: string; // Chapter title (e.g., "Direction and Position Recognition 3")
+  handle: string;
+  vendor?: string;
+  product_type?: string;
+  tags?: string;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+  images?: Array<{
+    id: number;
+    src: string;
+    alt: string | null;
+    width: number;
+    height: number;
+  }>;
+  metafields?: ResourceMetafields;
+}
+
+export interface ResourceMetafields {
+  last_name?: string; // Book name (e.g., "Direction and Position Recognition")
+}
+
+// Book grouping interface for organizing resources
+export interface Book {
+  name: string; // Book name from last_name metafield
+  chapters: Resource[]; // All resources/chapters in this book
+}

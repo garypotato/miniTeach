@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function AboutContent() {
   return (
-    <div className="min-h-screen">
+    <div>
       {/* Hero Section */}
       <section
         className="relative py-20 px-4 sm:px-6 lg:px-8"

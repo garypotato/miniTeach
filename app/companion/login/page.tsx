@@ -1,19 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 
 export default function CompanionLogin() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
     user_name: "",
     password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const redirect = searchParams.get('redirect');
+    setRedirectUrl(redirect);
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,7 +37,8 @@ export default function CompanionLogin() {
       if (result?.error) {
         setError("用户名或密码错误，或者你的账户未被审核通过");
       } else {
-        router.push("/companion/dashboard");
+        // Redirect to the intended page or default to dashboard
+        router.push(redirectUrl || "/companion/dashboard");
       }
     } catch (error) {
       setError("登录时发生错误，请重试");
@@ -47,8 +55,8 @@ export default function CompanionLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md mx-auto space-y-8">
         {/* Header */}
         <div className="text-center">
           <div className="flex items-center justify-center mb-6">
@@ -156,6 +164,14 @@ export default function CompanionLogin() {
                 注册成为陪伴师
               </Link>
             </p>
+            {redirectUrl && (
+              <Link
+                href={redirectUrl}
+                className="block text-sm text-gray-500 hover:text-gray-700"
+              >
+                返回上一页
+              </Link>
+            )}
             <Link
               href="/"
               className="block text-sm text-gray-500 hover:text-gray-700"

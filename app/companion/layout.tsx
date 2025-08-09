@@ -35,13 +35,9 @@ export default function CompanionLayout({
     );
   }
 
-  // If not a protected route (like login), render with GlobalHeader
+  // If not a protected route (like login), just render children (let main layout handle it)
   if (!isProtectedRoute) {
-    return (
-      <div className="min-h-screen flex flex-col pt-16">
-        <main className="flex-1">{children}</main>
-      </div>
-    );
+    return <>{children}</>;
   }
 
   // If protected route but no session, don't render anything (will redirect)

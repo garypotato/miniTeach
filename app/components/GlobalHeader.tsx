@@ -39,6 +39,12 @@ export default function GlobalHeader() {
               所有陪伴师
             </Link>
             <Link
+              href="/resources"
+              className="text-gray-700 hover:opacity-80 font-medium"
+            >
+              学习资源
+            </Link>
+            <Link
               href="/about"
               className="text-gray-700 hover:opacity-80 font-medium"
             >

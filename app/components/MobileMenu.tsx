@@ -71,6 +71,13 @@ export default function MobileMenu() {
             所有陪伴师
           </Link>
           <Link
+            href="/resources"
+            className="block px-3 py-2 text-gray-700 hover:bg-gray-50 font-medium rounded-md transition-colors duration-200"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            学习资源
+          </Link>
+          <Link
             href="/about"
             className="block px-3 py-2 text-gray-700 hover:bg-gray-50 font-medium rounded-md transition-colors duration-200"
             onClick={() => setIsMobileMenuOpen(false)}
