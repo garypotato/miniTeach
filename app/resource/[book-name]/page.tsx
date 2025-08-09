@@ -2,6 +2,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getChaptersByBookName } from "../../../lib/shopify";
 
+// Disable static generation and caching for this page
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface BookPageProps {
   params: Promise<{
     "book-name": string;

@@ -1,7 +1,16 @@
 import Link from "next/link";
 import { getBooks } from "../../lib/shopify";
+import { headers } from 'next/headers';
+
+// Disable static generation and caching for this page
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function ResourcesPage() {
+  // Force fresh data by accessing headers (this makes the page fully dynamic)
+  headers(); // This forces the page to be dynamic
+  console.log(`[DEBUG] Resources page - timestamp: ${Date.now()}`);
+  
   const booksResult = await getBooks();
 
   if (!booksResult.success || !booksResult.data) {

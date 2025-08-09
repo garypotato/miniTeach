@@ -6,6 +6,10 @@ import ChapterImageGallery from "./ChapterImageGallery";
 import UnauthenticatedPreview from "./UnauthenticatedPreview";
 import DownloadButton from "./DownloadButton";
 
+// Disable static generation and caching for this page
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface ChapterPageProps {
   params: Promise<{
     "book-name": string;
