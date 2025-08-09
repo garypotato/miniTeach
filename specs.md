@@ -292,16 +292,16 @@ app/                        # Next.js app directory
 
 - ✅ **Server Component**: Optimized server-side rendering
 - ✅ **Book Listing**: Groups resource products by `last_name` metafield into books
-- ✅ **Dynamic Content**: Force-dynamic rendering to ensure fresh data from Shopify
-- ✅ **Cache Control**: Comprehensive cache disabling for Vercel deployment
+- ✅ **Dynamic Content**: Natural dynamic rendering from server actions
+- ✅ **Cache Control**: Infrastructure-level cache management via vercel.json
 - ✅ **Responsive Design**: Grid layout with book cover images
 - ✅ **Error Handling**: Graceful handling of missing or failed data
 
 **Technical Implementation:**
 
 - Uses `getBooks()` server action to group resources by book name
-- Implements comprehensive cache disabling measures for production deployment
-- Server-side data fetching with `export const dynamic = 'force-dynamic'`
+- Dynamic rendering automatically enabled by server actions with Shopify API calls
+- Infrastructure-level cache control via vercel.json headers
 - First chapter's first image used as book cover
 - Clean responsive grid layout with hover effects
 
@@ -311,14 +311,14 @@ app/                        # Next.js app directory
 - ✅ **Chapter Listing**: Lists all chapters (resources) for a specific book
 - ✅ **Navigation**: Back to resources list and chapter access
 - ✅ **Dynamic Routing**: Book name URL encoding and decoding
-- ✅ **Cache Control**: Force-dynamic rendering with cache disabling
+- ✅ **Cache Control**: Infrastructure-level cache management
 - ✅ **Responsive Design**: Grid layout with chapter thumbnails
 
 **Technical Implementation:**
 
 - Uses `getChaptersByBookName()` server action for filtered data
 - Dynamic routing with URL-encoded book names
-- Cache control with `export const dynamic = 'force-dynamic'`
+- Natural dynamic rendering from server actions
 - Chapter thumbnails from first image of each resource
 - Clean grid layout with chapter information
 
@@ -342,7 +342,7 @@ app/                        # Next.js app directory
 - **Bulk Downloads**: `DownloadButton` with JSZip for reliable multi-file downloads
 - **Mobile Sharing**: Native share API integration for mobile devices
 - **Keyboard Controls**: Arrow keys and Escape key support
-- **Cache Control**: Force-dynamic rendering for fresh content
+- **Cache Control**: Infrastructure-level cache management
 
 **Technical Implementation:**
 
@@ -352,7 +352,7 @@ app/                        # Next.js app directory
 - Progressive web app features with native sharing
 - Touch event handling for mobile gesture support
 - Modal size constraints (70% screen) with responsive design
-- Comprehensive cache disabling for dynamic content
+- Natural dynamic rendering from server actions
 
 ### `/resources/debug` ✅ COMPLETED
 
@@ -403,20 +403,20 @@ app/                        # Next.js app directory
 
 ### Cache Management & Performance ✅
 
-- **Dynamic Content**: All resource pages use `export const dynamic = 'force-dynamic'`
-- **Cache Disabling**: Comprehensive cache control for Vercel deployment
-- **Fresh Data**: `export const revalidate = 0` prevents stale cache
-- **Manual Cache Refresh**: `/api/refresh-resources` endpoint for manual cache clearing
-- **Headers Control**: Custom Vercel headers to disable CDN caching
+- **Infrastructure-Level Caching**: Simplified cache control via vercel.json configuration
+- **Natural Dynamic Rendering**: Server actions automatically enable dynamic behavior
+- **Fresh Data**: Next.js 15 default no-cache fetch behavior ensures current data
+- **Manual Cache Refresh**: `/api/refresh-resources` endpoint for manual cache clearing when needed
+- **CDN Control**: Custom Vercel headers disable edge caching for resource routes
 - **Production Debugging**: Debug tools for troubleshooting cache issues
 
 **Implementation Details:**
 
-- **vercel.json Configuration**: Custom headers for `/resources/*` and `/resource/*` routes
-- **Next.js 15 Fetch**: Leverages default no-cache behavior for fetch requests  
-- **Server-Side Forces**: `headers()` calls to ensure dynamic rendering
-- **Debug Endpoint**: Real-time cache inspection and manual refresh capability
-- **Production-Ready**: Solves Vercel caching issues that prevent new Shopify products from appearing
+- **vercel.json Configuration**: Simple, reliable cache-control headers for `/resources/*` and `/resource/*` routes
+- **Next.js 15 Fetch**: Leverages default no-cache behavior - no additional configuration needed
+- **Server Actions**: Dynamic rendering automatically enabled by Shopify API server actions
+- **Debug Endpoint**: Real-time cache inspection and manual refresh capability  
+- **Production-Ready**: Clean solution that prevents Vercel CDN from caching dynamic Shopify content
 
 ## Environment Variables
 
