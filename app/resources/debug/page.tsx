@@ -1,27 +1,13 @@
 import { getResources, getBooks } from "../../../lib/shopify";
 
 export default async function DebugResourcesPage() {
-  console.log("=== DEBUG: Fetching resources ===");
-  
   // First, let's get raw resources
   const resourcesResult = await getResources();
   
-  console.log("Raw resources result:", {
-    success: resourcesResult.success,
-    error: resourcesResult.error,
-    dataLength: resourcesResult.data?.length || 0,
-    data: resourcesResult.data
-  });
 
   // Then get processed books
   const booksResult = await getBooks();
   
-  console.log("Processed books result:", {
-    success: booksResult.success,
-    error: booksResult.error,
-    dataLength: booksResult.data?.length || 0,
-    data: booksResult.data
-  });
 
   return (
     <div className="py-16">

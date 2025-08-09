@@ -11,20 +11,11 @@ const RESOURCE_COLLECTION_ID = "492851167547";
  */
 export async function getResources(): Promise<ShopifyResponse<Resource[]>> {
   try {
-    console.log(`[DEBUG] Fetching resources from collection: ${RESOURCE_COLLECTION_ID}`);
-    
     const result = await getProductsWithMetafields({
       collection_id: RESOURCE_COLLECTION_ID,
     });
 
-    console.log(`[DEBUG] Raw products result:`, {
-      success: result.success,
-      error: result.error,
-      dataLength: result.data?.length || 0
-    });
-
     if (!result.success || !result.data) {
-      console.log(`[DEBUG] Failed to get products:`, result.error);
       return result as ShopifyResponse<Resource[]>;
     }
 
@@ -34,7 +25,7 @@ export async function getResources(): Promise<ShopifyResponse<Resource[]>> {
         (field) => field.namespace === "custom" && field.key === "last_name"
       );
 
-      const resource = {
+      return {
         id: product.id,
         title: product.title,
         handle: product.handle,
@@ -46,15 +37,6 @@ export async function getResources(): Promise<ShopifyResponse<Resource[]>> {
           last_name: lastNameMetafield?.value || "",
         },
       };
-
-      console.log(`[DEBUG] Processed resource:`, {
-        id: resource.id,
-        title: resource.title,
-        lastNameMetafield: lastNameMetafield?.value,
-        allMetafields: product.metafields?.map(f => ({ namespace: f.namespace, key: f.key, value: f.value }))
-      });
-
-      return resource;
     });
 
     return {

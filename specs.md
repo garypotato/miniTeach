@@ -20,6 +20,7 @@ This is a **Next.js 15** project designed to assist **parents** in finding suita
 - **API Routes**: Only essential routes remain:
   - `/api/auth/[...nextauth]`: Required for Next-auth.js authentication
   - `/api/companion/login`: Provides login logic that Next-auth.js uses
+  - `/api/refresh-resources`: Manual cache clearing for resource pages (POST only)
 
 ### Shopify Integration
 
@@ -106,6 +107,14 @@ All resource-specific data is stored in product metafields under the `custom` na
 - `checkEmailAvailability()` - Email validation wrapper
 - `createCompanion()` - Complete companion creation flow (uses only server actions)
 
+**Resource-Specific Actions:**
+
+- `getResources()` - Fetch all resource products from Resource collection
+- `getResource()` - Fetch single resource product by ID
+- `getBooks()` - Group resources by book name (last_name metafield)
+- `getChaptersByBookName()` - Get all chapters for a specific book
+- `getChapter()` - Get specific chapter by book name and chapter ID
+
 ### Next-auth.js
 
 Front-end authentication for Next.js with JWT strategy and 7-day session expiration.
@@ -122,6 +131,7 @@ lib/                        # All shared utilities and logic
     ├── metafields.ts       # Metafields processing utilities
     ├── utils.ts            # Utility functions (transformations)
     ├── companion-actions.ts # Companion-specific server actions
+    ├── resource-actions.ts # Resource-specific server actions
     └── index.ts            # Barrel exports
 
 app/                        # Next.js app directory
@@ -132,9 +142,16 @@ app/                        # Next.js app directory
 │   ├── login/page.tsx      # Login page (client component)
 │   ├── create/             # Companion registration
 │   └── dashboard/          # Protected dashboard area
+├── resource/
+│   ├── [book-name]/page.tsx           # Book chapters listing (server component)
+│   └── [book-name]/[chapter-id]/page.tsx # Chapter detail with image gallery (server component)
+├── resources/
+│   ├── page.tsx            # Resources listing (server component)
+│   └── debug/page.tsx      # Debug page for troubleshooting resources
 ├── api/                    # Essential API routes only
 │   ├── auth/[...nextauth]/ # Next-auth.js required
-│   └── companion/login/    # Authentication endpoint
+│   ├── companion/login/    # Authentication endpoint
+│   └── refresh-resources/  # Cache refresh endpoint
 └── actions/                # Page-specific server actions
     └── profile.ts          # Profile-related actions
 ```
@@ -271,6 +288,89 @@ app/                        # Next.js app directory
 - Type-safe with TypeScript interfaces
 - Performance optimized server component
 
+### `/resources` ✅ COMPLETED
+
+- ✅ **Server Component**: Optimized server-side rendering
+- ✅ **Book Listing**: Groups resource products by `last_name` metafield into books
+- ✅ **Dynamic Content**: Force-dynamic rendering to ensure fresh data from Shopify
+- ✅ **Cache Control**: Comprehensive cache disabling for Vercel deployment
+- ✅ **Responsive Design**: Grid layout with book cover images
+- ✅ **Error Handling**: Graceful handling of missing or failed data
+
+**Technical Implementation:**
+
+- Uses `getBooks()` server action to group resources by book name
+- Implements comprehensive cache disabling measures for production deployment
+- Server-side data fetching with `export const dynamic = 'force-dynamic'`
+- First chapter's first image used as book cover
+- Clean responsive grid layout with hover effects
+
+### `/resource/[book-name]` ✅ COMPLETED
+
+- ✅ **Server Component**: Dynamic server-side rendering
+- ✅ **Chapter Listing**: Lists all chapters (resources) for a specific book
+- ✅ **Navigation**: Back to resources list and chapter access
+- ✅ **Dynamic Routing**: Book name URL encoding and decoding
+- ✅ **Cache Control**: Force-dynamic rendering with cache disabling
+- ✅ **Responsive Design**: Grid layout with chapter thumbnails
+
+**Technical Implementation:**
+
+- Uses `getChaptersByBookName()` server action for filtered data
+- Dynamic routing with URL-encoded book names
+- Cache control with `export const dynamic = 'force-dynamic'`
+- Chapter thumbnails from first image of each resource
+- Clean grid layout with chapter information
+
+### `/resource/[book-name]/[chapter-id]` ✅ COMPLETED
+
+- ✅ **Server Component**: Optimized server-side rendering
+- ✅ **Image Gallery**: Full-featured gallery with authentication-aware display
+- ✅ **Smooth Animations**: Fade and scale transitions between images
+- ✅ **Mobile Support**: Touch gestures and mobile-optimized controls
+- ✅ **Bulk Download**: ZIP-based download of all chapter images
+- ✅ **Modal Gallery**: 70% screen size modal with backdrop blur
+- ✅ **Navigation Controls**: Previous/Next buttons and keyboard support
+- ✅ **Progressive Enhancement**: Mobile sharing API when available
+
+**Features Implemented:**
+
+- **Authenticated Gallery**: `ChapterImageGallery` component with full functionality
+- **Unauthenticated Preview**: `UnauthenticatedPreview` with limited image access
+- **Smooth Animations**: Coordinated fade/scale transitions with proper timing
+- **Mobile Gestures**: Touch swipe support with visual feedback
+- **Bulk Downloads**: `DownloadButton` with JSZip for reliable multi-file downloads
+- **Mobile Sharing**: Native share API integration for mobile devices
+- **Keyboard Controls**: Arrow keys and Escape key support
+- **Cache Control**: Force-dynamic rendering for fresh content
+
+**Technical Implementation:**
+
+- Uses `getChapter()` server action for data fetching
+- Animation state management with `useState` and `setTimeout` coordination
+- JSZip library for browser-compatible bulk downloads
+- Progressive web app features with native sharing
+- Touch event handling for mobile gesture support
+- Modal size constraints (70% screen) with responsive design
+- Comprehensive cache disabling for dynamic content
+
+### `/resources/debug` ✅ COMPLETED
+
+- ✅ **Server Component**: Debug information display
+- ✅ **Raw Data Analysis**: Shows raw Shopify resource data
+- ✅ **Processed Data Review**: Displays grouped book structure
+- ✅ **Cache Refresh**: Manual cache clearing functionality
+- ✅ **Troubleshooting Guide**: Step-by-step debugging instructions
+- ✅ **Production Support**: Designed for Vercel deployment issues
+
+**Technical Implementation:**
+
+- Uses both `getResources()` and `getBooks()` for comprehensive data view
+- Manual cache refresh via `/api/refresh-resources` endpoint
+- Detailed metafield inspection for troubleshooting
+- Chinese localization for user-friendly debugging
+- Production-focused troubleshooting workflow
+
 ## Architecture Highlights
 
 ### Server-First Approach ✅
@@ -300,6 +400,23 @@ app/                        # Next.js app directory
 - **Password Hashing**: bcrypt for password security
 - **Protected Routes**: Server-side authentication checks
 - **Environment Variables**: Secure configuration management
+
+### Cache Management & Performance ✅
+
+- **Dynamic Content**: All resource pages use `export const dynamic = 'force-dynamic'`
+- **Cache Disabling**: Comprehensive cache control for Vercel deployment
+- **Fresh Data**: `export const revalidate = 0` prevents stale cache
+- **Manual Cache Refresh**: `/api/refresh-resources` endpoint for manual cache clearing
+- **Headers Control**: Custom Vercel headers to disable CDN caching
+- **Production Debugging**: Debug tools for troubleshooting cache issues
+
+**Implementation Details:**
+
+- **vercel.json Configuration**: Custom headers for `/resources/*` and `/resource/*` routes
+- **Next.js 15 Fetch**: Leverages default no-cache behavior for fetch requests  
+- **Server-Side Forces**: `headers()` calls to ensure dynamic rendering
+- **Debug Endpoint**: Real-time cache inspection and manual refresh capability
+- **Production-Ready**: Solves Vercel caching issues that prevent new Shopify products from appearing
 
 ## Environment Variables
 
