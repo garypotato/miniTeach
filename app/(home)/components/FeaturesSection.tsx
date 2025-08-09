@@ -60,7 +60,7 @@ export default function FeaturesSection() {
       ),
       title: "合法签证和安全背景",
       description:
-        "每位陪伴师都持有有效的澳大利亚签证，并已完成WWCC、Blue Card或警察检查——让您更加安心。",
+        "每位陪伴师都持有有效的澳大利亚签证，并已完成WWCC、Blue Card 或 Police Check——让您更加安心。",
       color: "from-purple-500 to-pink-600",
     },
     {

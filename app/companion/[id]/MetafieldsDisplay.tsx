@@ -44,7 +44,7 @@ export default function MetafieldsDisplay({
       major: "专业/学习领域",
       education: "学历背景",
       language: "语言",
-      age_range: "年龄段",
+      age_range: "陪伴师年龄",
       location: "位置",
       age_group: "擅长年龄段",
       blue_card: "是否持有蓝卡(WWCC)",
