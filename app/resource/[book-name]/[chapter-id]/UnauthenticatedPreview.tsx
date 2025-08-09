@@ -116,19 +116,21 @@ export default function UnauthenticatedPreview({
       {/* Modal for full-size image viewing */}
       {showModal && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
           onClick={() => setShowModal(false)}
           onKeyDown={handleKeyDown}
           tabIndex={-1}
           style={{ zIndex: 9999 }}
         >
-          <div className="relative max-w-5xl max-h-full">
+          <div className="relative w-[90%] h-[90%] md:w-[70%] md:h-[70%] flex items-center justify-center bg-black bg-opacity-40 rounded-lg backdrop-blur-sm p-4"
+               onClick={(e) => e.stopPropagation()}
+          >
             {/* Close button */}
             <button
               onClick={() => setShowModal(false)}
-              className="absolute -top-12 right-0 text-white hover:text-gray-300 transition-colors"
+              className="absolute top-4 right-4 z-10 bg-black bg-opacity-50 rounded-full p-2 text-white hover:text-gray-300 hover:bg-opacity-70 transition-all"
             >
-              <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -138,13 +140,16 @@ export default function UnauthenticatedPreview({
               </svg>
             </button>
 
-            {/* Image */}
-            <img
-              src={images[0].src}
-              alt={images[0].alt || `${chapterTitle} - 图片预览`}
-              className="max-w-full max-h-full object-contain"
-              onClick={(e) => e.stopPropagation()}
-            />
+            {/* Image Container */}
+            <div className="relative w-full h-full flex items-center justify-center overflow-hidden rounded-md">
+              <img
+                src={images[0].src}
+                alt={images[0].alt || `${chapterTitle} - 图片预览`}
+                className="max-w-full max-h-full object-contain select-none"
+                onClick={(e) => e.stopPropagation()}
+                draggable={false}
+              />
+            </div>
 
             {/* Login prompt for unauthenticated users viewing first image */}
             {images.length > 1 && (
