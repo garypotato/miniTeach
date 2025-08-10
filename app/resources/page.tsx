@@ -1,5 +1,9 @@
 import Link from "next/link";
 import { getBooks } from "../../lib/shopify";
+
+// Disable caching to always fetch latest data from Shopify
+export const revalidate = 0;
+
 export default async function ResourcesPage() {
   
   const booksResult = await getBooks();
