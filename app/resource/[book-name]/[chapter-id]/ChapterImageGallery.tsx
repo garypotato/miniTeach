@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface ChapterImageGalleryProps {
   images: Array<{
@@ -153,11 +154,13 @@ export default function ChapterImageGallery({
             onClick={() => handleImageClick(index)}
           >
             <div className="aspect-[4/3] bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg overflow-hidden p-3">
-              <div className="w-full h-full bg-white rounded-lg shadow-sm overflow-hidden p-2">
-                <img
+              <div className="relative w-full h-full bg-white rounded-lg shadow-sm overflow-hidden p-2">
+                <Image
                   src={image.src}
                   alt={image.alt || `${chapterTitle} - 图片 ${index + 1}`}
-                  className="w-full h-full object-cover rounded transition-transform duration-300 group-hover:scale-105"
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="object-cover rounded transition-transform duration-300 group-hover:scale-105"
                 />
               </div>
             </div>
@@ -183,11 +186,13 @@ export default function ChapterImageGallery({
               onClick={() => handleImageClick(index + 1)}
             >
               <div className="aspect-[4/3] bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg overflow-hidden p-3">
-                <div className="w-full h-full bg-white rounded-lg shadow-sm overflow-hidden p-2">
-                  <img
+                <div className="relative w-full h-full bg-white rounded-lg shadow-sm overflow-hidden p-2">
+                  <Image
                     src={image.src}
                     alt={image.alt || `${chapterTitle} - 图片 ${index + 2}`}
-                    className="w-full h-full object-cover rounded transition-transform duration-300 group-hover:scale-105"
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover rounded transition-transform duration-300 group-hover:scale-105"
                   />
                 </div>
               </div>
@@ -271,7 +276,7 @@ export default function ChapterImageGallery({
               onTouchEnd={onTouchEnd}
             >
               <div className="relative w-full h-full flex items-center justify-center">
-                <img
+                <Image
                   key={`image-${selectedImageIndex}`}
                   src={visibleImages[selectedImageIndex]?.src || images[0]?.src}
                   alt={
@@ -279,9 +284,11 @@ export default function ChapterImageGallery({
                     images[0]?.alt ||
                     `${chapterTitle} - 图片预览`
                   }
-                  className={`max-w-full max-h-full object-contain select-none transition-all duration-300 ease-out ${
-                    isAnimating 
-                      ? 'opacity-0 scale-95' 
+                  fill
+                  sizes="(max-width: 768px) 90vw, 70vw"
+                  className={`object-contain select-none transition-all duration-300 ease-out ${
+                    isAnimating
+                      ? 'opacity-0 scale-95'
                       : 'opacity-100 scale-100'
                   }`}
                   onClick={(e) => e.stopPropagation()}

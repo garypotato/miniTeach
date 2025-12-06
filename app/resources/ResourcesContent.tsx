@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useTranslation } from "@/app/i18n";
 
 interface Book {
@@ -81,11 +82,13 @@ export default function ResourcesContent({ books, hasError }: ResourcesContentPr
                   {/* Book Cover - Use first chapter's first image */}
                   <div className="aspect-[4/3] bg-gradient-to-br from-blue-100 to-purple-100 p-4 flex items-center justify-center overflow-hidden">
                     {book.chapters[0]?.images?.[0] ? (
-                      <div className="w-full h-full bg-white rounded-lg shadow-sm overflow-hidden p-2">
-                        <img
+                      <div className="relative w-full h-full bg-white rounded-lg shadow-sm overflow-hidden p-2">
+                        <Image
                           src={book.chapters[0].images[0].src}
                           alt={book.name}
-                          className="w-full h-full object-cover rounded group-hover:scale-105 transition-transform duration-300"
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          className="object-cover rounded group-hover:scale-105 transition-transform duration-300"
                         />
                       </div>
                     ) : (

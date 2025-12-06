@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface UnauthenticatedPreviewProps {
   images: Array<{
@@ -43,11 +44,13 @@ export default function UnauthenticatedPreview({
                 className="aspect-[4/3] bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg overflow-hidden p-2 cursor-pointer"
                 onClick={handleImageClick}
               >
-                <div className="w-full h-full bg-white rounded-lg shadow-sm overflow-hidden p-1">
-                  <img
+                <div className="relative w-full h-full bg-white rounded-lg shadow-sm overflow-hidden p-1">
+                  <Image
                     src={images[0].src}
                     alt={images[0].alt || `${chapterTitle} - 预览图片`}
-                    className="w-full h-full object-cover rounded hover:scale-105 transition-transform duration-300"
+                    fill
+                    sizes="(max-width: 640px) 100vw, 384px"
+                    className="object-cover rounded hover:scale-105 transition-transform duration-300"
                   />
                 </div>
               </div>
@@ -142,10 +145,12 @@ export default function UnauthenticatedPreview({
 
             {/* Image Container */}
             <div className="relative w-full h-full flex items-center justify-center overflow-hidden rounded-md">
-              <img
+              <Image
                 src={images[0].src}
                 alt={images[0].alt || `${chapterTitle} - 图片预览`}
-                className="max-w-full max-h-full object-contain select-none"
+                fill
+                sizes="(max-width: 768px) 90vw, 70vw"
+                className="object-contain select-none"
                 onClick={(e) => e.stopPropagation()}
                 draggable={false}
               />

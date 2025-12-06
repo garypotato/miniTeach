@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getChaptersByBookName } from "../../../lib/shopify";
 
@@ -72,11 +73,13 @@ export default async function BookPage({ params }: BookPageProps) {
                 {/* Chapter Thumbnail */}
                 <div className="aspect-[16/10] bg-gradient-to-br from-gray-100 to-gray-200 p-3 overflow-hidden">
                   {chapter.images?.[0] ? (
-                    <div className="w-full h-full bg-white rounded-lg shadow-sm overflow-hidden p-2">
-                      <img
+                    <div className="relative w-full h-full bg-white rounded-lg shadow-sm overflow-hidden p-2">
+                      <Image
                         src={chapter.images[0].src}
                         alt={chapter.title}
-                        className="w-full h-full object-cover rounded group-hover:scale-105 transition-transform duration-300"
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        className="object-cover rounded group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>
                   ) : (
