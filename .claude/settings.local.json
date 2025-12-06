@@ -26,7 +26,8 @@
       "Bash(cd:*)",
       "Bash(cmdkey /list:*)",
       "Bash(findstr:*)",
-      "Bash(git config:*)"
+      "Bash(git config:*)",
+      "Bash(npm show:*)"
     ],
     "deny": []
   }
