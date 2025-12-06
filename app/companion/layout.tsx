@@ -4,6 +4,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useTranslation } from "@/app/i18n";
 
 export default function CompanionLayout({
   children,
@@ -14,6 +15,7 @@ export default function CompanionLayout({
   const router = useRouter();
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { t, translations } = useTranslation();
 
   // Check if this is a protected route (dashboard)
   const isProtectedRoute = pathname?.startsWith("/companion/dashboard");
@@ -109,7 +111,7 @@ export default function CompanionLayout({
                 </div>
                 <div className="ml-3">
                   <p className="text-sm font-medium text-gray-900">
-                    {session.user?.name || "陪伴师"}
+                    {session.user?.name || t(translations.companionLayout.companion)}
                   </p>
                   <p className="text-xs text-gray-500">
                     {(session.user as { email?: string })?.email}
@@ -143,7 +145,7 @@ export default function CompanionLayout({
                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                       />
                     </svg>
-                    个人档案
+                    {t(translations.companionLayout.myProfile)}
                   </Link>
                 </li>
               </ul>
@@ -168,7 +170,7 @@ export default function CompanionLayout({
                     d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                   />
                 </svg>
-                退出登录
+                {t(translations.companionLayout.logout)}
               </button>
             </div>
           </div>
@@ -207,7 +209,7 @@ export default function CompanionLayout({
                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                       />
                     </svg>
-                    个人档案
+                    {t(translations.companionLayout.myProfile)}
                   </Link>
                 </li>
               </ul>
@@ -232,7 +234,7 @@ export default function CompanionLayout({
                     d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                   />
                 </svg>
-                退出登录
+                {t(translations.companionLayout.logout)}
               </button>
             </div>
           </div>

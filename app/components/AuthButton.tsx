@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
+import { useTranslation } from "@/app/i18n";
 
 interface AuthButtonProps {
   onMobileMenuClose?: () => void;
@@ -15,6 +16,7 @@ export default function AuthButton({
 }: AuthButtonProps) {
   const [isHydrated, setIsHydrated] = useState(false);
   const { data: session } = useSession();
+  const { t, translations } = useTranslation();
 
   useEffect(() => {
     setIsHydrated(true);
@@ -54,7 +56,7 @@ export default function AuthButton({
             onClick={handleSignOut}
             className="block w-full text-left px-3 py-2 text-red-600 hover:bg-red-50 font-medium rounded-md transition-colors duration-200"
           >
-            退出登录
+            {t(translations.auth.logout)}
           </button>
         </div>
       );
@@ -85,7 +87,7 @@ export default function AuthButton({
         className="block mx-3 my-2 px-3 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium rounded-md transition-colors duration-200 text-center"
         onClick={onMobileMenuClose}
       >
-        陪伴师登录
+        {t(translations.modal.companionLogin)}
       </Link>
     );
   }
@@ -95,7 +97,7 @@ export default function AuthButton({
       href="/companion/login"
       className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors"
     >
-      陪伴师登录
+      {t(translations.modal.companionLogin)}
     </Link>
   );
 }

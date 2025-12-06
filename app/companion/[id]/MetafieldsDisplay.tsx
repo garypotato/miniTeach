@@ -1,9 +1,12 @@
+"use client";
+
 import { CompanionMetafields } from "../../types/companion";
 import {
   getMetafieldIcon,
   formatMetafieldValue,
   METAFIELD_KEYS,
 } from "../../utils/metafields";
+import { useTranslation } from "@/app/i18n";
 
 interface MetafieldsDisplayProps {
   metafields: CompanionMetafields;
@@ -17,7 +20,7 @@ const EXCLUDED_FIELDS = [
   "first_name",
   "last_name",
   "age", // Don't display raw age, use age_range instead
-  "description", // Displayed separately in "关于我" section
+  "description", // Displayed separately in "About Me" section
 ];
 
 const FIELD_ORDER = [
@@ -37,23 +40,25 @@ const FIELD_ORDER = [
 export default function MetafieldsDisplay({
   metafields,
 }: MetafieldsDisplayProps) {
-  // Function to get Chinese metafield label
+  const { t, translations } = useTranslation();
+
+  // Function to get translated metafield label
   const getTranslatedLabel = (key: string): string => {
-    const labels: Record<string, string> = {
-      wechat_id: "微信号",
-      major: "专业/学习领域",
-      education: "学历背景",
-      language: "语言",
-      age_range: "陪伴师年龄",
-      location: "位置",
-      age_group: "擅长年龄段",
-      blue_card: "是否持有蓝卡(WWCC)",
-      police_check: "无犯罪记录证明",
-      skill: "技能",
-      certification: "证书/毕业证",
-      availability: "时间安排",
+    const labelMap: Record<string, { zh: string; en: string }> = {
+      wechat_id: translations.companionDetail.wechatId,
+      major: translations.companionDetail.major,
+      education: translations.companionDetail.educationBg,
+      language: translations.companionDetail.language,
+      age_range: translations.companionDetail.ageRange,
+      location: translations.companionDetail.location,
+      age_group: translations.companionDetail.ageGroup,
+      blue_card: translations.companionDetail.blueCard,
+      police_check: translations.companionDetail.policeCheck,
+      skill: translations.companionDetail.skill,
+      certification: translations.companionDetail.certification,
+      availability: translations.companionDetail.availabilitySchedule,
     };
-    return labels[key] || key;
+    return labelMap[key] ? t(labelMap[key]) : key;
   };
 
   // Fields that should be displayed as bullet points (list fields from specs.md)
@@ -73,7 +78,7 @@ export default function MetafieldsDisplay({
   ) => {
     if (!value) return "";
 
-    // For boolean/status fields (blue_card, police_check), convert to Chinese text
+    // For boolean/status fields (blue_card, police_check), convert to translated text
     if (key === "blue_card" || key === "police_check") {
       const stringValue = String(value).toLowerCase();
       let displayText = "";
@@ -83,17 +88,17 @@ export default function MetafieldsDisplay({
         case "yes":
         case "是":
         case "有":
-          displayText = "是";
+          displayText = t(translations.companionDetail.yes);
           break;
         case "false":
         case "no":
         case "否":
         case "没有":
-          displayText = "否";
+          displayText = t(translations.companionDetail.no);
           break;
         case "pending":
         case "申请中":
-          displayText = "申请中";
+          displayText = t(translations.companionDetail.pending);
           break;
         default:
           displayText = String(value);
@@ -211,13 +216,13 @@ export default function MetafieldsDisplay({
           </svg>
         </div>
         <h2 className="text-xl font-bold text-gray-800 mb-4">
-          专业详情即将推出
+          {t(translations.companionDetail.detailsComingSoon)}
         </h2>
         <p className="text-gray-600 mb-6">
-          此陪伴师的详细专业信息目前正在更新中。请稍后再查看或联系我们获取更多信息。
+          {t(translations.companionDetail.detailsUpdating)}
         </p>
         <div>
-          <p>我们通常提供的信息包括:</p>
+          <p>{t(translations.companionDetail.infoWeProvide)}</p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2 text-left max-w-md mx-auto">
             <div className="flex items-center space-x-2">
               <svg
@@ -233,7 +238,7 @@ export default function MetafieldsDisplay({
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span>教育</span>
+              <span>{t(translations.companionDetail.education)}</span>
             </div>
             <div className="flex items-center space-x-2">
               <svg
@@ -249,7 +254,7 @@ export default function MetafieldsDisplay({
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span>地点</span>
+              <span>{t(translations.companionDetail.location)}</span>
             </div>
             <div className="flex items-center space-x-2">
               <svg
@@ -265,7 +270,7 @@ export default function MetafieldsDisplay({
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span>技能</span>
+              <span>{t(translations.companionDetail.skills)}</span>
             </div>
             <div className="flex items-center space-x-2">
               <svg
@@ -281,7 +286,7 @@ export default function MetafieldsDisplay({
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span>语言</span>
+              <span>{t(translations.companionDetail.languages)}</span>
             </div>
             <div className="flex items-center space-x-2">
               <svg
@@ -297,7 +302,7 @@ export default function MetafieldsDisplay({
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span>证书/毕业证</span>
+              <span>{t(translations.companionDetail.certification)}</span>
             </div>
             <div className="flex items-center space-x-2">
               <svg
@@ -313,7 +318,7 @@ export default function MetafieldsDisplay({
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span>时间安排</span>
+              <span>{t(translations.companionDetail.availabilitySchedule)}</span>
             </div>
           </div>
         </div>

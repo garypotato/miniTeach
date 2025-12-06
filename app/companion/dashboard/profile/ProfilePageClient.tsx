@@ -7,6 +7,7 @@ import { openModal } from "@/app/store/modalSlice";
 import FormField from "@/app/companion/create/components/FormField";
 import TagsInput from "@/app/companion/create/components/TagsInput";
 import ImageUpload from "@/app/companion/create/components/ImageUpload";
+import { useTranslation } from "@/app/i18n";
 
 // Module-level storage for edit images (outside Redux)
 let currentEditImages: File[] = [];
@@ -54,25 +55,25 @@ interface ProfilePageClientProps {
   profile: ProfileData;
 }
 
-function formatArrayField(field: string[] | undefined): string {
-  if (!field || field.length === 0) return "未设置";
+function formatArrayField(field: string[] | undefined, notSetText: string): string {
+  if (!field || field.length === 0) return notSetText;
   return field.join(", ");
 }
 
-function getBooleanDisplay(value: string | undefined): string {
-  if (!value) return "未设置";
+function getBooleanDisplay(value: string | undefined, yesText: string, noText: string, pendingText: string, notSetText: string): string {
+  if (!value) return notSetText;
   switch (value.toLowerCase()) {
     case "yes":
     case "true":
     case "是":
-      return "是";
+      return yesText;
     case "no":
     case "false":
     case "否":
-      return "否";
+      return noText;
     case "pending":
     case "申请中":
-      return "申请中";
+      return pendingText;
     default:
       return value;
   }
@@ -80,6 +81,7 @@ function getBooleanDisplay(value: string | undefined): string {
 
 export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
   const dispatch = useAppDispatch();
+  const { t, translations } = useTranslation();
   const [isEditMode, setIsEditMode] = useState(false);
 
   // Original data for comparison
@@ -175,13 +177,13 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
       {/* Header */}
       <div className="mb-8 flex justify-between items-start">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">个人档案</h1>
+          <h1 className="text-3xl font-bold text-gray-900">{t(translations.profilePage.title)}</h1>
           <p className="mt-2 text-gray-600">
             {isEditMode
-              ? "编辑您的陪伴师档案信息"
+              ? t(translations.profilePage.editModeSubtitle)
               : canEdit
-              ? "查看您的陪伴师档案信息"
-              : "请先设置登录邮箱和密码后才能编辑档案"}
+              ? t(translations.profilePage.viewModeSubtitle)
+              : t(translations.profilePage.setupCredentialsFirst)}
           </p>
         </div>
         <div className="flex gap-3">
@@ -191,7 +193,7 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
                 onClick={handleCancelEdit}
                 className="px-4 py-2 text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
-                取消
+                {t(translations.profilePage.cancel)}
               </button>
               <button
                 onClick={() =>
@@ -212,7 +214,7 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
                 }`}
               >
-                更新档案
+                {t(translations.profilePage.updateProfile)}
               </button>
             </>
           ) : (
@@ -225,7 +227,7 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
             >
-              编辑档案
+              {t(translations.profilePage.editProfile)}
             </button>
           )}
         </div>
@@ -252,10 +254,10 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
             </div>
             <div className="ml-4 flex-1">
               <h3 className="text-lg font-medium text-orange-800">
-                需要设置登录凭据
+                {t(translations.profilePage.needCredentials)}
               </h3>
               <p className="mt-2 text-sm text-orange-700">
-                为了能够编辑和更新您的档案信息，您需要先设置登录邮箱和密码。这些凭据将用于验证您的身份。
+                {t(translations.profilePage.credentialsDesc)}
               </p>
               <div className="mt-4">
                 <button
@@ -264,7 +266,7 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
                   }
                   className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-colors"
                 >
-                  设置登录凭据
+                  {t(translations.profilePage.setCredentials)}
                 </button>
               </div>
             </div>
@@ -278,56 +280,56 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
           {/* Basic Information */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-6">
-              基本信息
+              {t(translations.profilePage.basicInfo)}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {isEditMode ? (
                 <>
                   <FormField
-                    label="姓氏"
+                    label={t(translations.profilePage.lastName)}
                     name="last_name"
                     type="text"
                     value={editFormData.last_name}
                     onChange={handleFieldChange}
-                    placeholder="请输入姓氏"
+                    placeholder={t(translations.profilePage.enterLastName)}
                     required
                   />
                   <FormField
-                    label="名字"
+                    label={t(translations.profilePage.firstName)}
                     name="first_name"
                     type="text"
                     value={editFormData.first_name}
                     onChange={handleFieldChange}
-                    placeholder="请输入名字"
+                    placeholder={t(translations.profilePage.enterFirstName)}
                     required
                   />
                   <FormField
-                    label="邮箱"
+                    label={t(translations.profilePage.email)}
                     name="user_name"
                     type="email"
                     value={editFormData.user_name}
                     onChange={handleFieldChange}
-                    placeholder="请输入邮箱地址"
+                    placeholder={t(translations.profilePage.enterEmail)}
                     required
                   />
                   <FormField
-                    label="专业"
+                    label={t(translations.profilePage.major)}
                     name="major"
                     type="text"
                     value={editFormData.major}
                     onChange={handleFieldChange}
-                    placeholder="请输入您的专业"
+                    placeholder={t(translations.profilePage.enterMajor)}
                     required
                   />
                   <FormField
-                    label="位置"
+                    label={t(translations.profilePage.location)}
                     name="location"
                     type="select"
                     value={editFormData.location}
                     onChange={handleFieldChange}
                     required
                     options={[
-                      { value: "", label: "选择您的城市..." },
+                      { value: "", label: t(translations.profilePage.selectCity) },
                       { value: "sydney", label: "Sydney" },
                       { value: "melbourne", label: "Melbourne" },
                       { value: "brisbane", label: "Brisbane" },
@@ -336,20 +338,20 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
                     ]}
                   />
                   <FormField
-                    label="年龄"
+                    label={t(translations.profilePage.age)}
                     name="age"
                     type="number"
                     value={editFormData.age}
                     onChange={handleFieldChange}
-                    placeholder="请输入年龄"
+                    placeholder={t(translations.profilePage.enterAge)}
                   />
                   <FormField
-                    label="微信号"
+                    label={t(translations.profilePage.wechatId)}
                     name="wechat_id"
                     type="text"
                     value={profile.metafields?.wechat_id || ""}
                     onChange={() => {}} // Empty function since it's disabled
-                    placeholder="微信号不可编辑"
+                    placeholder={t(translations.profilePage.wechatNotEditable)}
                     disabled
                   />
                 </>
@@ -357,7 +359,7 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
                 <>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      姓氏
+                      {t(translations.profilePage.lastName)}
                     </label>
                     <p className="text-gray-900">
                       {profile.metafields?.last_name}
@@ -365,7 +367,7 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      名字
+                      {t(translations.profilePage.firstName)}
                     </label>
                     <p className="text-gray-900">
                       {profile.metafields?.first_name}
@@ -373,7 +375,7 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      邮箱
+                      {t(translations.profilePage.email)}
                     </label>
                     <p className="text-gray-900">
                       {profile.metafields?.user_name}
@@ -381,13 +383,13 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      专业
+                      {t(translations.profilePage.major)}
                     </label>
                     <p className="text-gray-900">{profile.metafields?.major}</p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      位置
+                      {t(translations.profilePage.location)}
                     </label>
                     <p className="text-gray-900">
                       {profile.metafields?.location}
@@ -396,7 +398,7 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
                   {profile.metafields?.age && (
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        年龄
+                        {t(translations.profilePage.age)}
                       </label>
                       <p className="text-gray-900">{profile.metafields.age}</p>
                     </div>
@@ -404,7 +406,7 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
                   {profile.metafields?.wechat_id && (
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        微信号
+                        {t(translations.profilePage.wechatId)}
                       </label>
                       <p className="text-gray-900">
                         {profile.metafields.wechat_id}
@@ -414,7 +416,7 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
                   {profile.metafields?.age_range && (
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        年龄段
+                        {t(translations.profilePage.ageRange)}
                       </label>
                       <p className="text-gray-900">{profile.metafields.age_range}</p>
                     </div>
@@ -426,21 +428,21 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
 
           {/* About Me */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">关于我</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">{t(translations.profilePage.aboutMe)}</h2>
             {isEditMode ? (
               <FormField
-                label="个人介绍"
+                label={t(translations.profilePage.personalIntro)}
                 name="description"
                 type="textarea"
                 value={editFormData.description}
                 onChange={handleFieldChange}
-                placeholder="请介绍一下您自己，包括您的经验、教育背景、兴趣爱好等"
+                placeholder={t(translations.profilePage.personalIntroPlaceholder)}
                 required
                 rows={6}
               />
             ) : (
               <div className="prose max-w-none text-gray-700 whitespace-pre-wrap">
-                {profile.metafields?.description || "未设置"}
+                {profile.metafields?.description || t(translations.profilePage.notSet)}
               </div>
             )}
           </div>
@@ -448,115 +450,115 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
           {/* Skills & Qualifications */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-6">
-              技能与资质
+              {t(translations.profilePage.skillsAndQualifications)}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {isEditMode ? (
                 <>
                   <FormField
-                    label="教育背景"
+                    label={t(translations.profilePage.educationBackground)}
                     name="education"
                     type="text"
                     value={editFormData.education}
                     onChange={handleFieldChange}
-                    placeholder="请输入教育背景"
+                    placeholder={t(translations.profilePage.enterEducation)}
                   />
                   <TagsInput
-                    label="语言能力"
+                    label={t(translations.profilePage.languageAbility)}
                     name="language"
                     value={editFormData.language}
                     onChange={handleFieldChange}
-                    placeholder="输入语言并按Enter或逗号添加"
+                    placeholder={t(translations.profilePage.enterLanguage)}
                   />
                   <FormField
-                    label="蓝卡/WWCC"
+                    label={t(translations.profilePage.blueCard)}
                     name="blue_card"
                     type="select"
                     value={editFormData.blue_card}
                     onChange={handleFieldChange}
                     options={[
-                      { value: "", label: "请选择" },
-                      { value: "是", label: "是" },
-                      { value: "否", label: "否" },
-                      { value: "申请中", label: "申请中" },
+                      { value: "", label: t(translations.profilePage.pleaseSelect) },
+                      { value: "是", label: t(translations.profilePage.yes) },
+                      { value: "否", label: t(translations.profilePage.no) },
+                      { value: "申请中", label: t(translations.profilePage.pending) },
                     ]}
                   />
                   <FormField
-                    label="警察检查"
+                    label={t(translations.profilePage.policeCheck)}
                     name="police_check"
                     type="select"
                     value={editFormData.police_check}
                     onChange={handleFieldChange}
                     options={[
-                      { value: "", label: "请选择" },
-                      { value: "是", label: "是" },
-                      { value: "否", label: "否" },
-                      { value: "申请中", label: "申请中" },
+                      { value: "", label: t(translations.profilePage.pleaseSelect) },
+                      { value: "是", label: t(translations.profilePage.yes) },
+                      { value: "否", label: t(translations.profilePage.no) },
+                      { value: "申请中", label: t(translations.profilePage.pending) },
                     ]}
                   />
                   <TagsInput
-                    label="技能"
+                    label={t(translations.profilePage.skills)}
                     name="skill"
                     value={editFormData.skill}
                     onChange={handleFieldChange}
-                    placeholder="输入技能并按Enter或逗号添加"
+                    placeholder={t(translations.profilePage.enterSkill)}
                   />
                   <TagsInput
-                    label="证书/毕业证"
+                    label={t(translations.profilePage.certificates)}
                     name="certification"
                     value={editFormData.certification}
                     onChange={handleFieldChange}
-                    placeholder="输入证书并按Enter或逗号添加"
+                    placeholder={t(translations.profilePage.enterCertificate)}
                   />
                 </>
               ) : (
                 <>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      教育背景
+                      {t(translations.profilePage.educationBackground)}
                     </label>
                     <p className="text-gray-900">
-                      {profile.metafields?.education || "未设置"}
+                      {profile.metafields?.education || t(translations.profilePage.notSet)}
                     </p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      语言能力
+                      {t(translations.profilePage.languageAbility)}
                     </label>
                     <p className="text-gray-900">
-                      {formatArrayField(profile.metafields?.language)}
+                      {formatArrayField(profile.metafields?.language, t(translations.profilePage.notSet))}
                     </p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      蓝卡/WWCC
+                      {t(translations.profilePage.blueCard)}
                     </label>
                     <p className="text-gray-900">
-                      {getBooleanDisplay(profile.metafields?.blue_card)}
+                      {getBooleanDisplay(profile.metafields?.blue_card, t(translations.profilePage.yes), t(translations.profilePage.no), t(translations.profilePage.pending), t(translations.profilePage.notSet))}
                     </p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      警察检查
+                      {t(translations.profilePage.policeCheck)}
                     </label>
                     <p className="text-gray-900">
-                      {getBooleanDisplay(profile.metafields?.police_check)}
+                      {getBooleanDisplay(profile.metafields?.police_check, t(translations.profilePage.yes), t(translations.profilePage.no), t(translations.profilePage.pending), t(translations.profilePage.notSet))}
                     </p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      技能
+                      {t(translations.profilePage.skills)}
                     </label>
                     <p className="text-gray-900">
-                      {formatArrayField(profile.metafields?.skill)}
+                      {formatArrayField(profile.metafields?.skill, t(translations.profilePage.notSet))}
                     </p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      证书/毕业证
+                      {t(translations.profilePage.certificates)}
                     </label>
                     <p className="text-gray-900">
-                      {formatArrayField(profile.metafields?.certification)}
+                      {formatArrayField(profile.metafields?.certification, t(translations.profilePage.notSet))}
                     </p>
                   </div>
                 </>
@@ -567,42 +569,42 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
           {/* Preferences */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-6">
-              偏好设置
+              {t(translations.profilePage.preferences)}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {isEditMode ? (
                 <>
                   <TagsInput
-                    label="偏好年龄组"
+                    label={t(translations.profilePage.preferredAgeGroup)}
                     name="age_group"
                     value={editFormData.age_group}
                     onChange={handleFieldChange}
-                    placeholder="输入年龄组并按Enter或逗号添加"
+                    placeholder={t(translations.profilePage.enterAgeGroup)}
                   />
                   <TagsInput
-                    label="时间安排"
+                    label={t(translations.profilePage.availability)}
                     name="availability"
                     value={editFormData.availability}
                     onChange={handleFieldChange}
-                    placeholder="输入可用时间并按Enter或逗号添加"
+                    placeholder={t(translations.profilePage.enterAvailability)}
                   />
                 </>
               ) : (
                 <>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      偏好年龄组
+                      {t(translations.profilePage.preferredAgeGroup)}
                     </label>
                     <p className="text-gray-900">
-                      {formatArrayField(profile.metafields?.age_group)}
+                      {formatArrayField(profile.metafields?.age_group, t(translations.profilePage.notSet))}
                     </p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      时间安排
+                      {t(translations.profilePage.availability)}
                     </label>
                     <p className="text-gray-900">
-                      {formatArrayField(profile.metafields?.availability)}
+                      {formatArrayField(profile.metafields?.availability, t(translations.profilePage.notSet))}
                     </p>
                   </div>
                 </>
@@ -615,14 +617,14 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
         <div className="lg:col-span-1 lg:order-2 order-2">
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">
-              档案照片
+              {t(translations.profilePage.profilePhotos)}
             </h2>
             {isEditMode ? (
               <div className="space-y-4">
                 {/* Current Images */}
                 {profile.images && profile.images.length > 0 && (
                   <div>
-                    <p className="text-sm text-gray-600 mb-3">当前照片:</p>
+                    <p className="text-sm text-gray-600 mb-3">{t(translations.profilePage.currentPhotos)}</p>
                     <div className="grid grid-cols-2 lg:grid-cols-1 gap-4 mb-4">
                       {profile.images.map((image, index) => {
                         const isMarkedForRemoval =
@@ -646,7 +648,7 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
                             {isMarkedForRemoval && (
                               <div className="absolute inset-0 bg-red-500 bg-opacity-20 flex items-center justify-center">
                                 <span className="text-white text-xs font-semibold bg-red-600 px-2 py-1 rounded">
-                                  将被删除
+                                  {t(translations.profilePage.willBeDeleted)}
                                 </span>
                               </div>
                             )}
@@ -702,8 +704,7 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
                     {imagesToRemove.length > 0 && (
                       <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
                         <p className="text-xs text-orange-700">
-                          ⚠️ {imagesToRemove.length}{" "}
-                          {`张照片标记为删除。点击"更新档案"按钮确认删除，或点击照片上的恢复按钮取消删除。`}
+                          {`⚠️ ${imagesToRemove.length} ${t(translations.profilePage.photosMarkedForDeletion)}`}
                         </p>
                       </div>
                     )}
@@ -713,19 +714,18 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
                 {/* Image Upload */}
                 <div>
                   <p className="text-sm text-gray-600 mb-3">
-                    {editImages.length > 0 ? "新增照片:" : "上传新照片:"}
+                    {editImages.length > 0 ? t(translations.profilePage.newPhotos) : t(translations.profilePage.uploadNewPhotos)}
                   </p>
                   <ImageUpload
                     images={editImages}
                     onChange={handleImageChange}
                   />
                   <p className="text-xs text-gray-500 mt-2">
-                    最多5张照片，每张最大5MB
+                    {t(translations.profilePage.maxPhotos)}
                   </p>
                   <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
                     <p className="text-xs text-green-700">
-                      ✓
-                      上传新照片后，点击&ldquo;更新档案&rdquo;按钮会将照片添加到您的档案中。
+                      ✓ {t(translations.profilePage.uploadPhotosNote)}
                     </p>
                   </div>
                 </div>
@@ -749,7 +749,7 @@ export default function ProfilePageClient({ profile }: ProfilePageClientProps) {
                     ))}
                   </div>
                 ) : (
-                  <div className="text-gray-500 text-center py-8">暂无照片</div>
+                  <div className="text-gray-500 text-center py-8">{t(translations.profilePage.noPhotos)}</div>
                 )}
               </>
             )}

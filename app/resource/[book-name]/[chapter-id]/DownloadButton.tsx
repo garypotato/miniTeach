@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import JSZip from "jszip";
+import { useTranslation } from "@/app/i18n";
 
 interface DownloadButtonProps {
   images: Array<{
@@ -22,6 +23,7 @@ export default function DownloadButton({
 }: DownloadButtonProps) {
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadProgress, setDownloadProgress] = useState(0);
+  const { t, translations } = useTranslation();
 
   const downloadImageAsBlob = async (url: string): Promise<Blob> => {
     try {
@@ -54,8 +56,8 @@ export default function DownloadButton({
         if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], filename, { type: blob.type })] })) {
           navigator.share({
             files: [new File([blob], filename, { type: blob.type })],
-            title: '图片下载',
-            text: `下载 ${filename}`
+            title: t(translations.downloadButton.imageDownload),
+            text: `${t(translations.downloadButton.download)} ${filename}`
           }).catch((error) => {
             console.log('Share failed, falling back to download:', error);
             // Fallback to direct download
@@ -145,7 +147,7 @@ export default function DownloadButton({
       }
       
       if (successCount === 0) {
-        alert('所有图片下载失败，请重试');
+        alert(t(translations.downloadButton.allImagesFailed));
         return;
       }
 
@@ -162,24 +164,24 @@ export default function DownloadButton({
       setDownloadProgress(100);
       
       // Download the ZIP file
-      const zipFilename = `${sanitizedTitle}_图片合集.zip`;
+      const zipFilename = `${sanitizedTitle}_${t(translations.downloadButton.imageCollection)}.zip`;
       downloadZipFile(zipBlob, zipFilename);
-      
+
       // Show result message with mobile-friendly instructions
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      
+
       if (failedCount > 0) {
-        alert(`下载完成！成功打包 ${successCount} 张图片，${failedCount} 张失败`);
+        alert(`${t(translations.downloadButton.downloadComplete)} ${t(translations.downloadButton.successPackaged)} ${successCount} ${t(translations.downloadButton.images)}, ${failedCount} ${t(translations.downloadButton.imagesFailed)}`);
       } else {
-        const message = isMobile 
-          ? `成功下载 ${successCount} 张图片！文件已保存为 ZIP 格式。\n\n📱 在手机上：请检查下载文件夹或通过分享功能保存文件。`
-          : `成功下载 ${successCount} 张图片！文件已保存为 ZIP 格式`;
+        const message = isMobile
+          ? `${successCount} ${t(translations.downloadButton.downloadSuccessMobile)}`
+          : `${successCount} ${t(translations.downloadButton.downloadSuccess)}`;
         alert(message);
       }
-      
+
     } catch (error) {
       console.error('Error in download process:', error);
-      alert('下载过程中出现错误，请重试');
+      alert(t(translations.downloadButton.downloadError));
     } finally {
       setIsDownloading(false);
       setDownloadProgress(0);
@@ -204,7 +206,7 @@ export default function DownloadButton({
       {isDownloading ? (
         <>
           <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-2"></div>
-          下载中... {downloadProgress > 0 && `${downloadProgress}%`}
+          {t(translations.downloadButton.downloading)} {downloadProgress > 0 && `${downloadProgress}%`}
         </>
       ) : (
         <>
@@ -221,7 +223,7 @@ export default function DownloadButton({
               d="M12 10v6m0 0l-4-4m4 4l4-4m5-2a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          下载ZIP文件 ({images.length}张)
+          {t(translations.downloadButton.downloadZip)} ({images.length}{t(translations.downloadButton.images)})
         </>
       )}
     </button>

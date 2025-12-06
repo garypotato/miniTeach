@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "@/app/i18n";
 
 interface PasswordConfirmationFormProps {
   onClose: () => void;
@@ -11,6 +12,7 @@ export default function PasswordConfirmationForm({
   onClose,
   onConfirm,
 }: PasswordConfirmationFormProps) {
+  const { t, translations } = useTranslation();
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -22,17 +24,17 @@ export default function PasswordConfirmationForm({
 
     try {
       if (!password) {
-        setError("请输入密码");
+        setError(t(translations.passwordConfirmation.enterPassword));
         setIsLoading(false);
         return;
       }
 
       await onConfirm(password);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "确认密码失败";
-      // Check if it's a password mismatch error and use the requested message
+      const errorMessage = error instanceof Error ? error.message : t(translations.passwordConfirmation.confirmFailed);
+      // Check if it's a password mismatch error
       if (errorMessage === "密码不正确" || errorMessage.includes("密码不正确")) {
-        setError("请输入正确的密码");
+        setError(t(translations.passwordConfirmation.enterCorrectPassword));
       } else {
         setError(errorMessage);
       }
@@ -45,7 +47,7 @@ export default function PasswordConfirmationForm({
     <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
       <div className="mb-6">
         <h3 className="text-xl font-semibold text-gray-900 mb-2">
-          确认密码
+          {t(translations.passwordConfirmation.title)}
         </h3>
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <div className="flex">
@@ -63,7 +65,7 @@ export default function PasswordConfirmationForm({
               />
             </svg>
             <p className="ml-2 text-sm text-blue-700">
-              为了安全起见，请输入您的密码来确认更新档案信息
+              {t(translations.passwordConfirmation.securityMessage)}
             </p>
           </div>
         </div>
@@ -72,7 +74,7 @@ export default function PasswordConfirmationForm({
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            密码
+            {t(translations.passwordConfirmation.passwordLabel)}
           </label>
           <input
             type="password"
@@ -80,7 +82,7 @@ export default function PasswordConfirmationForm({
             onChange={(e) => setPassword(e.target.value)}
             required
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="请输入您的密码"
+            placeholder={t(translations.passwordConfirmation.passwordPlaceholder)}
             disabled={isLoading}
           />
         </div>
@@ -98,14 +100,14 @@ export default function PasswordConfirmationForm({
             disabled={isLoading}
             className="flex-1 px-4 py-2 text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            取消
+            {t(translations.passwordConfirmation.cancel)}
           </button>
           <button
             type="submit"
             disabled={isLoading}
             className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? "确认中..." : "确认"}
+            {isLoading ? t(translations.passwordConfirmation.confirming) : t(translations.passwordConfirmation.confirm)}
           </button>
         </div>
       </form>

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/app/store/hooks";
 import { setLoading } from "@/app/store/modalSlice";
 import { Companion } from "@/lib/shopify/types";
+import { useTranslation } from "@/app/i18n";
 
 interface CompanionsPaginationProps {
   companions: Companion[];
@@ -69,6 +70,7 @@ export default function CompanionsPagination({
 }: CompanionsPaginationProps) {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const { t, translations } = useTranslation();
 
   const pageNumbers = generatePageNumbers(currentPage, totalPages);
 
@@ -138,7 +140,7 @@ export default function CompanionsPagination({
                             color: "#47709B",
                           }}
                         >
-                          儿童陪伴师
+                          {t(translations.companionsPage.childCompanion)}
                         </span>
                       </div>
 
@@ -181,7 +183,7 @@ export default function CompanionsPagination({
                               d="M5 13l4 4L19 7"
                             />
                           </svg>
-                          已认证
+                          {t(translations.companionsPage.verified)}
                         </span>
                         <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                           <svg
@@ -197,7 +199,7 @@ export default function CompanionsPagination({
                               d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
                             />
                           </svg>
-                          教育背景
+                          {t(translations.companionsPage.educationBg)}
                         </span>
                         <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                           <svg
@@ -213,7 +215,7 @@ export default function CompanionsPagination({
                               d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                             />
                           </svg>
-                          灵活
+                          {t(translations.companionsPage.flexible)}
                         </span>
                       </div>
                     </div>
@@ -225,7 +227,7 @@ export default function CompanionsPagination({
                         className="inline-flex items-center justify-center px-6 py-3 text-white text-sm font-semibold rounded-lg transition-colors hover:opacity-90"
                         style={{ backgroundColor: "#47709B" }}
                       >
-                        查看详情
+                        {t(translations.companionsPage.viewDetails)}
                         <svg
                           className="w-4 h-4 ml-2"
                           fill="none"
@@ -282,7 +284,7 @@ export default function CompanionsPagination({
                     d="M15 19l-7-7 7-7"
                   />
                 </svg>
-                上一页
+                {t(translations.companionsPage.previousPage)}
               </Link>
             ) : (
               <span className="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded-lg cursor-not-allowed">
@@ -299,7 +301,7 @@ export default function CompanionsPagination({
                     d="M15 19l-7-7 7-7"
                   />
                 </svg>
-                上一页
+                {t(translations.companionsPage.previousPage)}
               </span>
             )}
 
@@ -338,7 +340,7 @@ export default function CompanionsPagination({
                 href={buildPageUrl(currentPage + 1)}
                 className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                下一页
+                {t(translations.companionsPage.nextPage)}
                 <svg
                   className="w-4 h-4 ml-1 inline"
                   fill="none"
@@ -355,7 +357,7 @@ export default function CompanionsPagination({
               </Link>
             ) : (
               <span className="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded-lg cursor-not-allowed">
-                下一页
+                {t(translations.companionsPage.nextPage)}
                 <svg
                   className="w-4 h-4 ml-1 inline"
                   fill="none"
@@ -376,13 +378,13 @@ export default function CompanionsPagination({
           {/* Quick Jump */}
           {totalPages > 5 && (
             <div className="text-center">
-              <span className="text-sm text-gray-500 mr-2">跳转到页面:</span>
+              <span className="text-sm text-gray-500 mr-2">{t(translations.companionsPage.jumpToPage)}</span>
               <select
                 value={currentPage}
                 onChange={(e) => {
                   const page = parseInt(e.target.value);
                   dispatch(
-                    setLoading({ loading: true, message: "正在加载页面..." })
+                    setLoading({ loading: true, message: t(translations.companionsPage.loadingPage) })
                   );
                   router.push(buildPageUrl(page));
                 }}

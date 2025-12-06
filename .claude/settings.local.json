@@ -28,7 +28,9 @@
       "Bash(findstr:*)",
       "Bash(git config:*)",
       "Bash(npm show:*)",
-      "Bash(npm view:*)"
+      "Bash(npm view:*)",
+      "Bash(grep:*)",
+      "Bash(xargs -I {} sh -c 'echo \"\"=== {} ===\"\" && grep -n \"\"[\\u4e00-\\u9fff]\"\" {} 2>/dev/null | head -5')"
     ],
     "deny": []
   }

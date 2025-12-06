@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { updateCompanionLoginCredentials } from "@/lib/shopify/companion-actions";
+import { useTranslation } from "@/app/i18n";
 
 interface LoginCredentialsFormProps {
   onClose: () => void;
@@ -10,6 +11,7 @@ interface LoginCredentialsFormProps {
 export default function LoginCredentialsForm({
   onClose,
 }: LoginCredentialsFormProps) {
+  const { t, translations } = useTranslation();
   const [formData, setFormData] = useState({
     user_name: "",
     password: "",
@@ -35,13 +37,13 @@ export default function LoginCredentialsForm({
     try {
       // Validate on client side first
       if (!formData.user_name || !formData.password || !formData.confirm_password) {
-        setError("所有字段都是必需的");
+        setError(t(translations.loginCredentials.allFieldsRequired));
         setIsLoading(false);
         return;
       }
 
       if (formData.password !== formData.confirm_password) {
-        setError("两次输入的密码不匹配");
+        setError(t(translations.loginCredentials.passwordsNotMatch));
         setIsLoading(false);
         return;
       }
@@ -54,7 +56,7 @@ export default function LoginCredentialsForm({
       );
 
       if (!result.success) {
-        throw new Error(result.error || "更新登录信息失败");
+        throw new Error(result.error || t(translations.loginCredentials.updateFailed));
       }
 
       if (result.success) {
@@ -63,7 +65,7 @@ export default function LoginCredentialsForm({
         window.location.reload();
       }
     } catch (error) {
-      setError(error instanceof Error ? error.message : "更新登录信息失败");
+      setError(error instanceof Error ? error.message : t(translations.loginCredentials.updateFailed));
     } finally {
       setIsLoading(false);
     }
@@ -73,7 +75,7 @@ export default function LoginCredentialsForm({
     <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
       <div className="mb-6">
         <h3 className="text-xl font-semibold text-gray-900 mb-2">
-          设置登录信息
+          {t(translations.loginCredentials.title)}
         </h3>
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
           <div className="flex">
@@ -91,7 +93,7 @@ export default function LoginCredentialsForm({
               />
             </svg>
             <p className="ml-2 text-sm text-yellow-700">
-              你还没有登录信息，如果现在不设置你的登录信息，你将无法更新你的档案
+              {t(translations.loginCredentials.warningMessage)}
             </p>
           </div>
         </div>
@@ -100,7 +102,7 @@ export default function LoginCredentialsForm({
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            电子邮件地址
+            {t(translations.loginCredentials.emailLabel)}
           </label>
           <input
             type="email"
@@ -109,14 +111,14 @@ export default function LoginCredentialsForm({
             onChange={handleInputChange}
             required
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="请输入邮箱地址"
+            placeholder={t(translations.loginCredentials.emailPlaceholder)}
             disabled={isLoading}
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            密码
+            {t(translations.loginCredentials.passwordLabel)}
           </label>
           <input
             type="password"
@@ -125,14 +127,14 @@ export default function LoginCredentialsForm({
             onChange={handleInputChange}
             required
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="请输入密码"
+            placeholder={t(translations.loginCredentials.passwordPlaceholder)}
             disabled={isLoading}
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            再次输入密码
+            {t(translations.loginCredentials.confirmPasswordLabel)}
           </label>
           <input
             type="password"
@@ -141,7 +143,7 @@ export default function LoginCredentialsForm({
             onChange={handleInputChange}
             required
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="请再次输入密码"
+            placeholder={t(translations.loginCredentials.confirmPasswordPlaceholder)}
             disabled={isLoading}
           />
         </div>
@@ -158,7 +160,7 @@ export default function LoginCredentialsForm({
             disabled={isLoading}
             className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? "保存中..." : "保存"}
+            {isLoading ? t(translations.loginCredentials.saving) : t(translations.loginCredentials.save)}
           </button>
         </div>
       </form>

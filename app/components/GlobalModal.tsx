@@ -8,10 +8,12 @@ import LoginCredentialsForm from "./LoginCredentialsForm";
 import PasswordConfirmationForm from "./PasswordConfirmationForm";
 import { updateCompanionProfile } from "@/lib/shopify/companion-actions";
 import { getCurrentEditImages, clearCurrentEditImages } from "@/app/companion/dashboard/profile/ProfilePageClient";
+import { useTranslation } from "@/app/i18n";
 
 export default function GlobalModal() {
   const dispatch = useAppDispatch();
   const { modalType, modalOpen, modalData, isLoading, loadingMessage, isSuccess, successMessage } = useAppSelector((state) => state.modal);
+  const { t, translations } = useTranslation();
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     // Close modal if clicking on the backdrop (not the modal content)
@@ -34,7 +36,7 @@ export default function GlobalModal() {
   if (modalType === "filter" || (!isLoading && !isSuccess && !modalOpen)) return null;
 
   if (isLoading) {
-    return <LoadingSpinner message={loadingMessage || "加载中"} backdrop="dark" />;
+    return <LoadingSpinner message={loadingMessage || t(translations.modal.loading)} backdrop="dark" />;
   }
 
   if (modalType === "login_credentials" && modalOpen) {
@@ -94,10 +96,10 @@ export default function GlobalModal() {
               if (result.success) {
                 // Clear the uploaded images after successful update
                 clearCurrentEditImages();
-                
-                dispatch(setSuccess({ 
-                  success: true, 
-                  message: result.message || "档案更新成功" 
+
+                dispatch(setSuccess({
+                  success: true,
+                  message: result.message || t(translations.modal.profileUpdateSuccess)
                 }));
                 // Reload page after success modal closes
                 setTimeout(() => {
@@ -105,7 +107,7 @@ export default function GlobalModal() {
                 }, 2000);
               } else {
                 // Don't close modal on error, show error in the password form
-                throw new Error(result.error || "更新失败");
+                throw new Error(result.error || t(translations.modal.updateFailed));
               }
             }
           }}
@@ -134,9 +136,9 @@ export default function GlobalModal() {
             </svg>
           </div>
           <div className="text-center">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">成功</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t(translations.modal.success)}</h3>
             <p className="text-sm text-gray-600">
-              {successMessage || "操作完成"}
+              {successMessage || t(translations.modal.operationComplete)}
             </p>
           </div>
         </div>

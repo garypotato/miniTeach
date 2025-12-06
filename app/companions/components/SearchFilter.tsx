@@ -9,6 +9,7 @@ import {
   setLoading,
   clearLoading,
 } from "@/app/store/modalSlice";
+import { useTranslation } from "@/app/i18n";
 
 interface SearchFilterProps {
   initialSearch: string;
@@ -30,6 +31,7 @@ export default function SearchFilter({
   const router = useRouter();
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
+  const { t, translations } = useTranslation();
   const { modalOpen, modalType, isLoading } = useAppSelector(
     (state) => state.modal
   );
@@ -53,7 +55,7 @@ export default function SearchFilter({
     name: string = searchInput,
     cities: string[] = selectedCities
   ) => {
-    dispatch(setLoading({ loading: true, message: "正在搜索陪伴师..." }));
+    dispatch(setLoading({ loading: true, message: t(translations.companionsPage.searchingCompanions) }));
     const params = new URLSearchParams(searchParams);
 
     if (name.trim()) {
@@ -98,7 +100,7 @@ export default function SearchFilter({
   };
 
   const handleClear = () => {
-    dispatch(setLoading({ loading: true, message: "清除筛选中..." }));
+    dispatch(setLoading({ loading: true, message: t(translations.companionsPage.clearingFilters) }));
     setSearchInput("");
     setSelectedCities([]);
     setTempSearchInput("");
@@ -123,10 +125,10 @@ export default function SearchFilter({
 
   const handleCloseModal = () => {
     setIsClosing(true);
-    
+
     // Check if mobile (animations enabled) or desktop (no animations)
     const isMobile = window.innerWidth < 640;
-    
+
     if (isMobile) {
       // Mobile: Delay close to allow slide-out animation
       setTimeout(() => {
@@ -155,7 +157,7 @@ export default function SearchFilter({
             opacity: 1;
           }
         }
-        
+
         @keyframes slideDownMobile {
           from {
             transform: translateY(0%);
@@ -166,7 +168,7 @@ export default function SearchFilter({
             opacity: 0;
           }
         }
-        
+
         /* Mobile animations only */
         @media (max-width: 639px) {
           .modal-opening {
@@ -191,10 +193,10 @@ export default function SearchFilter({
         {/* Hero Search Section */}
         <div className="text-center mb-8">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            找到您的完美陪伴师
+            {t(translations.companionsPage.findYourPerfect)}
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            在澳大利亚寻找有经验的儿童陪伴师
+            {t(translations.companionsPage.searchInAustralia)}
           </p>
 
           {/* Main Search Button */}
@@ -207,7 +209,7 @@ export default function SearchFilter({
             {isLoading ? (
               <>
                 <div className="animate-spin rounded-full h-6 w-6 border-2 border-white border-t-transparent"></div>
-                <span>搜索中...</span>
+                <span>{t(translations.companionsPage.searching)}</span>
               </>
             ) : (
               <>
@@ -224,7 +226,7 @@ export default function SearchFilter({
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                   />
                 </svg>
-                <span>搜索陪伴师</span>
+                <span>{t(translations.companionsPage.searchCompanions)}</span>
                 <svg
                   className="h-5 w-5 group-hover:translate-x-1 transition-transform"
                   fill="none"
@@ -272,7 +274,7 @@ export default function SearchFilter({
                       d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707v6.586a1 1 0 01-1.447.894l-4-2A1 1 0 018 18.586v-4.586a1 1 0 00-.293-.707L1.293 7.293A1 1 0 011 6.586V4z"
                     />
                   </svg>
-                  <span>当前筛选</span>
+                  <span>{t(translations.companionsPage.currentFilters)}</span>
                 </h3>
                 <button
                   onClick={handleClear}
@@ -292,7 +294,7 @@ export default function SearchFilter({
                       d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                     />
                   </svg>
-                  <span>清除全部</span>
+                  <span>{t(translations.companionsPage.clearAll)}</span>
                 </button>
               </div>
 
@@ -312,7 +314,7 @@ export default function SearchFilter({
                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                       />
                     </svg>
-                    <span>名称: &ldquo;{searchInput}&rdquo;</span>
+                    <span>{t(translations.companionsPage.nameLabel)}: &ldquo;{searchInput}&rdquo;</span>
                     <button
                       type="button"
                       disabled={isLoading}
@@ -362,7 +364,7 @@ export default function SearchFilter({
                         d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                       />
                     </svg>
-                    <span>地点: {city}</span>
+                    <span>{t(translations.companionsPage.locationLabel)}: {city}</span>
                     <button
                       type="button"
                       disabled={isLoading}
@@ -416,8 +418,8 @@ export default function SearchFilter({
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-blue-800">实时搜索</p>
-                <p className="text-xs text-blue-600">高效过滤</p>
+                <p className="text-sm font-medium text-blue-800">{t(translations.companionsPage.realTimeSearch)}</p>
+                <p className="text-xs text-blue-600">{t(translations.companionsPage.efficientFilter)}</p>
               </div>
             </div>
           </div>
@@ -446,8 +448,8 @@ export default function SearchFilter({
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-purple-800">地理筛选</p>
-                <p className="text-xs text-purple-600">精准定位</p>
+                <p className="text-sm font-medium text-purple-800">{t(translations.companionsPage.geoFilter)}</p>
+                <p className="text-xs text-purple-600">{t(translations.companionsPage.preciseLocation)}</p>
               </div>
             </div>
           </div>
@@ -470,8 +472,8 @@ export default function SearchFilter({
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-green-800">智能收藏</p>
-                <p className="text-xs text-green-600">多样选择</p>
+                <p className="text-sm font-medium text-green-800">{t(translations.companionsPage.smartCollection)}</p>
+                <p className="text-xs text-green-600">{t(translations.companionsPage.diverseChoices)}</p>
               </div>
             </div>
           </div>
@@ -490,8 +492,8 @@ export default function SearchFilter({
           >
             <div
               className={`${isClosing ? 'modal-closing' : 'modal-opening'} bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden transform ${
-                isLoading 
-                  ? "pointer-events-none opacity-75" 
+                isLoading
+                  ? "pointer-events-none opacity-75"
                   : ""
               }`}
               onClick={(e) => e.stopPropagation()}
@@ -504,9 +506,9 @@ export default function SearchFilter({
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1 pr-4">
-                    <h2 className="text-xl sm:text-2xl font-bold mb-2 leading-tight">搜索陪伴师</h2>
+                    <h2 className="text-xl sm:text-2xl font-bold mb-2 leading-tight">{t(translations.companionsPage.searchCompanions)}</h2>
                     <p className="text-blue-100 text-sm leading-relaxed">
-                      找到您的完美AI陪伴师，按地点筛选
+                      {t(translations.companionsPage.findPerfectAI)}
                     </p>
                   </div>
                   <button
@@ -556,7 +558,7 @@ export default function SearchFilter({
                       </svg>
                     </div>
                     <h3 className="text-lg font-semibold text-gray-900">
-                      按名称搜索
+                      {t(translations.companionsPage.searchByName)}
                     </h3>
                   </div>
 
@@ -567,7 +569,7 @@ export default function SearchFilter({
                       onChange={(e) => setTempSearchInput(e.target.value)}
                       onFocus={(e) => e.stopPropagation()}
                       onClick={(e) => e.stopPropagation()}
-                      placeholder="输入陪伴师名称..."
+                      placeholder={t(translations.companionsPage.enterCompanionName)}
                       className="block w-full px-4 sm:px-5 py-4 sm:py-4 text-base sm:text-lg border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500 focus:ring-opacity-20 focus:border-blue-500 focus:outline-none transition-all placeholder-gray-400 touch-manipulation"
                     />
                     <div className="absolute inset-y-0 right-0 pr-3 sm:pr-4 flex items-center pointer-events-none">
@@ -613,7 +615,7 @@ export default function SearchFilter({
                       </svg>
                     </div>
                     <h3 className="text-lg font-semibold text-gray-900">
-                      按地点筛选
+                      {t(translations.companionsPage.filterByLocation)}
                     </h3>
                   </div>
 
@@ -677,7 +679,7 @@ export default function SearchFilter({
                   {tempSelectedCities.length > 0 && (
                     <div className="mt-4 p-4 bg-blue-50 rounded-xl border border-blue-200">
                       <p className="text-sm font-medium text-blue-700 mb-2">
-                        已选择城市 ({tempSelectedCities.length})
+                        {t(translations.companionsPage.selectedCities)} ({tempSelectedCities.length})
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {tempSelectedCities.map((city) => (
@@ -737,7 +739,7 @@ export default function SearchFilter({
                       d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                     />
                   </svg>
-                  <span>清除全部</span>
+                  <span>{t(translations.companionsPage.clearAll)}</span>
                 </button>
 
                 <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
@@ -746,7 +748,7 @@ export default function SearchFilter({
                     disabled={isLoading}
                     className="w-full sm:w-auto px-6 py-4 sm:py-3 text-base sm:text-sm font-medium text-gray-700 bg-white border-2 border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation"
                   >
-                    取消
+                    {t(translations.common.cancel)}
                   </button>
                   <button
                     onClick={handleApplyFilters}
@@ -770,7 +772,7 @@ export default function SearchFilter({
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                       />
                     </svg>
-                    <span>{isLoading ? "搜索中" : "搜索陪伴师"}</span>
+                    <span>{isLoading ? t(translations.companionsPage.searching) : t(translations.companionsPage.searchCompanions)}</span>
                   </button>
                 </div>
               </div>

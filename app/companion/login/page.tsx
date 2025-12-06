@@ -5,10 +5,12 @@ import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { useTranslation } from "@/app/i18n";
 
 export default function CompanionLogin() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { t, translations } = useTranslation();
   const [formData, setFormData] = useState({
     user_name: "",
     password: "",
@@ -35,13 +37,13 @@ export default function CompanionLogin() {
       });
 
       if (result?.error) {
-        setError("用户名或密码错误，或者你的账户未被审核通过");
+        setError(t(translations.loginPage.invalidCredentials));
       } else {
         // Redirect to the intended page or default to dashboard
         router.push(redirectUrl || "/companion/dashboard");
       }
     } catch (error) {
-      setError("登录时发生错误，请重试");
+      setError(t(translations.loginPage.loginFailed));
       console.error("Login error:", error);
     } finally {
       setIsLoading(false);
@@ -69,8 +71,8 @@ export default function CompanionLogin() {
               priority
             />
           </div>
-          <h2 className="text-3xl font-bold text-gray-900">陪伴师登录</h2>
-          <p className="mt-2 text-sm text-gray-600">登录您的陪伴师账户</p>
+          <h2 className="text-3xl font-bold text-gray-900">{t(translations.loginPage.title)}</h2>
+          <p className="mt-2 text-sm text-gray-600">{t(translations.loginPage.title)}</p>
         </div>
 
         {/* Login Form */}
@@ -81,7 +83,7 @@ export default function CompanionLogin() {
                 htmlFor="user_name"
                 className="block text-sm font-medium text-gray-700"
               >
-                用户名 / 邮箱
+                {t(translations.loginPage.emailLabel)}
               </label>
               <input
                 id="user_name"
@@ -89,7 +91,7 @@ export default function CompanionLogin() {
                 type="text"
                 required
                 className="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="请输入您的邮箱或微信号"
+                placeholder={t(translations.loginPage.emailPlaceholder)}
                 value={formData.user_name}
                 onChange={handleInputChange}
                 disabled={isLoading}
@@ -101,7 +103,7 @@ export default function CompanionLogin() {
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700"
               >
-                密码
+                {t(translations.loginPage.passwordLabel)}
               </label>
               <input
                 id="password"
@@ -109,7 +111,7 @@ export default function CompanionLogin() {
                 type="password"
                 required
                 className="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="请输入您的密码"
+                placeholder={t(translations.loginPage.passwordPlaceholder)}
                 value={formData.password}
                 onChange={handleInputChange}
                 disabled={isLoading}
@@ -149,19 +151,19 @@ export default function CompanionLogin() {
               {isLoading && (
                 <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></div>
               )}
-              {isLoading ? "登录中..." : "登录"}
+              {isLoading ? t(translations.loginPage.loggingIn) : t(translations.loginPage.loginButton)}
             </button>
           </div>
 
           {/* Links */}
           <div className="text-center space-y-2">
             <p className="text-sm text-gray-600">
-              还没有账户？{" "}
+              {t(translations.loginPage.noAccount)}{" "}
               <Link
                 href="/companion/create"
                 className="font-medium text-blue-600 hover:text-blue-500"
               >
-                注册成为陪伴师
+                {t(translations.loginPage.registerNow)}
               </Link>
             </p>
             {redirectUrl && (
@@ -169,14 +171,14 @@ export default function CompanionLogin() {
                 href={redirectUrl}
                 className="block text-sm text-gray-500 hover:text-gray-700"
               >
-                返回上一页
+                {t(translations.common.back)}
               </Link>
             )}
             <Link
               href="/"
               className="block text-sm text-gray-500 hover:text-gray-700"
             >
-              返回首页
+              {t(translations.companionForm.returnHome)}
             </Link>
           </div>
         </form>

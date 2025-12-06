@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useTranslation } from "@/app/i18n";
 
 interface ChapterImageGalleryProps {
   images: Array<{
@@ -23,6 +24,7 @@ export default function ChapterImageGallery({
   chapterTitle,
   redirectUrl,
 }: ChapterImageGalleryProps) {
+  const { t, translations } = useTranslation();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
@@ -130,13 +132,13 @@ export default function ChapterImageGallery({
       <div className="mb-6 text-center">
         <p className="text-gray-600">
           {isAuthenticated ? (
-            <>共 {images.length} 张图片</>
+            <>{t(translations.resourcePage.totalImages).replace('{count}', String(images.length))}</>
           ) : (
             <>
-              可预览 1 张，共 {images.length} 张图片
+              {t(translations.resourcePage.previewCount).replace('{count}', String(images.length))}
               {images.length > 1 && (
                 <span className="text-blue-600 ml-2">
-                  · {images.length - 1} 张需要登录
+                  · {t(translations.resourcePage.loginForMore).replace('{count}', String(images.length - 1))}
                 </span>
               )}
             </>
@@ -167,7 +169,7 @@ export default function ChapterImageGallery({
             {/* Free Preview Badge */}
             <div className="absolute top-5 left-5">
               <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 shadow-sm">
-                免费预览
+                {t(translations.resourcePage.freePreview)}
               </span>
             </div>
             {/* Image number */}
@@ -223,12 +225,12 @@ export default function ChapterImageGallery({
                         d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                       />
                     </svg>
-                    <p className="text-gray-500 text-sm font-medium">需要登录</p>
+                    <p className="text-gray-500 text-sm font-medium">{t(translations.resourcePage.loginRequired)}</p>
                     <Link
                       href={`/companion/login?redirect=${encodeURIComponent(redirectUrl)}`}
                       className="text-blue-600 text-xs hover:text-blue-700 underline mt-1 block"
                     >
-                      点击登录
+                      {t(translations.resourcePage.clickToLogin)}
                     </Link>
                   </div>
                 </div>
@@ -348,7 +350,7 @@ export default function ChapterImageGallery({
 
                 {/* Mobile swipe indicator */}
                 <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-xs md:hidden">
-                  滑动浏览
+                  {t(translations.resourcePage.swipeToView)}
                 </div>
               </>
             )}
@@ -360,7 +362,7 @@ export default function ChapterImageGallery({
                   <svg className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
-                  <span>还有 {images.length - 1} 张图片需要登录查看</span>
+                  <span>{t(translations.resourcePage.moreImagesRequireLogin).replace('{count}', String(images.length - 1))}</span>
                 </div>
               </div>
             )}
@@ -369,7 +371,7 @@ export default function ChapterImageGallery({
             <div className={`absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm z-10 transition-all duration-200 ${
               isAnimating ? 'scale-95 opacity-75' : 'scale-100 opacity-100'
             }`}>
-              {isAuthenticated ? `${selectedImageIndex + 1} / ${visibleImages.length}` : "预览图片"}
+              {isAuthenticated ? `${selectedImageIndex + 1} / ${visibleImages.length}` : t(translations.resourcePage.previewImage)}
             </div>
 
             {/* Thumbnail indicators for authenticated users with multiple images */}

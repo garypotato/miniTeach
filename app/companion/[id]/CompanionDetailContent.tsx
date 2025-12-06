@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ImageGallery } from "./ImageGallery";
 import MetafieldsDisplay from "./MetafieldsDisplay";
 import { Companion, CompanionImage } from "../../types/companion";
+import { useTranslation } from "@/app/i18n";
 
 interface CompanionDetailContentProps {
   companion: Companion;
@@ -14,6 +15,8 @@ export default function CompanionDetailContent({
   companion,
   images,
 }: CompanionDetailContentProps) {
+  const { t, translations } = useTranslation();
+
   return (
     <>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -31,18 +34,18 @@ export default function CompanionDetailContent({
                 className="px-3 py-1 rounded-full text-sm font-medium"
                 style={{ backgroundColor: "#AFC8DA", color: "#47709B" }}
               >
-                儿童陪伴师
+                {t(translations.companionDetail.childCompanion)}
               </span>
               <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                可用
+                {t(translations.companionDetail.available)}
               </span>
             </div>
           </div>
 
           <div className="prose prose-lg max-w-none">
-            <h3 className="text-xl font-semibold text-gray-900 mb-4">关于我</h3>
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">{t(translations.companionDetail.aboutMe)}</h3>
             <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-              {companion.metafields?.description || "暂无描述"}
+              {companion.metafields?.description || t(translations.companionDetail.noDescription)}
             </div>
           </div>
 
@@ -50,7 +53,7 @@ export default function CompanionDetailContent({
           {companion.metafields && (
             <div className="border-t pt-8">
               <h3 className="text-xl font-semibold text-gray-900 mb-6">
-                资格与详情
+                {t(translations.companionDetail.qualificationsAndDetails)}
               </h3>
               <MetafieldsDisplay metafields={companion.metafields} />
             </div>
@@ -58,10 +61,10 @@ export default function CompanionDetailContent({
 
           <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
             <h3 className="text-xl font-semibold text-gray-900 mb-4">
-              联系我们
+              {t(translations.companionDetail.contactUs)}
             </h3>
             <p className="text-gray-600 mb-6">
-              为保护我们陪伴师的隐私，联系信息是私下提供的。请与我们联系以请求联系详情。
+              {t(translations.companionDetail.contactPrivacy)}
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
@@ -69,14 +72,14 @@ export default function CompanionDetailContent({
                 className="flex-1 text-white px-6 py-3 rounded-full font-semibold transition-colors hover:opacity-90 text-center"
                 style={{ backgroundColor: "#47709B" }}
               >
-                获取联系信息
+                {t(translations.companionDetail.getContactInfo)}
               </Link>
               <Link
                 href="/companions"
                 className="flex-1 border-2 px-6 py-3 rounded-full font-semibold transition-colors hover:bg-gray-50 text-center"
                 style={{ borderColor: "#47709B", color: "#47709B" }}
               >
-                所有陪伴师
+                {t(translations.companionDetail.allCompanions)}
               </Link>
             </div>
           </div>
@@ -87,10 +90,10 @@ export default function CompanionDetailContent({
       <section className="py-16 mt-16 bg-white border-t rounded-2xl">
         <div className="text-center mb-12">
           <h3 className="text-3xl font-bold text-gray-900 mb-4">
-            认识我们的陪伴师
+            {t(translations.companionDetail.meetOurCompanions)}
           </h3>
           <p className="text-lg text-gray-600">
-            发现准备支持您孩子成长旅程的关爱专业人士
+            {t(translations.companionDetail.discoverProfessionals)}
           </p>
         </div>
         <div className="text-center">
@@ -99,7 +102,7 @@ export default function CompanionDetailContent({
             className="inline-flex items-center text-white px-8 py-3 rounded-full font-semibold transition-colors hover:opacity-90"
             style={{ backgroundColor: "#47709B" }}
           >
-            所有陪伴师
+            {t(translations.companionDetail.allCompanions)}
             <svg
               className="w-5 h-5 ml-2"
               fill="none"
