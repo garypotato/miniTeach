@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslation } from "@/app/i18n";
 
 export default function GlobalFooter() {
   const pathname = usePathname();
   const isDashboard = pathname?.startsWith("/companion/dashboard");
+  const { t, translations } = useTranslation();
 
   if (isDashboard) {
     return (
@@ -16,30 +18,30 @@ export default function GlobalFooter() {
               <h5 className="text-lg font-semibold mb-3 text-blue-600">
                 MiniTeach
               </h5>
-              <p className="text-gray-600 text-sm">学霸带娃 — 为家庭与学生</p>
+              <p className="text-gray-600 text-sm">{t(translations.footer.slogan)}</p>
             </div>
             <div>
-              <h6 className="font-medium mb-3 text-gray-800">联系我们</h6>
+              <h6 className="font-medium mb-3 text-gray-800">{t(translations.footer.contactUs)}</h6>
               <p className="text-gray-600 text-sm">
-                有问题请联系我们的客服团队
+                {t(translations.footer.contactDesc)}
               </p>
             </div>
             <div>
-              <h6 className="font-medium mb-3 text-gray-800">帮助</h6>
+              <h6 className="font-medium mb-3 text-gray-800">{t(translations.footer.help)}</h6>
               <ul className="space-y-1 text-sm">
                 <li>
                   <Link
                     href="/about"
                     className="text-gray-600 hover:text-blue-600 transition-colors"
                   >
-                    关于我们
+                    {t(translations.footer.aboutUs)}
                   </Link>
                 </li>
               </ul>
             </div>
           </div>
           <div className="border-t border-gray-300 mt-6 pt-6 text-center">
-            <p className="text-gray-500 text-sm">© 2025 学霸带娃 保留所有权利。</p>
+            <p className="text-gray-500 text-sm">{t(translations.footer.copyright)}</p>
           </div>
         </div>
       </footer>
@@ -57,10 +59,10 @@ export default function GlobalFooter() {
             >
               MiniTeach
             </h5>
-            <p className="text-gray-400">学霸带娃 — 为家庭与学生</p>
+            <p className="text-gray-400">{t(translations.footer.slogan)}</p>
           </div>
           <div>
-            <h6 className="font-semibold mb-4">服务</h6>
+            <h6 className="font-semibold mb-4">{t(translations.footer.services)}</h6>
             <ul className="space-y-2 text-gray-400">
               <li>
                 <Link
@@ -68,7 +70,7 @@ export default function GlobalFooter() {
                   className="hover:opacity-80"
                   style={{ color: "#AFC8DA" }}
                 >
-                  寻找陪伴师
+                  {t(translations.footer.findCompanion)}
                 </Link>
               </li>
               <li>
@@ -77,23 +79,23 @@ export default function GlobalFooter() {
                   className="hover:opacity-80"
                   style={{ color: "#AFC8DA" }}
                 >
-                  关于我们
+                  {t(translations.footer.aboutUs)}
                 </Link>
               </li>
             </ul>
           </div>
           <div>
-            <h6 className="font-semibold mb-4">联系我们</h6>
+            <h6 className="font-semibold mb-4">{t(translations.footer.contactUs)}</h6>
             <ul className="space-y-2 text-gray-400">
               <li>
                 <span className="text-gray-400">
-                  有问题请联系我们的客服团队
+                  {t(translations.footer.contactDesc)}
                 </span>
               </li>
             </ul>
           </div>
           <div>
-            <h6 className="font-semibold mb-4">关注我们</h6>
+            <h6 className="font-semibold mb-4">{t(translations.footer.followUs)}</h6>
             <ul className="space-y-2 text-gray-400">
               <li>
                 <Link
@@ -101,7 +103,7 @@ export default function GlobalFooter() {
                   className="hover:opacity-80"
                   style={{ color: "#AFC8DA" }}
                 >
-                  脸书
+                  {t(translations.footer.facebook)}
                 </Link>
               </li>
               <li>
@@ -119,14 +121,14 @@ export default function GlobalFooter() {
                   className="hover:opacity-80"
                   style={{ color: "#AFC8DA" }}
                 >
-                  推特
+                  {t(translations.footer.twitter)}
                 </Link>
               </li>
             </ul>
           </div>
         </div>
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-          <p>© 2025 学霸带娃 保留所有权利。</p>
+          <p>{t(translations.footer.copyright)}</p>
         </div>
       </div>
     </footer>

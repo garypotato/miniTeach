@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Companion } from "@/lib/shopify/types";
+import { useTranslation } from "@/app/i18n";
 // Client component - use fetch API for data
 
 interface CompanionsSectionProps {
@@ -50,6 +51,7 @@ export default function CompanionsSection({
   const [companions, setCompanions] = useState<Companion[]>(initialCompanions);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMoreAvailable, setHasMoreAvailable] = useState(true);
+  const { t, translations } = useTranslation();
 
   // Randomize companions after hydration to ensure different companions each visit
   useEffect(() => {
@@ -101,10 +103,10 @@ export default function CompanionsSection({
       <div className="w-full">
         <div className="text-center mb-12 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="text-3xl font-bold text-gray-900 mb-4">
-            认识我们的陪伴师
+            {t(translations.companions.title)}
           </h3>
           <p className="text-lg text-gray-600">
-            发现准备支持您孩子成长旅程的关爱专业人士
+            {t(translations.companions.subtitle)}
           </p>
         </div>
 
@@ -231,7 +233,7 @@ export default function CompanionsSection({
                               marginTop: "auto",
                             }}
                           >
-                            <span>查看档案</span>
+                            <span>{t(translations.companions.viewProfile)}</span>
                             <svg
                               className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform"
                               fill="none"
@@ -265,11 +267,11 @@ export default function CompanionsSection({
                   {loadingMore ? (
                     <>
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                      加载更多...
+                      {t(translations.companions.loadingMore)}
                     </>
                   ) : (
                     <>
-                      查看更多陪伴师
+                      {t(translations.companions.viewMore)}
                       <svg
                         className="w-5 h-5 ml-2"
                         fill="none"
@@ -309,7 +311,7 @@ export default function CompanionsSection({
                       d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                     />
                   </svg>
-                  显示不同陪伴师
+                  {t(translations.companions.showDifferent)}
                 </Link>
               </div>
             )}

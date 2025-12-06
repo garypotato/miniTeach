@@ -5,12 +5,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import AuthButton from "./AuthButton";
+import LanguageToggle from "./LanguageToggle";
+import { useTranslation } from "@/app/i18n";
 
 export default function MobileMenu() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { data: session } = useSession();
   const pathname = usePathname();
-  
+  const { t, translations } = useTranslation();
+
   const isOnCreatePage = pathname === "/companion/create";
 
   return (
@@ -61,41 +64,41 @@ export default function MobileMenu() {
             className="block px-3 py-2 text-gray-700 hover:bg-gray-50 font-medium rounded-md transition-colors duration-200"
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            首页
+            {t(translations.nav.home)}
           </Link>
           <Link
             href="/companions"
             className="block px-3 py-2 text-gray-700 hover:bg-gray-50 font-medium rounded-md transition-colors duration-200"
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            所有陪伴师
+            {t(translations.nav.allCompanions)}
           </Link>
           <Link
             href="/resources"
             className="block px-3 py-2 text-gray-700 hover:bg-gray-50 font-medium rounded-md transition-colors duration-200"
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            学习资源
+            {t(translations.nav.resources)}
           </Link>
           <Link
             href="/about"
             className="block px-3 py-2 text-gray-700 hover:bg-gray-50 font-medium rounded-md transition-colors duration-200"
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            关于我们
+            {t(translations.nav.aboutUs)}
           </Link>
           <Link
             href="/contact"
             className="block px-3 py-2 text-gray-700 hover:bg-gray-50 font-medium rounded-md transition-colors duration-200"
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            联系我们
+            {t(translations.nav.contactUs)}
           </Link>
-          {/* Only show "成为陪伴师" button when not logged in */}
+          {/* Only show "Become Companion" button when not logged in */}
           {!session && (
             isOnCreatePage ? (
               <span className="block mx-3 my-2 px-3 py-2 bg-gray-400 text-white font-medium rounded-md text-center cursor-not-allowed">
-                成为陪伴师
+                {t(translations.nav.becomeCompanion)}
               </span>
             ) : (
               <Link
@@ -103,11 +106,16 @@ export default function MobileMenu() {
                 className="block mx-3 my-2 px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 font-medium rounded-md transition-colors duration-200 text-center"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                成为陪伴师
+                {t(translations.nav.becomeCompanion)}
               </Link>
             )
           )}
           
+          {/* Language Toggle */}
+          <div className="px-3 py-2">
+            <LanguageToggle />
+          </div>
+
           {/* Mobile Authentication */}
           <div className="border-t border-gray-200 pt-3 mt-3">
             <AuthButton onMobileMenuClose={() => setIsMobileMenuOpen(false)} isMobile={true} />

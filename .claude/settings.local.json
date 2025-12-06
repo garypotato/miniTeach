@@ -20,7 +20,10 @@
       "Bash(timeout 10 npm run dev)",
       "Bash(git push:*)",
       "Bash(git reset:*)",
-      "WebFetch(domain:community.shopify.com)"
+      "WebFetch(domain:community.shopify.com)",
+      "Bash(tree:*)",
+      "Bash(wc:*)",
+      "Bash(cd:*)"
     ],
     "deny": []
   }

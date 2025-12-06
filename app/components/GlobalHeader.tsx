@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import MobileMenu from "./MobileMenu";
 import NavigationButtons from "./NavigationButtons";
+import HeaderNavLinks from "./HeaderNavLinks";
 
 // Server Component - most of the header is static
 export default function GlobalHeader() {
@@ -25,39 +26,10 @@ export default function GlobalHeader() {
 
           {/* Desktop Navigation - Mixed Server/Client */}
           <nav className="hidden md:flex space-x-8 items-center">
-            {/* Static Links - Server Rendered */}
-            <Link
-              href="/"
-              className="text-gray-700 hover:opacity-80 font-medium"
-            >
-              首页
-            </Link>
-            <Link
-              href="/companions"
-              className="text-gray-700 hover:opacity-80 font-medium"
-            >
-              所有陪伴师
-            </Link>
-            <Link
-              href="/resources"
-              className="text-gray-700 hover:opacity-80 font-medium"
-            >
-              学习资源
-            </Link>
-            <Link
-              href="/about"
-              className="text-gray-700 hover:opacity-80 font-medium"
-            >
-              关于我们
-            </Link>
-            <Link
-              href="/contact"
-              className="text-gray-700 hover:opacity-80 font-medium"
-            >
-              联系我们
-            </Link>
+            {/* Navigation Links - Client Component for i18n */}
+            <HeaderNavLinks />
 
-            {/* Dynamic Buttons - Client Component */}
+            {/* Dynamic Buttons & Language Toggle - Client Component */}
             <NavigationButtons />
           </nav>
 

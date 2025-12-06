@@ -1,18 +1,28 @@
+"use client";
+
 import Image from "next/image";
+import { useTranslation } from "@/app/i18n";
 
 interface LoadingSpinnerProps {
   message?: string;
+  subtitle?: string;
   backdrop?: "light" | "dark";
 }
 
 export default function LoadingSpinner({
-  message = "加载中",
+  message,
+  subtitle,
   backdrop = "dark",
 }: LoadingSpinnerProps) {
+  const { t, translations } = useTranslation();
+
   const backdropClass =
     backdrop === "dark"
       ? "bg-black/70 backdrop-blur-sm"
       : "bg-white/95 backdrop-blur-sm";
+
+  const displayMessage = message || t(translations.common.loadingTitle);
+  const displaySubtitle = subtitle || t(translations.common.loadingSubtitle);
 
   return (
     <div
@@ -38,12 +48,12 @@ export default function LoadingSpinner({
         {/* Clean loading dots */}
         <div className="flex items-center justify-center space-x-2 mb-2">
           <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce"></div>
-          <div 
-            className="w-3 h-3 bg-blue-500 rounded-full animate-bounce" 
+          <div
+            className="w-3 h-3 bg-blue-500 rounded-full animate-bounce"
             style={{ animationDelay: "0.1s" }}
           ></div>
-          <div 
-            className="w-3 h-3 bg-blue-500 rounded-full animate-bounce" 
+          <div
+            className="w-3 h-3 bg-blue-500 rounded-full animate-bounce"
             style={{ animationDelay: "0.2s" }}
           ></div>
         </div>
@@ -51,9 +61,9 @@ export default function LoadingSpinner({
         {/* Loading text */}
         <div className="text-center">
           <h3 className="text-lg font-semibold text-gray-900 mb-1">
-            {message}
+            {displayMessage}
           </h3>
-          <p className="text-sm text-gray-600">为您准备最优质的服务...</p>
+          <p className="text-sm text-gray-600">{displaySubtitle}</p>
         </div>
       </div>
     </div>
